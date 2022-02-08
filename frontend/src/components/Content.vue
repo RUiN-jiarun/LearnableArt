@@ -245,10 +245,10 @@ export default {
 
           this.feat_list = Object.keys(response.data.image_info);
 
-          for (var i = 0; i < this.feat_list.length; i++) {
-            response.data.image_info[this.feat_list[i]][2] = this.feat_list[i];
-            this.feature_list.push(response.data.image_info[this.feat_list[i]]);
-          }
+          // for (var i = 0; i < this.feat_list.length; i++) {
+          //   response.data.image_info[this.feat_list[i]] = this.feat_list[i];
+          //   this.feature_list.push(response.data.image_info[this.feat_list[i]]);
+          // }
 
           this.feature_list.push(response.data.image_info);
           this.feature_list_1 = this.feature_list[0];

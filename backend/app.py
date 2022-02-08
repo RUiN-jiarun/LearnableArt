@@ -47,10 +47,10 @@ def upload_file():
         file.save(src_path)
         shutil.copy(src_path, './tmp/ct')
         image_path = os.path.join('./tmp/ct', file.filename)
-        pid, image_info = 1, "test"
+        pid, image_info = file.filename, "test"
         return jsonify({'status': 1,
                         'image_url': 'http://127.0.0.1:5003/tmp/ct/' + pid,
-                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/' + pid,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/ct/' + pid,      # temporary at ct dir
                         'image_info': image_info})
 
     return jsonify({'status': 0})
