@@ -10,7 +10,7 @@
       :center="true"
     >
       <el-progress :percentage="percentage"></el-progress>
-      <span slot="footer" class="dialog-footer">请耐心等待约3秒钟</span>
+      <span slot="footer" class="dialog-footer">请耐心等待</span>
     </el-dialog>
 
     <div id="CT">
@@ -47,9 +47,9 @@
             <div class="img_info_1" style="border-radius: 0 0 5px 5px">
               <span style="color: white; letter-spacing: 6px">原始图像</span>
             </div>
-            <div class="img_info_1" style="border-radius: 5px">
+            <div class="img_info_1" style="border-radius: 5px; background-color: #ffffff">
               <el-button
-                      v-show="showbutton2"
+                      v-show="showbutton1"
                       type="primary"
                       icon="el-icon-upload"
                       class="download_bt"
@@ -61,9 +61,9 @@
                         style="display: none"
                         name="file"
                         type="file"
-                        @change="update"
+                        @change="update($event, 1)"
                       />
-                      <!-- 更改此处的ref函数？ -->
+                      <!-- 更改此处的change函数？ -->
                     </el-button>
             </div>
           </div>
@@ -82,34 +82,31 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error">
-                    
                   </div>
-                  
                 </div>
-
               </el-image>
             </div>
             <div class="img_info_1" style="border-radius: 0 0 5px 5px">
               <span style="color: white; letter-spacing: 4px">风格图像</span>
             </div>
-            <div class="img_info_1" style="border-radius: 5px">
+            <div class="img_info_1" style="border-radius: 5px; background-color: #ffffff">
               <el-button
                       v-show="showbutton2"
                       type="primary"
                       icon="el-icon-upload"
                       class="download_bt"
-                      v-on:click="true_upload"
+                      v-on:click="true_upload2"
                     >
                       上传图像
                       <input
-                        ref="upload"
+                        ref="upload2"
                         style="display: none"
                         name="file"
                         type="file"
-                        @change="update"
+                        @change="update($event, 2)"
                       />
-                      <!-- 更改此处的ref函数？ -->
-                    </el-button>
+                      <!-- 更改此处的change函数？ -->
+              </el-button>
             </div>
           </div>
         </el-card>
@@ -119,23 +116,6 @@
         <el-card style="border-radius: 8px">
           <div slot="header" class="clearfix">
             <span>检测目标</span>
-            <!-- <el-button
-              style="margin-left: 35px"
-              v-show=true
-              type="primary"
-              icon="el-icon-upload"
-              class="download_bt"
-              v-on:click="true_upload2"
-            >
-              重新选择图像
-              <input
-                ref="upload2"
-                style="display: none"
-                name="file"
-                type="file"
-                @change="update"
-              />
-            </el-button> -->
           </div>
           <el-tabs v-model="activeName">
             <el-tab-pane label="检测到的目标" name="first">
@@ -236,22 +216,30 @@ export default {
       return url;
     },
     // 上传文件
-    update(e) {
+    update(e, id) {
+      // console.log(id);
       this.percentage = 0;
       this.dialogTableVisible = true;
       this.url_1 = "";
       this.url_2 = "";
-      this.srcList = [];
-      this.srcList1 = [];
+      // this.srcList = [];
+      // this.srcList1 = [];
+      // console.log(this.srcList);
+      // console.log(this.srcList1);
       this.wait_return = "";
       this.wait_upload = "";
       this.feature_list = [];
       this.feat_list = [];
       this.fullscreenLoading = true;
       this.loading = true;
-      // this.showbutton = false;
+      this.showbutton = false;
       let file = e.target.files[0];
-      this.url_1 = this.$options.methods.getObjectURL(file);
+      if (id == 1) {
+        this.url_1 = this.$options.methods.getObjectURL(file);
+      } else if (id == 2) {
+        this.url_2 = this.$options.methods.getObjectURL(file);
+      }
+      // this.url_1 = this.$options.methods.getObjectURL(file);
       let param = new FormData();               // 创建form对象
       param.append("file", file, file.name);    // 通过append向form对象添加数据
       var timer = setInterval(() => {
@@ -265,10 +253,16 @@ export default {
         .then((response) => {
           this.percentage = 100;
           clearInterval(timer);
-          this.url_1 = response.data.image_url;
-          this.srcList.push(this.url_1);
-          // this.url_2 = response.data.draw_url;
-          // this.srcList1.push(this.url_2);
+          if (id == 1) {
+            this.url_1 = response.data.image_url;
+            this.srcList.push(this.url_1);
+            this.url_2 = this.srcList1[this.srcList1.length-1];
+          } else if (id == 2) {
+            this.url_2 = response.data.draw_url;
+            this.srcList1.push(this.url_2);
+            this.url_1 = this.srcList[this.srcList.length-1];
+          }
+
           this.fullscreenLoading = false;
           this.loading = false;
 

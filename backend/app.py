@@ -50,7 +50,7 @@ def upload_file():
         pid, image_info = file.filename, "test"
         return jsonify({'status': 1,
                         'image_url': 'http://127.0.0.1:5003/tmp/ct/' + pid,
-                        # 'draw_url': 'http://127.0.0.1:5003/tmp/ct/' + pid,      # temporary at ct dir
+                        'draw_url': 'http://127.0.0.1:5003/tmp/ct/' + pid,      # temporary at ct dir
                         'image_info': image_info})
 
     return jsonify({'status': 0})
