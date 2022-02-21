@@ -1,7 +1,7 @@
 <template>
   <div id="Content">
     <el-dialog
-      title="AI预测中"
+      title="上传中"
       :visible.sync="dialogTableVisible"
       :show-close="false"
       :close-on-press-escape="false"
@@ -21,7 +21,7 @@
           style="
             border-radius: 8px;
             width: 800px;
-            height: 360px;
+            height: 420px;
             margin-bottom: -30px;
           "
         >
@@ -39,8 +39,17 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error">
-                    <el-button
-                      v-show="showbutton"
+                    
+                  </div>
+                </div>
+              </el-image>
+            </div>
+            <div class="img_info_1" style="border-radius: 0 0 5px 5px">
+              <span style="color: white; letter-spacing: 6px">原始图像</span>
+            </div>
+            <div class="img_info_1" style="border-radius: 5px">
+              <el-button
+                      v-show="showbutton2"
                       type="primary"
                       icon="el-icon-upload"
                       class="download_bt"
@@ -54,19 +63,15 @@
                         type="file"
                         @change="update"
                       />
+                      <!-- 更改此处的ref函数？ -->
                     </el-button>
-                  </div>
-                </div>
-              </el-image>
-            </div>
-            <div class="img_info_1" style="border-radius: 0 0 5px 5px">
-              <span style="color: white; letter-spacing: 6px">原始图像</span>
             </div>
           </div>
-          <div class="demo-image__preview2">
+          
+          <div class="demo-image__preview1">
             <div
               v-loading="loading"
-              element-loading-text="处理中,请耐心等待"
+              element-loading-text="上传图片中"
               element-loading-spinner="el-icon-loading"
             >
               <el-image
@@ -76,12 +81,35 @@
                 style="border-radius: 3px 3px 0 0"
               >
                 <div slot="error">
-                  <div slot="placeholder" class="error">{{ wait_return }}</div>
+                  <div slot="placeholder" class="error">
+                    
+                  </div>
+                  
                 </div>
+
               </el-image>
             </div>
             <div class="img_info_1" style="border-radius: 0 0 5px 5px">
-              <span style="color: white; letter-spacing: 4px">检测结果</span>
+              <span style="color: white; letter-spacing: 4px">风格图像</span>
+            </div>
+            <div class="img_info_1" style="border-radius: 5px">
+              <el-button
+                      v-show="showbutton2"
+                      type="primary"
+                      icon="el-icon-upload"
+                      class="download_bt"
+                      v-on:click="true_upload"
+                    >
+                      上传图像
+                      <input
+                        ref="upload"
+                        style="display: none"
+                        name="file"
+                        type="file"
+                        @change="update"
+                      />
+                      <!-- 更改此处的ref函数？ -->
+                    </el-button>
             </div>
           </div>
         </el-card>
@@ -91,9 +119,9 @@
         <el-card style="border-radius: 8px">
           <div slot="header" class="clearfix">
             <span>检测目标</span>
-            <el-button
+            <!-- <el-button
               style="margin-left: 35px"
-              v-show="!showbutton"
+              v-show=true
               type="primary"
               icon="el-icon-upload"
               class="download_bt"
@@ -107,7 +135,7 @@
                 type="file"
                 @change="update"
               />
-            </el-button>
+            </el-button> -->
           </div>
           <el-tabs v-model="activeName">
             <el-tab-pane label="检测到的目标" name="first">
@@ -172,7 +200,8 @@ export default {
       loading: false,
       table: false,
       isNav: false,
-      showbutton: true,
+      showbutton1: true,
+      showbutton2: true,
       percentage: 0,
       fullscreenLoading: false,
       opacitys: {
@@ -182,7 +211,7 @@ export default {
     };
   },
   created: function () {
-    document.title = "YOLOv5目标检测WEB端";
+    document.title = "LearnableArt";
   },
   methods: {
     true_upload() {
@@ -220,17 +249,17 @@ export default {
       this.feat_list = [];
       this.fullscreenLoading = true;
       this.loading = true;
-      this.showbutton = false;
+      // this.showbutton = false;
       let file = e.target.files[0];
       this.url_1 = this.$options.methods.getObjectURL(file);
-      let param = new FormData(); //创建form对象
-      param.append("file", file, file.name); //通过append向form对象添加数据
+      let param = new FormData();               // 创建form对象
+      param.append("file", file, file.name);    // 通过append向form对象添加数据
       var timer = setInterval(() => {
         this.myFunc();
       }, 30);
       let config = {
         headers: { "Content-Type": "multipart/form-data" },
-      }; //添加请求头
+      };                                        // 添加请求头
       axios
         .post(this.server_url + "/upload", param, config)
         .then((response) => {
@@ -238,8 +267,8 @@ export default {
           clearInterval(timer);
           this.url_1 = response.data.image_url;
           this.srcList.push(this.url_1);
-          this.url_2 = response.data.draw_url;
-          this.srcList1.push(this.url_2);
+          // this.url_2 = response.data.draw_url;
+          // this.srcList1.push(this.url_2);
           this.fullscreenLoading = false;
           this.loading = false;
 
@@ -258,6 +287,7 @@ export default {
         });
     },
     myFunc() {
+      // A fake upload processing bar
       if (this.percentage + 33 < 99) {
         this.percentage = this.percentage + 33;
       } else {
@@ -267,7 +297,7 @@ export default {
     drawChart() {},
     notice1() {
       this.$notify({
-        title: "预测成功",
+        title: "上传成功",
         message: "点击图片可以查看大图",
         duration: 0,
         type: "success",
@@ -351,11 +381,11 @@ export default {
 
 #CT_image_1 {
   width: 90%;
-  height: 40%;
+  height: 50%;
   margin: 0px auto;
   padding: 0px auto;
   margin-right: 180px;
-  margin-bottom: 0px;
+  margin-bottom: 40px;
   border-radius: 4px;
 }
 
@@ -373,8 +403,9 @@ export default {
 }
 
 .img_info_1 {
-  height: 30px;
+  height: 40px;
   width: 275px;
+  margin-bottom: 10px;
   text-align: center;
   background-color: #21b3b9;
   line-height: 30px;
