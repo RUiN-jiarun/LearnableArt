@@ -310,10 +310,14 @@ export default {
     histmatch() {
       console.log(this.srcList1[this.srcList1.length - 1]);
       console.log(this.srcList2[this.srcList2.length - 1]);
-      
+      this.url_3 = "";
       axios.get(this.server_url + "/histmatch", 
                 {params: {src: this.srcList1[this.srcList1.length - 1], 
                           style: this.srcList2[this.srcList2.length - 1]}})
+            .then((response) => {
+              console.log(response.data);
+              this.url_3 = response.data.draw_url;
+            });
     },
   },
   mounted() {
