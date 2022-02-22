@@ -34,7 +34,7 @@
               <el-image
                 :src="url_1"
                 class="image_1"
-                :preview-src-list="srcList"
+                :preview-src-list="srcList1"
                 style="border-radius: 3px 3px 0 0"
               >
                 <div slot="error">
@@ -77,7 +77,7 @@
               <el-image
                 :src="url_2"
                 class="image_1"
-                :preview-src-list="srcList1"
+                :preview-src-list="srcList2"
                 style="border-radius: 3px 3px 0 0"
               >
                 <div slot="error">
@@ -112,42 +112,51 @@
         </el-card>
       </div>
       <div id="info_patient">
-        <!-- 卡片放置表格 -->
         <el-card style="border-radius: 8px">
-          <div slot="header" class="clearfix">
-            <span>检测目标</span>
-          </div>
-          <el-tabs v-model="activeName">
-            <el-tab-pane label="检测到的目标" name="first">
-              <!-- 表格存放特征值 -->
-              <el-table
-                :data="feature_list"
-                height="390"
-                border
-                style="width: 750px; text-align: center"
-                v-loading="loading"
-                element-loading-text="数据正在处理中，请耐心等待"
-                element-loading-spinner="el-icon-loading"
-                lazy
+          <el-tabs v-model="activeName" @tab-click="handleClick">
+            <el-tab-pane label="色域匹配" name="first">
+                <div class="demo-image__preview1">
+            <div
+              v-loading="loading"
+              element-loading-text="上传图片中"
+              element-loading-spinner="el-icon-loading"
+            >
+              <el-image
+                :src="url_1"
+                class="image_1"
+                :preview-src-list="srcList1"
+                style="border-radius: 3px"
               >
-                <el-table-column label="目标类别" width="250px">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row[2] }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="目标大小" width="250px">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row[0] }}</span>
-                  </template>
-                </el-table-column>
-                <el-table-column label="置信度" width="250px">
-                  <template slot-scope="scope">
-                    <span>{{ scope.row[1] }}</span>
-                  </template>
-                </el-table-column>
-              </el-table>
-            </el-tab-pane>
-          </el-tabs>
+                <div slot="error">
+                  <div slot="placeholder" class="error">
+                    <el-button
+                      v-show="showbutton1"
+                      type="primary"
+                      class="download_bt"
+                      v-on:click="true_upload"
+                    >开始处理
+                      
+                      <!-- <input
+                        ref="upload"
+                        style="display: none"
+                        name="file"
+                        type="file"
+                        @change="update"
+                      /> -->
+                      <!-- 更改此处的change函数？ -->
+                </el-button>
+                  </div>
+                </div>
+              </el-image>
+            </div>
+            
+            
+          </div>
+              </el-tab-pane>
+              <el-tab-pane label="生成蒙版" name="second">
+              </el-tab-pane>
+            </el-tabs>
+
         </el-card>
       </div>
     </div>
@@ -168,8 +177,8 @@ export default {
       url_1: "",
       url_2: "",
       textarea: "",
-      srcList: [],
       srcList1: [],
+      srcList2: [],
       feature_list: [],
       feature_list_1: [],
       feat_list: [],
@@ -222,10 +231,10 @@ export default {
       this.dialogTableVisible = true;
       this.url_1 = "";
       this.url_2 = "";
-      // this.srcList = [];
       // this.srcList1 = [];
-      // console.log(this.srcList);
+      // this.srcList2 = [];
       // console.log(this.srcList1);
+      // console.log(this.srcList2);
       this.wait_return = "";
       this.wait_upload = "";
       this.feature_list = [];
@@ -255,26 +264,26 @@ export default {
           clearInterval(timer);
           if (id == 1) {
             this.url_1 = response.data.image_url;
-            this.srcList.push(this.url_1);
-            this.url_2 = this.srcList1[this.srcList1.length-1];
+            this.srcList1.push(this.url_1);
+            this.url_2 = this.srcList2[this.srcList2.length-1];
           } else if (id == 2) {
             this.url_2 = response.data.draw_url;
-            this.srcList1.push(this.url_2);
-            this.url_1 = this.srcList[this.srcList.length-1];
+            this.srcList2.push(this.url_2);
+            this.url_1 = this.srcList1[this.srcList1.length-1];
           }
 
           this.fullscreenLoading = false;
           this.loading = false;
 
-          this.feat_list = Object.keys(response.data.image_info);
+          // this.feat_list = Object.keys(response.data.image_info);
 
           // for (var i = 0; i < this.feat_list.length; i++) {
           //   response.data.image_info[this.feat_list[i]] = this.feat_list[i];
           //   this.feature_list.push(response.data.image_info[this.feat_list[i]]);
           // }
 
-          this.feature_list.push(response.data.image_info);
-          this.feature_list_1 = this.feature_list[0];
+          // this.feature_list.push(response.data.image_info);
+          // this.feature_list_1 = this.feature_list[0];
           this.dialogTableVisible = false;
           this.percentage = 0;
           this.notice1();
@@ -296,6 +305,9 @@ export default {
         duration: 0,
         type: "success",
       });
+    },
+    handleClick(tab) {
+      console.log(tab);
     },
   },
   mounted() {
@@ -379,12 +391,12 @@ export default {
   margin: 0px auto;
   padding: 0px auto;
   margin-right: 180px;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
   border-radius: 4px;
 }
 
 #CT_image {
-  margin-bottom: 60px;
+  margin-bottom: 10px;
   margin-left: 30px;
   margin-top: 5px;
 }
@@ -534,8 +546,9 @@ div {
 }
 
 #info_patient {
-  margin-top: 10px;
+  margin-top: 50px;
   margin-right: 160px;
+  /* height: 4px; */
 }
 </style>
 
