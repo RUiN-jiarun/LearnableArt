@@ -41,6 +41,7 @@ def hello_world():
 @app.route('/upload', methods=['GET', 'POST'])
 def upload_file():
     file = request.files['file']
+    # print(file)s
     print(datetime.datetime.now(), file.filename)
     if file and allowed_file(file.filename):
         src_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
@@ -51,6 +52,30 @@ def upload_file():
         return jsonify({'status': 1,
                         'image_url': 'http://127.0.0.1:5003/tmp/ct/' + pid,
                         'draw_url': 'http://127.0.0.1:5003/tmp/ct/' + pid})
+
+    return jsonify({'status': 0})
+
+@app.route('/histmatch', methods=['GET'])
+def hist_match():
+    src = request.values.get('src')
+    style = request.values.get('style')
+    
+    # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
+    # ./tmp/ct/xxxxx.jpg
+    
+    # file = request.files['file']
+    # print(datetime.datetime.now(), file.filename)
+    if src and style:
+        src_path = '.' + src[21:]
+        style_path = '.' + style[21:]
+        print(src_path, style_path)
+    #     draw_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    #     file.save(draw_path)
+    #     shutil.copy(draw_path, './tmp/draw')
+    #     image_path = os.path.join('./tmp/draw', file.filename)
+    #     pid= file.filename
+        return jsonify({'status': 1,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/' + 'pid'})
 
     return jsonify({'status': 0})
 

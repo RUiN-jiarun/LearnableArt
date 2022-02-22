@@ -113,7 +113,7 @@
       </div>
       <div id="info_patient">
         <el-card style="border-radius: 8px">
-          <el-tabs v-model="activeName" @tab-click="handleClick">
+          <el-tabs v-model="activeName">
             <el-tab-pane label="色域匹配" name="first">
                 <div class="demo-image__preview1">
             <div
@@ -122,7 +122,7 @@
               element-loading-spinner="el-icon-loading"
             >
               <el-image
-                :src="url_1"
+                :src="url_3"
                 class="image_1"
                 :preview-src-list="srcList1"
                 style="border-radius: 3px"
@@ -133,7 +133,7 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      v-on:click="true_upload"
+                      @click="histmatch"
                     >开始处理
                       
                       <!-- <input
@@ -176,6 +176,7 @@ export default {
       centerDialogVisible: true,
       url_1: "",
       url_2: "",
+      url_3: "",
       textarea: "",
       srcList1: [],
       srcList2: [],
@@ -306,8 +307,13 @@ export default {
         type: "success",
       });
     },
-    handleClick(tab) {
-      console.log(tab);
+    histmatch() {
+      console.log(this.srcList1[this.srcList1.length - 1]);
+      console.log(this.srcList2[this.srcList2.length - 1]);
+      
+      axios.get(this.server_url + "/histmatch", 
+                {params: {src: this.srcList1[this.srcList1.length - 1], 
+                          style: this.srcList2[this.srcList2.length - 1]}})
     },
   },
   mounted() {
