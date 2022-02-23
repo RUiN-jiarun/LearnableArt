@@ -74,5 +74,5 @@ def generate(
     # erode
     cutout = cutout.filter(PIL.ImageFilter.MinFilter(dilate_structure_size))
     cutout.save(bio, "PNG")
-
+    print('done')
     return bio.getbuffer()

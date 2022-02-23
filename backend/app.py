@@ -4,7 +4,10 @@ import os
 import shutil
 from datetime import timedelta
 from flask import *
-from automask import automask
+
+import io
+from PIL import Image, ImageFile
+from automask import u2net
 
 UPLOAD_FOLDER = r'./uploads'
 
@@ -75,14 +78,14 @@ def hist_match():
     #     shutil.copy(draw_path, './tmp/draw')
     #     image_path = os.path.join('./tmp/draw', file.filename)
         pid= src_path[9:]
-        print(pid)
+        # print(pid)
         return jsonify({'status': 1,
                         'draw_url': 'http://127.0.0.1:5003/tmp/draw/' + pid})
 
     return jsonify({'status': 0})
 
 @app.route('/automask', methods=['GET'])
-def hist_match():
+def auto_mask():
     src = request.values.get('src')
     style = request.values.get('style')
     
@@ -92,17 +95,24 @@ def hist_match():
     if src and style:
         src_path = '.' + src[21:]
         style_path = '.' + style[21:]
-        print(src_path, style_path)
-        # test -- copy only
-        shutil.copy(src_path, './tmp/draw')
+        
+        # print(src_path, style_path)
+        # test -- hard-coded
+        # shutil.copy(src_path, './tmp/draw')
+        res = u2net.mask.generate(src_path, model_name='u2netp', isBackground=False, dilate_structure_size=1)
+        img = Image.open(io.BytesIO(res)).convert("RGBA")
+        
     #     draw_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     #     file.save(draw_path)
     #     shutil.copy(draw_path, './tmp/draw')
     #     image_path = os.path.join('./tmp/draw', file.filename)
         pid= src_path[9:]
-        print(pid)
+        
+        output_path = './tmp/mask' + pid
+        print(output_path)
+        img.save(output_path)
         return jsonify({'status': 1,
-                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/' + pid})
+                        'draw_url': 'http://127.0.0.1:5003/tmp/mask/' + pid})
 
     return jsonify({'status': 0})
 

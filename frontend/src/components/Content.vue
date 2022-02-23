@@ -144,7 +144,7 @@
               </el-tab-pane>
               <el-tab-pane label="智能蒙版" name="second">
               </el-tab-pane>
-              <div class="demo-image__preview1">
+            <div class="demo-image__preview1">
             <div
               v-loading="loading"
               element-loading-text="上传图片中"
@@ -162,12 +162,13 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="histmatch"
+                      @click="automask"
                     >开始处理
                 </el-button>
                   </div>
                 </div>
               </el-image>
+            </div>
             </div>
             </el-tabs>
 
@@ -304,7 +305,7 @@ export default {
           // this.feature_list_1 = this.feature_list[0];
           this.dialogTableVisible = false;
           this.percentage = 0;
-          this.notice1();
+          this.notice("上传成功", "点击图片以查看大图", "success");
         });
     },
     myFunc() {
@@ -316,12 +317,12 @@ export default {
       }
     },
     drawChart() {},
-    notice1() {
+    notice(str, msg, type) {
       this.$notify({
-        title: "上传成功",
-        message: "点击图片可以查看大图",
+        title: str,
+        message: msg,
         duration: 0,
-        type: "success",
+        type: type,
       });
     },
     histmatch() {
@@ -342,14 +343,24 @@ export default {
         .then((response) => {
           this.percentage = 100;
           clearInterval(timer);
-          this.url_3 = response.data.draw_url;
+          if (response.data.status == 1) {
+            this.url_3 = response.data.draw_url;
 
-          this.fullscreenLoading = false;
-          this.loading = false;
+            this.fullscreenLoading = false;
+            this.loading = false;
 
-          this.dialogTableVisible = false;
-          this.percentage = 0;
-          this.notice2();
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作完成", "点击图片以查看大图", "success");
+          } else {
+            this.fullscreenLoading = false;
+            this.loading = false;
+
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作失败", "请重新检查", "error");
+          }
+          
         });
     },
     automask() {
@@ -370,23 +381,25 @@ export default {
         .then((response) => {
           this.percentage = 100;
           clearInterval(timer);
-          this.url_4 = response.data.draw_url;
+          if (response.data.status == 1) {
+            this.url_4 = response.data.draw_url;
 
-          this.fullscreenLoading = false;
-          this.loading = false;
+            this.fullscreenLoading = false;
+            this.loading = false;
 
-          this.dialogTableVisible = false;
-          this.percentage = 0;
-          this.notice2();
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作完成", "点击图片以查看大图", "success");
+          } else {
+            this.fullscreenLoading = false;
+            this.loading = false;
+
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作失败", "请重新检查", "error");
+          }
+          
         });
-    },
-    notice2() {
-      this.$notify({
-        title: "操作完成",
-        message: "点击图片可以查看大图",
-        duration: 0,
-        type: "success",
-      });
     },
   },
   mounted() {
