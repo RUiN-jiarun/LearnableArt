@@ -31,16 +31,20 @@ isBackground = str_to_bool(args.bg)
 model_name = args.model
 dilate_structure_size = args.dilate
 
-# Uncomment the following line if working with trucated image formats (ex. JPEG / JPG)
-if input_path.endswith('.jpg'):
-    ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-f = np.fromfile(input_path)
 
-start = time.time()
-result = u2net.mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_structure_size)
-end = time.time()
-print('Running time: %s seconds' %(end - start))
+def automask(input_path : str, bg=False, dilate=1, model='u2netp'):
+    output_path = os.path.splitext(input_path)[0] + "_mask.png"
+    # Uncomment the following line if working with trucated image formats (ex. JPEG / JPG)
+    if input_path.endswith('.jpg'):
+        ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-img = Image.open(io.BytesIO(result)).convert("RGBA")
-img.save(output_path)
+    f = np.fromfile(input_path)
+
+    start = time.time()
+    result = u2net.mask.generate(f, model_name=model, isBackground=bg, dilate_structure_size=dilate)
+    end = time.time()
+    print('Running time: %s seconds' %(end - start))
+
+    img = Image.open(io.BytesIO(result)).convert("RGBA")
+    img.save(output_path)

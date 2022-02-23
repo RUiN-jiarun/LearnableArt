@@ -4,6 +4,7 @@ import os
 import shutil
 from datetime import timedelta
 from flask import *
+from automask import automask
 
 UPLOAD_FOLDER = r'./uploads'
 
@@ -56,6 +57,31 @@ def upload_file():
     return jsonify({'status': 0})
 
 @app.route('/histmatch', methods=['GET'])
+def hist_match():
+    src = request.values.get('src')
+    style = request.values.get('style')
+    
+    # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
+    # ./tmp/ct/xxxxx.jpg
+    
+    if src and style:
+        src_path = '.' + src[21:]
+        style_path = '.' + style[21:]
+        print(src_path, style_path)
+        # test -- copy only
+        shutil.copy(src_path, './tmp/draw')
+    #     draw_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    #     file.save(draw_path)
+    #     shutil.copy(draw_path, './tmp/draw')
+    #     image_path = os.path.join('./tmp/draw', file.filename)
+        pid= src_path[9:]
+        print(pid)
+        return jsonify({'status': 1,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/' + pid})
+
+    return jsonify({'status': 0})
+
+@app.route('/automask', methods=['GET'])
 def hist_match():
     src = request.values.get('src')
     style = request.values.get('style')

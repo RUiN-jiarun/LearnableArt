@@ -124,7 +124,7 @@
               <el-image
                 :src="url_3"
                 class="image_1"
-                :preview-src-list="srcList1"
+                :preview-src-list="srcList3"
                 style="border-radius: 3px"
               >
                 <div slot="error">
@@ -135,26 +135,40 @@
                       class="download_bt"
                       @click="histmatch"
                     >开始处理
-                      
-                      <!-- <input
-                        ref="upload"
-                        style="display: none"
-                        name="file"
-                        type="file"
-                        @change="update"
-                      /> -->
-                      <!-- 更改此处的change函数？ -->
                 </el-button>
                   </div>
                 </div>
               </el-image>
             </div>
-            
-            
           </div>
               </el-tab-pane>
-              <el-tab-pane label="生成蒙版" name="second">
+              <el-tab-pane label="智能蒙版" name="second">
               </el-tab-pane>
+              <div class="demo-image__preview1">
+            <div
+              v-loading="loading"
+              element-loading-text="上传图片中"
+              element-loading-spinner="el-icon-loading"
+            >
+              <el-image
+                :src="url_4"
+                class="image_1"
+                :preview-src-list="srcList4"
+                style="border-radius: 3px"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error">
+                    <el-button
+                      v-show="showbutton1"
+                      type="primary"
+                      class="download_bt"
+                      @click="histmatch"
+                    >开始处理
+                </el-button>
+                  </div>
+                </div>
+              </el-image>
+            </div>
             </el-tabs>
 
         </el-card>
@@ -174,12 +188,15 @@ export default {
       activeName: "first",
       active: 0,
       centerDialogVisible: true,
-      url_1: "",
-      url_2: "",
-      url_3: "",
+      url_1: "",  // 原始图片
+      url_2: "",  // 风格图片
+      url_3: "",  // 色域匹配结果
+      url_4: "",  // 生成蒙版结果
       textarea: "",
       srcList1: [],
       srcList2: [],
+      srcList3: [],
+      srcList4: [],
       feature_list: [],
       feature_list_1: [],
       feat_list: [],
@@ -308,16 +325,68 @@ export default {
       });
     },
     histmatch() {
-      console.log(this.srcList1[this.srcList1.length - 1]);
-      console.log(this.srcList2[this.srcList2.length - 1]);
+      // console.log(this.srcList1[this.srcList1.length - 1]);
+      // console.log(this.srcList2[this.srcList2.length - 1]);
+      this.dialogTableVisible = true;
+      this.percentage = 0;
+      this.fullscreenLoading = true;
+      this.loading = true;
       this.url_3 = "";
-      axios.get(this.server_url + "/histmatch", 
-                {params: {src: this.srcList1[this.srcList1.length - 1], 
-                          style: this.srcList2[this.srcList2.length - 1]}})
-            .then((response) => {
-              console.log(response.data);
-              this.url_3 = response.data.draw_url;
-            });
+      var timer = setInterval(() => {
+        this.myFunc();
+      }, 30);
+      axios
+        .get(this.server_url + "/histmatch", 
+            {params: {src: this.srcList1[this.srcList1.length - 1], 
+                      style: this.srcList2[this.srcList2.length - 1]}})
+        .then((response) => {
+          this.percentage = 100;
+          clearInterval(timer);
+          this.url_3 = response.data.draw_url;
+
+          this.fullscreenLoading = false;
+          this.loading = false;
+
+          this.dialogTableVisible = false;
+          this.percentage = 0;
+          this.notice2();
+        });
+    },
+    automask() {
+      // console.log(this.srcList1[this.srcList1.length - 1]);
+      // console.log(this.srcList2[this.srcList2.length - 1]);
+      this.dialogTableVisible = true;
+      this.percentage = 0;
+      this.fullscreenLoading = true;
+      this.loading = true;
+      this.url_4 = "";
+      var timer = setInterval(() => {
+        this.myFunc();
+      }, 30);
+      axios
+        .get(this.server_url + "/automask", 
+            {params: {src: this.srcList1[this.srcList1.length - 1], 
+                      style: this.srcList2[this.srcList2.length - 1]}})
+        .then((response) => {
+          this.percentage = 100;
+          clearInterval(timer);
+          this.url_4 = response.data.draw_url;
+
+          this.fullscreenLoading = false;
+          this.loading = false;
+
+          this.dialogTableVisible = false;
+          this.percentage = 0;
+          this.notice2();
+        });
+    },
+    notice2() {
+      this.$notify({
+        title: "操作完成",
+        message: "点击图片可以查看大图",
+        duration: 0,
+        type: "success",
+      });
     },
   },
   mounted() {
