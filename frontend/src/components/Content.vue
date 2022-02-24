@@ -133,16 +133,20 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error">
-                    <el-button
+                   
+                    
+                  </div>
+                </div>
+              </el-image>
+              <div class="img_info_1" style="margin-top: 15px; border-radius: 5px; background-color: #ffffff">
+              <el-button
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
                       @click="histmatch"
                     >开始处理
                 </el-button>
-                  </div>
                 </div>
-              </el-image>
             </div>
           </div>
             <div class="demo-image__preview1" v-if="activeName=='second'">
@@ -159,16 +163,19 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error">
-                    <el-button
+                    
+                  </div>
+                </div>
+              </el-image>
+              <div class="img_info_1" style="margin-top: 15px; border-radius: 5px; background-color: #ffffff">
+              <el-button
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
                       @click="automask"
                     >开始处理
                 </el-button>
-                  </div>
                 </div>
-              </el-image>
             </div>
             </div>
             </el-tabs>
@@ -309,6 +316,7 @@ export default {
           this.notice("上传成功", "点击图片以查看大图", "success");
         });
     },
+    // TODO: Real processing bar
     myFunc() {
       // A fake upload processing bar
       if (this.percentage + 33 < 99) {
@@ -349,14 +357,14 @@ export default {
             this.srcList3.push(this.url_3);
             this.fullscreenLoading = false;
             this.loading = false;
-
+            
             this.dialogTableVisible = false;
             this.percentage = 0;
             this.notice("操作完成", "点击图片以查看大图", "success");
           } else {
             this.fullscreenLoading = false;
             this.loading = false;
-
+            
             this.dialogTableVisible = false;
             this.percentage = 0;
             this.notice("操作失败", "请重新检查", "error");
@@ -562,6 +570,11 @@ div {
 
 .download_bt {
   padding: 10px 16px !important;
+}
+
+.handle_bt {
+  padding: 10px 16px !important;
+  text-align: center;
 }
 
 #upfile {
