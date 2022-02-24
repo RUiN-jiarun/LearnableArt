@@ -7,7 +7,7 @@ from flask import *
 
 import io
 from PIL import Image, ImageFile
-from automask import u2net
+from automask.u2net import mask
 
 UPLOAD_FOLDER = r'./uploads'
 
@@ -99,7 +99,8 @@ def auto_mask():
         # print(src_path, style_path)
         # test -- hard-coded
         # shutil.copy(src_path, './tmp/draw')
-        res = u2net.mask.generate(src_path, model_name='u2netp', isBackground=False, dilate_structure_size=1)
+        
+        res = mask.generate(src_path, model_name='u2netp', isBackground=False, dilate_structure_size=1)
         img = Image.open(io.BytesIO(res)).convert("RGBA")
         
     #     draw_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)

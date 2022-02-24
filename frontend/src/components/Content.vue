@@ -115,7 +115,13 @@
         <el-card style="border-radius: 8px">
           <el-tabs v-model="activeName">
             <el-tab-pane label="色域匹配" name="first">
-                <div class="demo-image__preview1">
+            
+            
+          </el-tab-pane>
+              
+            <el-tab-pane label="智能蒙版" name="second">
+            </el-tab-pane>
+            <div class="demo-image__preview1" v-if="activeName=='first'">
             <div
               v-loading="loading"
               element-loading-text="上传图片中"
@@ -141,10 +147,7 @@
               </el-image>
             </div>
           </div>
-              </el-tab-pane>
-              <el-tab-pane label="智能蒙版" name="second">
-              </el-tab-pane>
-            <div class="demo-image__preview1">
+            <div class="demo-image__preview1" v-if="activeName=='second'">
             <div
               v-loading="loading"
               element-loading-text="上传图片中"
