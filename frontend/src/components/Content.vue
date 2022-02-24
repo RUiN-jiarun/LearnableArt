@@ -115,16 +115,14 @@
         <el-card style="border-radius: 8px">
           <el-tabs v-model="activeName">
             <el-tab-pane label="色域匹配" name="first">
-            
-            
-          </el-tab-pane>
-              
+            </el-tab-pane>
             <el-tab-pane label="智能蒙版" name="second">
             </el-tab-pane>
+
             <div class="demo-image__preview1" v-if="activeName=='first'">
             <div
               v-loading="loading"
-              element-loading-text="上传图片中"
+              element-loading-text="处理图片中"
               element-loading-spinner="el-icon-loading"
             >
               <el-image
@@ -150,7 +148,7 @@
             <div class="demo-image__preview1" v-if="activeName=='second'">
             <div
               v-loading="loading"
-              element-loading-text="上传图片中"
+              element-loading-text="处理图片中"
               element-loading-spinner="el-icon-loading"
             >
               <el-image
@@ -348,7 +346,7 @@ export default {
           clearInterval(timer);
           if (response.data.status == 1) {
             this.url_3 = response.data.draw_url;
-
+            this.srcList3.push(this.url_3);
             this.fullscreenLoading = false;
             this.loading = false;
 
@@ -386,7 +384,7 @@ export default {
           clearInterval(timer);
           if (response.data.status == 1) {
             this.url_4 = response.data.draw_url;
-
+            this.srcList4.push(this.url_4);
             this.fullscreenLoading = false;
             this.loading = false;
 
