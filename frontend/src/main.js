@@ -17,11 +17,33 @@ Vue.config.productionTip = false
 Vue.use(VueRouter)
 Vue.prototype.$http = axios
 
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+    return originalPush.call(this, location).catch(err => err)
+}
+
+const routes = [
+    {
+        path: '/App',
+        name: 'App',
+        component: App,
+        children: [
+            {
+                path: 'index',
+                name: 'index',
+                component: () => import('./components/Content.vue'),
+            },
+        ]
+    },
+]
+
 const router = new VueRouter({
-    routes: [
-        {path: "/App", component: App, meta: {title: "rua"},},
-    ],
-    mode: "history"
+    // routes: [
+    //     {path: "/App", component: App, meta: {title: "rua"},},
+    // ],
+    mode: "history",
+    // base: process.env.BASE_URL,
+    routes
 })
 
 // // 全局注册组件

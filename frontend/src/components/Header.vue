@@ -2,7 +2,7 @@
   <div id="Header">
     <div class="top-left-edition">
       <span style="color: #21b3b9; font-weight: bold">
-        <i class="el-icon-star-off" style="font-size: 23px"></i>TEST1
+        <i class="el-icon-star-off" style="font-size: 23px"></i>预处理
       </span>
       <span>
         <i class="el-icon-time" style="font-size: 23px"></i>TEST2
@@ -18,7 +18,7 @@ export default {
   name: "Header",
   data() {
     return {
-      msg: "LearnableArt",
+      msg: "LearnableArt Demo",
       activeIndex: "1",
     };
   },
@@ -27,6 +27,7 @@ export default {
 </script>
 <style scoped>
 #Header {
+  background-color: #ffffff;
   padding: 30px 110px 0 150px;
   width: 90%;
   margin: 10px auto;
@@ -44,8 +45,8 @@ export default {
 h1 {
   /*text-align: center;*/
   color: #21b3b9;
-  letter-spacing: 30px;
-  font-size: 2.3em;
+  /*letter-spacing: 30px;*/
+  font-size: 2.5em;
 }
 
 .el-menu-demo {

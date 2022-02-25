@@ -442,6 +442,7 @@ export default {
   padding: 0;
 }
 
+
 .dialog_info {
   margin: 20px auto;
 }
@@ -478,12 +479,12 @@ export default {
 #CT {
   display: flex;
   height: 100%;
-  width: 100%;
+  width: 80%;
   flex-wrap: wrap;
   justify-content: center;
   margin: 0 auto;
   margin-right: 0px;
-  max-width: 1800px;
+  max-width: 1500px;
 }
 
 #CT_image_1 {
@@ -615,9 +616,10 @@ div {
   width: 85%;
   height: 800px;
   background-color: #ffffff;
-  margin: 15px auto;
+  margin-left: 150px;
   display: flex;
   min-width: 1200px;
+
 }
 
 .divider {

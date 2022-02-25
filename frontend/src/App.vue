@@ -1,6 +1,8 @@
 <template>
   <div id="app">
+    <app-home></app-home>
     <app-header></app-header>
+    
     <app-content></app-content>
     <app-footer></app-footer>
   </div>
@@ -10,6 +12,7 @@
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Content from "./components/Content";
+import Home from "./components/Home";
 export default {
   name: "rua",
   data() {
@@ -19,6 +22,7 @@ export default {
     "app-header": Header,
     "app-footer": Footer,
     "app-content": Content,
+    "app-home": Home,
   },
   methods: {},
 };

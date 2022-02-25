@@ -11,6 +11,7 @@
     "axios": "^0.18.1",
     "echarts": "^4.9.0",
     "element-ui": "^2.15.0",
+    "less-loader": "^6.0.0",
     "socket.io": "^2.4.1",
     "vue": "^2.6.12",
     "vue-codemirror": "^4.0.6",
