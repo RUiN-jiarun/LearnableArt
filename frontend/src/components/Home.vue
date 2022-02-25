@@ -13,13 +13,9 @@
             text-color="#bfcbd9"
             active-text-color="#049eff">
             <el-menu-item index="home"><i class="el-icon-menu"></i>首页</el-menu-item>
-            <el-submenu index="2">
-              <template slot="title"><i class="el-icon-document"></i>数据管理</template>
-              <el-menu-item index="list">用户列表1</el-menu-item>
-              <el-menu-item index="list2">用户列表2</el-menu-item>
-              <el-menu-item index="list3">用户列表3</el-menu-item>
-              <el-menu-item index="list4">用户列表4</el-menu-item>
-            </el-submenu>
+            <el-menu-item index="pre"><i class="el-icon-document"></i>预处理</el-menu-item>
+             
+            
             <el-submenu index="3">
               <template slot="title"><i class="el-icon-document"></i>编辑</template>
               <el-menu-item index="index">编辑1</el-menu-item>

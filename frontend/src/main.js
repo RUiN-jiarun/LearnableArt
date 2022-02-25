@@ -2,6 +2,7 @@
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import Content from './components/Content'
 import VueRouter from 'vue-router'
 import axios from 'axios'
 import Element from 'element-ui'
@@ -29,9 +30,14 @@ const routes = [
         component: App,
         children: [
             {
-                path: 'index',
-                name: 'index',
-                component: () => import('./components/Content.vue'),
+                path: '/home',
+                name: 'home',
+                component: Content,
+            },
+            {
+                path: '/pre',
+                name: 'pre',
+                component: Content,
             },
         ]
     },
