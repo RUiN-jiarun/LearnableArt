@@ -26,21 +26,14 @@ VueRouter.prototype.push = function push(location) {
 
 const routes = [
     {
-        path: '/',
-        name: 'App',
-        component: App,
-        children: [
-            {
-                path: '/home',
-                name: 'home',
-                component: Home,
-            },
-            {
-                path: '/pre',
-                name: 'pre',
-                component: Content,
-            },
-        ]
+        path: '/home',
+        name: 'home',
+        component: Home,
+    },
+    {
+        path: '/pre',
+        name: 'pre',
+        component: Content,
     },
 ]
 
