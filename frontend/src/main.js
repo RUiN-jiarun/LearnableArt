@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import Content from './components/Content'
+import Home from './components/Home'
 import VueRouter from 'vue-router'
 import axios from 'axios'
 import Element from 'element-ui'
@@ -25,14 +26,14 @@ VueRouter.prototype.push = function push(location) {
 
 const routes = [
     {
-        path: '/App',
+        path: '/',
         name: 'App',
         component: App,
         children: [
             {
                 path: '/home',
                 name: 'home',
-                component: Content,
+                component: Home,
             },
             {
                 path: '/pre',
@@ -47,7 +48,7 @@ const router = new VueRouter({
     // routes: [
     //     {path: "/App", component: App, meta: {title: "rua"},},
     // ],
-    mode: "history",
+    // mode: "history",
     // base: process.env.BASE_URL,
     routes
 })

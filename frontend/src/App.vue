@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <app-home></app-home>
+    <app-sidebar></app-sidebar>
     <app-header></app-header>
-    
-    <app-content></app-content>
+    <router-view></router-view>
+    <!-- <app-content></app-content> -->
     <app-footer></app-footer>
   </div>
 </template>
@@ -12,9 +12,9 @@
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Content from "./components/Content";
-import Home from "./components/Home";
+import Sidebar from "./components/Sidebar";
 export default {
-  name: "rua",
+  name: "App",
   data() {
     return {};
   },
@@ -22,7 +22,7 @@ export default {
     "app-header": Header,
     "app-footer": Footer,
     "app-content": Content,
-    "app-home": Home,
+    "app-sidebar": Sidebar,
   },
   methods: {},
 };
