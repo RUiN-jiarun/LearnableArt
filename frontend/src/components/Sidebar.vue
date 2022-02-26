@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar" style="position:fixed">
+  <div class="sidebar" style="position:fixed; height:100%">
     <div class="manage_page fillcontain">
       <el-row style="height: 100%;width:150px;overflow:hidden;display:flex;">
         <el-col :span="3" style="min-height: 100%;background-color: #21b3b9;overflow: hidden;width:100%">

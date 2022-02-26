@@ -11,7 +11,7 @@
 <script>
 import Header from "./components/Header";
 import Footer from "./components/Footer";
-import Content from "./components/Content";
+// import Content from "./components/Content";
 import Sidebar from "./components/Sidebar";
 export default {
   name: "App",
@@ -21,7 +21,7 @@ export default {
   components: {
     "app-header": Header,
     "app-footer": Footer,
-    "app-content": Content,
+    // "app-content": Content,
     "app-sidebar": Sidebar,
   },
   methods: {},

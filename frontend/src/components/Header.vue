@@ -1,12 +1,12 @@
 <template>
   <div id="Header">
     <div class="top-left-edition">
-      <span style="color: #21b3b9; font-weight: bold">
+      <!-- <span style="color: #21b3b9; font-weight: bold">
         <i class="el-icon-star-off" style="font-size: 23px"></i>预处理
       </span>
       <span>
         <i class="el-icon-time" style="font-size: 23px"></i>TEST2
-      </span>
+      </span> -->
     </div>
     <div id="word">
       <h1>{{ msg }}</h1>

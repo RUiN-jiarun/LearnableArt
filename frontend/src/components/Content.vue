@@ -112,7 +112,7 @@
         </el-card>
       </div>
       <div id="info_patient">
-        <el-card style="border-radius: 8px">
+        <el-card class="box-card" style="border-radius: 8px; width: 800px;height:450px;">
           <el-tabs v-model="activeName">
             <el-tab-pane label="色域匹配" name="first">
             </el-tab-pane>
@@ -127,18 +127,16 @@
             >
               <el-image
                 :src="url_3"
-                class="image_1"
+                class="image_2"
                 :preview-src-list="srcList3"
                 style="border-radius: 3px"
               >
                 <div slot="error">
-                  <div slot="placeholder" class="error">
-                   
-                    
+                  <div slot="placeholder" class="error">等待处理
                   </div>
                 </div>
               </el-image>
-              <div class="img_info_1" style="margin-top: 15px; border-radius: 5px; background-color: #ffffff">
+              <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
               <el-button
                       v-show="showbutton1"
                       type="primary"
@@ -148,7 +146,7 @@
                 </el-button>
                 </div>
             </div>
-          </div>
+            </div>
             <div class="demo-image__preview1" v-if="activeName=='second'">
             <div
               v-loading="loading"
@@ -157,17 +155,17 @@
             >
               <el-image
                 :src="url_4"
-                class="image_1"
+                class="image_2"
                 :preview-src-list="srcList4"
-                style="border-radius: 3px"
+                style="border-radius: 3px;"
               >
                 <div slot="error">
-                  <div slot="placeholder" class="error">
-                    
+                  <div slot="placeholder" class="error">等待处理
                   </div>
                 </div>
               </el-image>
-              <div class="img_info_1" style="margin-top: 15px; border-radius: 5px; background-color: #ffffff">
+              
+              <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
               <el-button
                       v-show="showbutton1"
                       type="primary"
@@ -177,7 +175,9 @@
                 </el-button>
                 </div>
             </div>
+            <div class="demo-image__preview1" style="float:left;">test</div>
             </div>
+            
             </el-tabs>
 
         </el-card>
@@ -510,6 +510,14 @@ export default {
   box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
+.image_2 {
+  width: 275px;
+  height: 260px;
+  background: #ffffff;
+  /* display: inline-block; */
+  /* float:left; */
+}
+
 .img_info_1 {
   height: 40px;
   width: 275px;
@@ -654,8 +662,8 @@ div {
 }
 
 #info_patient {
-  margin-top: 50px;
-  margin-right: 160px;
+  margin-top: 70px;
+  margin-right: 150px;
   /* height: 4px; */
 }
 </style>
