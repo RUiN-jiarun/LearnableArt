@@ -4,6 +4,7 @@ import Vue from 'vue'
 import App from './App'
 import Content from './components/Content'
 import Home from './components/Home'
+import Sidebar from './components/Sidebar'
 import VueRouter from 'vue-router'
 import axios from 'axios'
 import Element from 'element-ui'
@@ -48,10 +49,12 @@ const router = new VueRouter({
 
 // // 全局注册组件
 Vue.component("App", App);
+// Vue.component("Sidebar", Sidebar);
 
 /* eslint-disable no-new */
 new Vue({
     el: '#app',
     router,
-    render: h => h(App)
+    render: h => h(Sidebar)
+    // TODO: change Sidebar to App and add Header and Footer
 })

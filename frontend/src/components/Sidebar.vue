@@ -1,8 +1,8 @@
 <template>
-  <div class="sidebar" style="position:fixed; height:100%">
-    <div class="manage_page fillcontain">
-      <el-row style="height: 100%;width:150px;overflow:hidden;display:flex;">
-        <el-col :span="3" style="min-height: 100%;background-color: #21b3b9;overflow: hidden;width:100%">
+  <div class="sidebar" style="">
+
+      <el-row style="height: 100%; overflow:hidden; display:flex;">
+        <el-col style="min-height: 100%;background-color: #21b3b9;overflow: hidden;width:15%">
           <el-menu
             router
             :default-active="$route.name"
@@ -24,13 +24,14 @@
             </el-submenu>
           </el-menu>
         </el-col>
-        <el-col :span="0">
+        <el-col :span="150">
           <keep-alive>
             <router-view></router-view>
           </keep-alive>
         </el-col>
+        <!-- <router-view></router-view> -->
       </el-row>
-    </div>
+
   </div>
 </template>
 
@@ -52,8 +53,10 @@ export default {
   mounted() {},
   methods: {
     handleOpen(key, keyPath) {
+      // console.log(key, keyPath);
     },
     handleClose(key, keyPath) {
+      // console.log(key, keyPath);
     },
   }
 }
@@ -67,11 +70,14 @@ export default {
   border: 0;
 }
 .el-col {
-  background-color: #21b3b9;
+  background-color: #ffffff;
   height: 100%;
   overflow: auto;
 }
 .sidebar {
+  display: block;
+  position: relative;
+  overflow-y: scroll;
   /deep/ .el-submenu .el-menu-item {
     background-color: #1f2d3d !important;
   }

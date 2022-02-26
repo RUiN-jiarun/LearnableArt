@@ -147,7 +147,8 @@
                 </div>
             </div>
             </div>
-            <div class="demo-image__preview1" v-if="activeName=='second'">
+            <div v-if="activeName=='second'">
+            <div class="demo-image__preview1" >
             <div
               v-loading="loading"
               element-loading-text="处理图片中"
@@ -175,7 +176,10 @@
                 </el-button>
                 </div>
             </div>
+            
+            </div>
             <div class="demo-image__preview1" style="float:left;">test</div>
+            <!-- TODO: POST a chart to pass refrences -->
             </div>
             
             </el-tabs>
@@ -624,7 +628,7 @@ div {
   width: 85%;
   height: 800px;
   background-color: #ffffff;
-  margin-left: 150px;
+  margin-left: 0px;
   display: flex;
   min-width: 1200px;
 
