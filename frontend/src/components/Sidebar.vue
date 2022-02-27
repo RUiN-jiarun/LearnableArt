@@ -30,6 +30,7 @@
             
             <router-view></router-view>
           </keep-alive>
+          <app-footer></app-footer>
         </el-col>
         <!-- <router-view></router-view> -->
       </el-row>
@@ -39,6 +40,7 @@
 
 <script>
 import Header from "./Header";
+import Footer from "./Footer";
 export default {
   name: 'Sidebar',
   computed: {
@@ -54,6 +56,7 @@ export default {
   mounted() {},
   components: {
     "app-header": Header,
+    "app-footer": Footer,
   },
   methods: {
     handleOpen(key, keyPath) {

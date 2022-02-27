@@ -30,7 +30,7 @@ export default {
   background-color: #ffffff;
   padding: 30px 110px 0 150px;
   width: 90%;
-  margin: 10px auto;
+  /* margin: 10px auto; */
 }
 
 #word {
