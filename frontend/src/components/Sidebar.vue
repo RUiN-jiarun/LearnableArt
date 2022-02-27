@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar" style="">
-
+      
       <el-row style="height: 100%; overflow:hidden; display:flex;">
         <el-col style="min-height: 100%;background-color: #21b3b9;overflow: hidden;width:15%">
           <el-menu
@@ -25,7 +25,9 @@
           </el-menu>
         </el-col>
         <el-col :span="150">
+          <app-header></app-header>
           <keep-alive>
+            
             <router-view></router-view>
           </keep-alive>
         </el-col>
@@ -36,8 +38,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
-
+import Header from "./Header";
 export default {
   name: 'Sidebar',
   computed: {
@@ -51,6 +52,9 @@ export default {
     return {}
   },
   mounted() {},
+  components: {
+    "app-header": Header,
+  },
   methods: {
     handleOpen(key, keyPath) {
       // console.log(key, keyPath);
