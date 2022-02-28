@@ -179,10 +179,31 @@
             
             </div>
             <div class="demo-image__preview1" style="float:left;">
-              <el-radio-group v-model="isBackground">
+              <div class="param_block">
+                <span>蒙版类型</span>
+              <el-radio-group style="margin-top: 10px;" v-model="isBackground">
                 <el-radio :label="1">背景蒙版</el-radio>
                 <el-radio :label="0">前景蒙版</el-radio>
               </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>算法模型</span>
+              <el-radio-group style="margin-top: 10px;" v-model="mask_model">
+                <el-radio :label="u2netp">简易模型</el-radio>
+                <el-radio :label="u2net">完整模型</el-radio>
+                <el-radio :label="u2net_human_seg">针对人像模型</el-radio>
+              </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>膨胀尺寸</span>
+                <el-slider
+                  v-model="dilate"
+                  show-input
+                  :min="1"
+                  :max="20"
+                  style="margin-top: 10px;">
+                </el-slider>
+              </div>
             </div>
             <!-- TODO: POST a chart to pass refrences -->
             </div>
@@ -235,6 +256,8 @@ export default {
       dialogTableVisible: false,
       // 蒙版参数
       isBackground: 1,
+      dilate: 1,
+      mask_model: "u2netp",
     };
   },
   created: function () {
@@ -396,7 +419,9 @@ export default {
         .get(this.server_url + "/automask", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
                       style: this.srcList2[this.srcList2.length - 1],
-                      isBackground: this.isBackground}})
+                      model: this.mask_model,
+                      isBackground: this.isBackground,
+                      dilate: this.dilate}})
         .then((response) => {
           this.percentage = 100;
           clearInterval(timer);
@@ -677,6 +702,18 @@ div {
   margin-right: 150px;
   /* height: 4px; */
 }
+
+.param_block {
+  margin-top: 15px;
+  /* margin-bottom: 10px; */
+  text-align: center;
+  font-size: 14px;
+}
+
+.param_block span {
+  font-size: 18px;
+}
+
 </style>
 
 
