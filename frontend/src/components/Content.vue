@@ -178,7 +178,12 @@
             </div>
             
             </div>
-            <div class="demo-image__preview1" style="float:left;">test</div>
+            <div class="demo-image__preview1" style="float:left;">
+              <el-radio-group v-model="isBackground">
+                <el-radio :label="1">背景蒙版</el-radio>
+                <el-radio :label="0">前景蒙版</el-radio>
+              </el-radio-group>
+            </div>
             <!-- TODO: POST a chart to pass refrences -->
             </div>
             
@@ -228,6 +233,8 @@ export default {
         opacity: 0,
       },
       dialogTableVisible: false,
+      // 蒙版参数
+      isBackground: 1,
     };
   },
   created: function () {
@@ -377,8 +384,6 @@ export default {
         });
     },
     automask() {
-      // console.log(this.srcList1[this.srcList1.length - 1]);
-      // console.log(this.srcList2[this.srcList2.length - 1]);
       this.dialogTableVisible = true;
       this.percentage = 0;
       this.fullscreenLoading = true;
@@ -390,7 +395,8 @@ export default {
       axios
         .get(this.server_url + "/automask", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      style: this.srcList2[this.srcList2.length - 1]}})
+                      style: this.srcList2[this.srcList2.length - 1],
+                      isBackground: this.isBackground}})
         .then((response) => {
           this.percentage = 100;
           clearInterval(timer);

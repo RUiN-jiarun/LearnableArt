@@ -89,7 +89,8 @@ def hist_match():
 def auto_mask():
     src = request.values.get('src')
     style = request.values.get('style')
-    
+    isBackground = request.values.get('isBackground')
+    # print(isBackground)
     # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
     # ./tmp/ct/xxxxx.jpg
     
@@ -104,7 +105,7 @@ def auto_mask():
             ImageFile.LOAD_TRUNCATED_IMAGES = True
 
         f = np.fromfile(src_path)
-        res = mask.generate(f, model_name='u2netp', isBackground=False, dilate_structure_size=1)
+        res = mask.generate(f, model_name='u2netp', isBackground=isBackground, dilate_structure_size=1)
         img = Image.open(io.BytesIO(res)).convert("RGBA")
         
     #     draw_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
