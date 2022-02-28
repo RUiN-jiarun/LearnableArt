@@ -12,7 +12,7 @@
             background-color="#21b3b9"
             text-color="#bfcbd9"
             active-text-color="#049eff">
-            <el-menu-item index="home"><i class="el-icon-menu"></i>首页</el-menu-item>
+            <el-menu-item index="/"><i class="el-icon-menu"></i>首页</el-menu-item>
             <el-menu-item index="pre"><i class="el-icon-document"></i>预处理</el-menu-item>
              
             
@@ -42,7 +42,7 @@
 import Header from "./Header";
 import Footer from "./Footer";
 export default {
-  name: 'Sidebar',
+  name: 'App',
   computed: {
     /*defaultActive: function () {
       /!*刷新后导航还是高亮显示且展开*!/ //或者直接$route.name
@@ -84,7 +84,7 @@ export default {
 .sidebar {
   display: block;
   position: relative;
-  overflow-y: scroll;
+  // overflow-y: scroll;
   /deep/ .el-submenu .el-menu-item {
     background-color: #1f2d3d !important;
   }

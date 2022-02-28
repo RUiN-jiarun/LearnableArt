@@ -27,7 +27,7 @@ div {
   width: 85%;
   height: 800px;
   background-color: #ffffff;
-  margin-left: 0px;
+  margin-left: 170px;
   display: flex;
   min-width: 1200px;
 

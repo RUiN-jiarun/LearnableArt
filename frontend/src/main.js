@@ -1,10 +1,10 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import App from './App'
+import App from './components/App'
 import Content from './components/Content'
 import Home from './components/Home'
-import Sidebar from './components/Sidebar'
+// import Sidebar from './components/Sidebar'
 import VueRouter from 'vue-router'
 import axios from 'axios'
 import Element from 'element-ui'
@@ -27,7 +27,7 @@ VueRouter.prototype.push = function push(location) {
 
 const routes = [
     {
-        path: '/home',
+        path: '/',
         name: 'home',
         component: Home,
     },
@@ -55,6 +55,6 @@ Vue.component("App", App);
 new Vue({
     el: '#app',
     router,
-    render: h => h(Sidebar)
+    render: h => h(App)
     // TODO: change Sidebar to App and add Header and Footer
 })
