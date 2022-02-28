@@ -180,6 +180,13 @@
             </div>
             <div class="demo-image__preview1" style="float:left;">
               <div class="param_block">
+                <span>选择图像</span>
+              <el-radio-group style="margin-top: 10px;" v-model="isSrc">
+                <el-radio :label="1">源图像</el-radio>
+                <el-radio :label="0">风格图像</el-radio>
+              </el-radio-group>
+              </div>
+              <div class="param_block">
                 <span>蒙版类型</span>
               <el-radio-group style="margin-top: 10px;" v-model="isBackground">
                 <el-radio :label="1">背景蒙版</el-radio>
@@ -255,6 +262,7 @@ export default {
       },
       dialogTableVisible: false,
       // 蒙版参数
+      isSrc: 1,
       isBackground: 1,
       dilate: 1,
       mask_model: "u2netp",
@@ -420,6 +428,7 @@ export default {
             {params: {src: this.srcList1[this.srcList1.length - 1], 
                       style: this.srcList2[this.srcList2.length - 1],
                       model: this.mask_model,
+                      isSrc: this.isSrc,
                       isBackground: this.isBackground,
                       dilate: this.dilate}})
         .then((response) => {

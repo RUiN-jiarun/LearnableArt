@@ -71,7 +71,7 @@ def hist_match():
     if src and style:
         src_path = '.' + src[21:]
         style_path = '.' + style[21:]
-        print(src_path, style_path)
+        # print(src_path, style_path)
         # test -- copy only
         shutil.copy(src_path, './tmp/draw')
     #     draw_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
@@ -89,6 +89,7 @@ def hist_match():
 def auto_mask():
     src = request.values.get('src')
     style = request.values.get('style')
+    isSrc = request.values.get('isSrc')
     isBackground = request.values.get('isBackground')
     dilate_size = request.values.get('dilate')
     model_name = request.values.get('model')
@@ -102,18 +103,27 @@ def auto_mask():
         # print(src_path, style_path)
         # test -- hard-coded
         # shutil.copy(src_path, './tmp/draw')
-        if src_path.endswith('.jpg'):
-            ImageFile.LOAD_TRUNCATED_IMAGES = True
+        if isSrc:
+            if src_path.endswith('.jpg'):
+                ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-        f = np.fromfile(src_path)
-        res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_size)
-        img = Image.open(io.BytesIO(res)).convert("RGBA")
+            f = np.fromfile(src_path)
+            res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_size)
+            img = Image.open(io.BytesIO(res)).convert("RGBA")
         
     #     draw_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     #     file.save(draw_path)
     #     shutil.copy(draw_path, './tmp/draw')
     #     image_path = os.path.join('./tmp/draw', file.filename)
-        pid= src_path[9:]
+            pid= src_path[9:]
+        else:
+            if style_path.endswith('.jpg'):
+                ImageFile.LOAD_TRUNCATED_IMAGES = True
+
+            f = np.fromfile(style_path)
+            res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_size)
+            img = Image.open(io.BytesIO(res)).convert("RGBA")
+            pid= style_path[9:]
         
         output_path = './tmp/mask/' + pid
         print(output_path)
