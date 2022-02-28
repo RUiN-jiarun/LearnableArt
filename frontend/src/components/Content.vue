@@ -704,7 +704,7 @@ div {
 }
 
 .param_block {
-  margin-top: 15px;
+  margin-top: 20px;
   /* margin-bottom: 10px; */
   text-align: center;
   font-size: 14px;
