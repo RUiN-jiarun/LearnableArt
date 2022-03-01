@@ -4,7 +4,7 @@ import os
 import cv2
 import numpy as np
 
-from core.constants import DIM_1, DIM_2
+from ..core.constants import DIM_1, DIM_2
 
 MAX_VALUE_8_BIT = 255
 

@@ -4,7 +4,7 @@ from typing import Tuple
 
 import numpy as np
 
-from core import DIM_3
+from ..core import DIM_3
 
 ChannelsType = Tuple[int, ...]
 

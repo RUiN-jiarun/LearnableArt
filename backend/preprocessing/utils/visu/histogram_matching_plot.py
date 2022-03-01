@@ -6,8 +6,8 @@ import numpy as np
 import seaborn as sns
 from matplotlib.pylab import rcParams
 
-from core import DIM_1, IMAGE_CHANNELS
-from utils.cs_conversion import ColorSpaceConverter
+from ...core import DIM_1, IMAGE_CHANNELS
+from ...utils.cs_conversion import ColorSpaceConverter
 
 _PLOT_WIDTH = 16
 _PLOT_HEIGHT = 12

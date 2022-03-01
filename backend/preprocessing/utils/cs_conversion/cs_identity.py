@@ -4,7 +4,7 @@ from typing import Tuple
 
 import numpy as np
 
-from core.constants import DIM_3
+from ...core.constants import DIM_3
 
 from . import ChannelRange, ColorSpaceConverter
 

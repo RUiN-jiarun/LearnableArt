@@ -1,6 +1,6 @@
 """This module contains a function that creates the operation context"""
-from core import FDM, HM, Params
-from utils.cs_conversion.cs_converter_builder import build_cs_converter
+from ..core import FDM, HM, Params
+from ..utils.cs_conversion.cs_converter_builder import build_cs_converter
 
 from . import Operation
 from .operation_context import OperationContext

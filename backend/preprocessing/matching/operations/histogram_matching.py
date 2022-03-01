@@ -3,8 +3,8 @@ import sys
 
 import numpy as np
 
-from core import MATCH_FULL, MATCH_ZERO
-from matching import ChannelsType, Operation
+from ...core import MATCH_FULL, MATCH_ZERO
+from ...matching import ChannelsType, Operation
 
 
 class HistogramMatching(Operation):

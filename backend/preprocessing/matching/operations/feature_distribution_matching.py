@@ -3,8 +3,8 @@ from typing import Tuple
 
 import numpy as np
 
-from matching import ChannelsType, Operation
-from utils.cs_conversion import ChannelRange
+from ...matching import ChannelsType, Operation
+from ...utils.cs_conversion import ChannelRange
 
 
 class FeatureDistributionMatching(Operation):

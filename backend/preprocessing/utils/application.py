@@ -2,9 +2,9 @@
 
 import numpy as np
 
-from core import DIM_1, GRAY, HM, HM_PLOT_FILE, Params
-from matching.operation_context_builder import build_operation_context
-from utils.visu import histogram_matching_plot as hm_plot
+from ..core import DIM_1, GRAY, HM, HM_PLOT_FILE, Params
+from ..matching.operation_context_builder import build_operation_context
+from ..utils.visu import histogram_matching_plot as hm_plot
 
 from .image_io import read_image, write_image
 

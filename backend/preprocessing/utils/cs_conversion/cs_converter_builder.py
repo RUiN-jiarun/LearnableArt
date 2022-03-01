@@ -1,6 +1,6 @@
 """This module contains a function that creates a specified color space
 converter"""
-from core import DIM_1, GRAY, HSV, LAB, RGB
+from ...core import DIM_1, GRAY, HSV, LAB, RGB
 
 from . import ColorSpaceConverter
 from .cs_identity import IdentityConverter

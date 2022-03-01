@@ -1,7 +1,7 @@
 """This module defines Context for launching matching operations"""
 import numpy as np
 
-from utils.cs_conversion import ColorSpaceConverter
+from ..utils.cs_conversion import ColorSpaceConverter
 
 from . import Operation
 
