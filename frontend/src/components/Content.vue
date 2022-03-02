@@ -119,7 +119,8 @@
             <el-tab-pane label="智能蒙版" name="second">
             </el-tab-pane>
 
-            <div class="demo-image__preview1" v-if="activeName=='first'">
+            <div v-if="activeName=='first'">
+            <div class="demo-image__preview1" >
             <div
               v-loading="loading"
               element-loading-text="处理图片中"
@@ -145,6 +146,44 @@
                     >开始处理
                 </el-button>
                 </div>
+            </div>
+            </div>
+            <div class="demo-image__preview1" style="float:left;">
+              <div class="param_block">
+                <span>匹配方向</span>
+                <el-radio-group style="margin-top: 10px;" v-model="isSrc2Style">
+                  <el-radio :label="1">风格图像到源</el-radio>
+                  <el-radio :label="0">源图像到风格</el-radio>
+                </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>匹配算法</span>
+                <el-radio-group style="margin-top: 10px;" v-model="algorithm">
+                  <el-radio label="fdm">特征分布匹配</el-radio>
+                  <el-radio label="hm">直方图匹配</el-radio>
+                </el-radio-group>
+              </div>
+              
+              <div class="param_block">
+                <span>色彩空间</span>
+                <el-radio-group style="margin-top: 10px;" v-model="colorspace">
+                  <el-radio label="rgb">RGB</el-radio>
+                  <el-radio label="hsv">HSV</el-radio>
+                  <el-radio label="Lab">Lab</el-radio>
+                </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>匹配通道</span>
+                <el-checkbox-group 
+                  style="margin-top: 10px;" 
+                  v-model="channels"
+                  :min="1"
+                  :max="3">
+                  <el-checkbox :label="0">0</el-checkbox>
+                  <el-checkbox :label="1">1</el-checkbox>
+                  <el-checkbox :label="2">2</el-checkbox>
+                </el-checkbox-group>
+              </div>
             </div>
             </div>
             <div v-if="activeName=='second'">
@@ -196,9 +235,9 @@
               <div class="param_block">
                 <span>算法模型</span>
               <el-radio-group style="margin-top: 10px;" v-model="mask_model">
-                <el-radio :label="u2netp">简易模型</el-radio>
-                <el-radio :label="u2net">完整模型</el-radio>
-                <el-radio :label="u2net_human_seg">针对人像模型</el-radio>
+                <el-radio label="u2netp">简易</el-radio>
+                <el-radio label="u2net">完整</el-radio>
+                <el-radio label="u2net_human_seg">人像</el-radio>
               </el-radio-group>
               </div>
               <div class="param_block">
@@ -212,7 +251,6 @@
                 </el-slider>
               </div>
             </div>
-            <!-- TODO: POST a chart to pass refrences -->
             </div>
             
             </el-tabs>
@@ -261,6 +299,11 @@ export default {
         opacity: 0,
       },
       dialogTableVisible: false,
+      // 色域匹配参数
+      isSrc2Style: 1,
+      algorithm: "fdm",
+      colorspace: "rgb",
+      channels: [0,1,2],
       // 蒙版参数
       isSrc: 1,
       isBackground: 1,
