@@ -5,6 +5,9 @@ import shutil
 from datetime import timedelta
 from flask import *
 
+from preprocessing.utils.application import run as match
+from preprocessing.core import Params
+
 import io
 from PIL import Image, ImageFile
 from automask.u2net import mask
@@ -64,24 +67,49 @@ def upload_file():
 def hist_match():
     src = request.values.get('src')
     style = request.values.get('style')
-    
+    isSrc2Style = request.values.get('isSrc2Style')
+    algorithm = request.values.get('algorithm')
+    color_space = request.values.get('color_space')
+    channels = request.values.get('channels')
+    param = {}
     # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
     # ./tmp/ct/xxxxx.jpg
+
+    channels = channels.lstrip('[').rstrip(']')
+    print(channels)
     
     if src and style:
         src_path = '.' + src[21:]
         style_path = '.' + style[21:]
+        pid= src_path[9:]
+        if isSrc2Style:
+            param = {"color_space": color_space, 
+                    "source_path": src_path, 
+                    "reference_path": style_path, 
+                    "channels": "0,1,2", 
+                    "result_path": "./tmp/match/match_" + pid, 
+                    "verify_input": "False", 
+                    "plot": "False"}
+        else:
+            param = {"color_space": color_space, 
+                    "source_path": style_path, 
+                    "reference_path": src_path, 
+                    "channels": "0,1,2", 
+                    "result_path": "./tmp/match/match_" + pid, 
+                    "verify_input": "False", 
+                    "plot": "False"}
+        match(algorithm, Params(param))
         # print(src_path, style_path)
         # test -- copy only
-        shutil.copy(src_path, './tmp/draw')
+        # shutil.copy(src_path, './tmp/draw')
     #     draw_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
     #     file.save(draw_path)
     #     shutil.copy(draw_path, './tmp/draw')
     #     image_path = os.path.join('./tmp/draw', file.filename)
-        pid= src_path[9:]
+        # pid= src_path[9:]
         # print(pid)
         return jsonify({'status': 1,
-                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/' + pid})
+                        'draw_url': 'http://127.0.0.1:5003/tmp/match/match_' + pid})
 
     return jsonify({'status': 0})
 
@@ -110,11 +138,7 @@ def auto_mask():
             f = np.fromfile(src_path)
             res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_size)
             img = Image.open(io.BytesIO(res)).convert("RGBA")
-        
-    #     draw_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    #     file.save(draw_path)
-    #     shutil.copy(draw_path, './tmp/draw')
-    #     image_path = os.path.join('./tmp/draw', file.filename)
+
             pid= src_path[9:]
         else:
             if style_path.endswith('.jpg'):
@@ -125,11 +149,11 @@ def auto_mask():
             img = Image.open(io.BytesIO(res)).convert("RGBA")
             pid= style_path[9:]
         
-        output_path = './tmp/mask/' + pid
+        output_path = './tmp/mask/mask_' + pid
         print(output_path)
         img.save(output_path)
         return jsonify({'status': 1,
-                        'draw_url': 'http://127.0.0.1:5003/tmp/mask/' + pid})
+                        'draw_url': 'http://127.0.0.1:5003/tmp/mask/mask_' + pid})
 
     return jsonify({'status': 0})
 
@@ -154,7 +178,7 @@ def show_photo(file):
 if __name__ == '__main__':
     files = [
         'uploads', 'tmp/ct', 'tmp/draw',
-        'tmp/image', 'tmp/mask', 'tmp/uploads'
+        'tmp/image', 'tmp/mask', 'tmp/uploads', 'tmp/match'
     ]
     for ff in files:
         if not os.path.exists(ff):

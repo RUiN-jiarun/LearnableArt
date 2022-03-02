@@ -169,7 +169,7 @@
                 <el-radio-group style="margin-top: 10px;" v-model="colorspace">
                   <el-radio label="rgb">RGB</el-radio>
                   <el-radio label="hsv">HSV</el-radio>
-                  <el-radio label="Lab">Lab</el-radio>
+                  <el-radio label="lab">Lab</el-radio>
                 </el-radio-group>
               </div>
               <div class="param_block">
@@ -430,11 +430,17 @@ export default {
       var timer = setInterval(() => {
         this.myFunc();
       }, 30);
+      console.log(JSON.parse(JSON.stringify(this.channels)));
       axios
         .get(this.server_url + "/histmatch", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      style: this.srcList2[this.srcList2.length - 1]}})
+                      style: this.srcList2[this.srcList2.length - 1],
+                      isSrc2Style: this.isSrc2Style,
+                      algorithm: this.algorithm,
+                      color_space: this.colorspace,
+                      channels: JSON.stringify(this.channels.sort(function(a, b){return a-b}))}})
         .then((response) => {
+          
           this.percentage = 100;
           clearInterval(timer);
           if (response.data.status == 1) {
