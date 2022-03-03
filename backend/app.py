@@ -71,12 +71,13 @@ def hist_match():
     algorithm = request.values.get('algorithm')
     color_space = request.values.get('color_space')
     channels = request.values.get('channels')
+    match_proportion = request.values.get('match_proportion')
     param = {}
     # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
     # ./tmp/ct/xxxxx.jpg
 
     channels = channels.lstrip('[').rstrip(']')
-    print(channels)
+    # print(channels)
     
     if src and style:
         src_path = '.' + src[21:]
@@ -89,7 +90,8 @@ def hist_match():
                     "channels": "0,1,2", 
                     "result_path": "./tmp/match/match_" + pid, 
                     "verify_input": "False", 
-                    "plot": "False"}
+                    "plot": "False",
+                    "match_proportion": match_proportion}
         else:
             param = {"color_space": color_space, 
                     "source_path": style_path, 
@@ -97,7 +99,8 @@ def hist_match():
                     "channels": "0,1,2", 
                     "result_path": "./tmp/match/match_" + pid, 
                     "verify_input": "False", 
-                    "plot": "False"}
+                    "plot": "False",
+                    "match_proportion": match_proportion}
         match(algorithm, Params(param))
         # print(src_path, style_path)
         # test -- copy only

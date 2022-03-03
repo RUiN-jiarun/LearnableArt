@@ -28,7 +28,7 @@ def run(operation_type: str, params: Params) -> None:
 
     write_image(result, params.result_path)
 
-    if params.plot:
+    if params.plot == True:
         if operation_type == HM:
             result = read_image(params.result_path)
             images = hm_plot.Images(source, reference, result)

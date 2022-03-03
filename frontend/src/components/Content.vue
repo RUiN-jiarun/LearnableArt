@@ -112,7 +112,7 @@
         </el-card>
       </div>
       <div id="info_patient">
-        <el-card class="box-card" style="border-radius: 8px; width: 800px;height:450px;">
+        <el-card class="box-card" style="border-radius: 8px; width: 800px;height:500px;">
           <el-tabs v-model="activeName">
             <el-tab-pane label="色域匹配" name="first">
             </el-tab-pane>
@@ -148,7 +148,7 @@
                 </div>
             </div>
             </div>
-            <div class="demo-image__preview1" style="float:left;">
+            <div class="demo-image__preview1" style="float:left; height:400px;">
               <div class="param_block">
                 <span>匹配方向</span>
                 <el-radio-group style="margin-top: 10px;" v-model="isSrc2Style">
@@ -183,6 +183,17 @@
                   <el-checkbox :label="1">1</el-checkbox>
                   <el-checkbox :label="2">2</el-checkbox>
                 </el-checkbox-group>
+              </div>
+              <div class="param_block" v-if="algorithm=='hm'">
+                <span>匹配比例</span>
+                <el-slider
+                  v-model="match_proportion"
+                  show-input
+                  :min="0"
+                  :max="1"
+                  :step="0.01"
+                  style="margin-top: 10px;">
+                </el-slider>
               </div>
             </div>
             </div>
@@ -304,6 +315,7 @@ export default {
       algorithm: "fdm",
       colorspace: "rgb",
       channels: [0,1,2],
+      match_proportion: 1.0,
       // 蒙版参数
       isSrc: 1,
       isBackground: 1,
@@ -438,6 +450,7 @@ export default {
                       isSrc2Style: this.isSrc2Style,
                       algorithm: this.algorithm,
                       color_space: this.colorspace,
+                      match_proportion: this.match_proportion,
                       channels: JSON.stringify(this.channels.sort(function(a, b){return a-b}))}})
         .then((response) => {
           
