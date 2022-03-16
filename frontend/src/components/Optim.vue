@@ -1,5 +1,5 @@
 <template>
-  <div id="Content">
+  <div id="Optim">
     <el-dialog
       title="上传中"
       :visible.sync="dialogTableVisible"
@@ -45,7 +45,7 @@
               </el-image>
             </div>
             <div class="img_info_1" style="border-radius: 0 0 5px 5px">
-              <span style="color: white; letter-spacing: 6px">原始图像</span>
+              <span style="color: white; letter-spacing: 6px">目标图像</span>
             </div>
             <div class="img_info_1" style="border-radius: 5px; background-color: #ffffff">
               <el-button
@@ -87,7 +87,7 @@
               </el-image>
             </div>
             <div class="img_info_1" style="border-radius: 0 0 5px 5px">
-              <span style="color: white; letter-spacing: 4px">风格图像</span>
+              <span style="color: white; letter-spacing: 4px">参考图像</span>
             </div>
             <div class="img_info_1" style="border-radius: 5px; background-color: #ffffff">
               <el-button
@@ -114,7 +114,7 @@
       <div id="info_patient">
         <el-card class="box-card" style="border-radius: 8px; width: 800px;height:500px;">
           <el-tabs v-model="activeName">
-            <el-tab-pane label="色域匹配" name="first">
+            <el-tab-pane label="色彩迁移" name="first">
             </el-tab-pane>
             <el-tab-pane label="智能蒙版" name="second">
             </el-tab-pane>
@@ -126,6 +126,7 @@
               element-loading-text="处理图片中"
               element-loading-spinner="el-icon-loading"
             >
+              <div>请在参考图像中上传色域参考图</div>
               <el-image
                 :src="url_3"
                 class="image_2"
@@ -150,12 +151,13 @@
             </div>
             <div class="demo-image__preview1" style="float:left; height:400px;">
               <div class="param_block">
-                <span>匹配方向</span>
-                <el-radio-group style="margin-top: 10px;" v-model="isSrc2Style">
-                  <el-radio :label="1">风格图像到源</el-radio>
-                  <el-radio :label="0">源图像到风格</el-radio>
+                <span>是否使用蒙版</span>
+                <el-radio-group style="margin-top: 10px;" v-model="isMasked">
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="0">否</el-radio>
                 </el-radio-group>
               </div>
+
               <div class="param_block">
                 <span>匹配算法</span>
                 <el-radio-group style="margin-top: 10px;" v-model="algorithm">
@@ -167,23 +169,11 @@
               <div class="param_block">
                 <span>色彩空间</span>
                 <el-radio-group style="margin-top: 10px;" v-model="colorspace">
-                  <el-radio label="rgb">RGB</el-radio>
-                  <el-radio label="hsv">HSV</el-radio>
-                  <el-radio label="lab">Lab</el-radio>
+                  <el-radio label="RGB">RGB</el-radio>
+                  <el-radio label="YCbCr">YCbCr</el-radio>
                 </el-radio-group>
               </div>
-              <div class="param_block">
-                <span>匹配通道</span>
-                <el-checkbox-group 
-                  style="margin-top: 10px;" 
-                  v-model="channels"
-                  :min="1"
-                  :max="3">
-                  <el-checkbox :label="0">0</el-checkbox>
-                  <el-checkbox :label="1">1</el-checkbox>
-                  <el-checkbox :label="2">2</el-checkbox>
-                </el-checkbox-group>
-              </div>
+              
               <div class="param_block" v-if="algorithm=='hm'">
                 <span>匹配比例</span>
                 <el-slider
@@ -276,7 +266,7 @@
 import axios from "axios";
 
 export default {
-  name: "Content",
+  name: "Optim",
   data() {
     return {
       server_url: "http://127.0.0.1:5003",
@@ -310,10 +300,10 @@ export default {
         opacity: 0,
       },
       dialogTableVisible: false,
-      // 色域匹配参数
-      isSrc2Style: 1,
+      // 色彩迁移参数
+      isMasked: 0,
       algorithm: "fdm",
-      colorspace: "rgb",
+      colorspace: "RGB",
       channels: [0,1,2],
       match_proportion: 1.0,
       // 蒙版参数
@@ -447,7 +437,7 @@ export default {
         .get(this.server_url + "/histmatch", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
                       style: this.srcList2[this.srcList2.length - 1],
-                      isSrc2Style: this.isSrc2Style,
+                      isMasked: this.isMasked,
                       algorithm: this.algorithm,
                       color_space: this.colorspace,
                       match_proportion: this.match_proportion,
@@ -727,7 +717,7 @@ div {
   margin: 0px 0px;
 }
 
-#Content {
+#Optim {
   width: 85%;
   height: 800px;
   background-color: #ffffff;

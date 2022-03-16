@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './components/App'
 import Content from './components/Content'
+import Optim from './components/Optim'
 import Home from './components/Home'
 // import Sidebar from './components/Sidebar'
 import VueRouter from 'vue-router'
@@ -36,6 +37,11 @@ const routes = [
         name: 'pre',
         component: Content,
     },
+    {
+        path: '/post',
+        name: 'post',
+        component: Optim,
+    }
 ]
 
 const router = new VueRouter({

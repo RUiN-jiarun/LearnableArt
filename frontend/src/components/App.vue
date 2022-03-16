@@ -22,6 +22,7 @@
               <el-menu-item index="index2">编辑2</el-menu-item>
               <el-menu-item index="index3">编辑3</el-menu-item>
             </el-submenu>
+            <el-menu-item index="post"><i class="el-icon-document"></i>后处理</el-menu-item>
           </el-menu>
         </el-col>
         <el-col :span="150">
