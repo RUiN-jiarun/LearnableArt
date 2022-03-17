@@ -116,8 +116,8 @@ def color_trans(generated_image, content_image, mask, hist_match):
 
     img = original_color_transform(content_image, generated_image, mask_img, hist_match, mode=mode)
 
-    # return img
-    imsave(image_path, img)
+    return img
+    # imsave(image_path, img)
 
     # print("Image saved at path : %s" % image_path)
 

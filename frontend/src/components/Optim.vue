@@ -169,8 +169,8 @@
               <div class="param_block">
                 <span>匹配方式</span>
                 <el-radio-group style="margin-top: 10px;" v-model="match_mode">
-                  <el-radio label="RGB">分布匹配</el-radio>
-                  <el-radio label="YCbCr">直接匹配</el-radio>
+                  <el-radio :label="1">分布匹配</el-radio>
+                  <el-radio :label="0">直接匹配</el-radio>
                 </el-radio-group>
               </div>
             </div>
@@ -291,7 +291,7 @@ export default {
       // 色彩迁移参数
       isMasked: 0,
       // algorithm: "fdm",
-      match_mode: "RGB",
+      match_mode: 0,
       // match_proportion: 1.0,
       // 蒙版参数
       isSrc: 1,

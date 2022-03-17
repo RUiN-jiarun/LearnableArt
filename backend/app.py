@@ -171,15 +171,16 @@ def color_transfer_page():
     hist_match = request.values.get('hist_match')
     # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
     # ./tmp/ct/xxxxx.jpg
+    print(hist_match)
     if src and ref:
         src_path = '.' + src[21:]
         ref_path = '.' + ref[21:]
         pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
         img = color_trans(src_path, ref_path, isMasked, hist_match)
         output_path = './tmp/draw/colortrans_' + pid
-        # imageio.imwrite(output_path, img)
-        img = Image.fromarray(np.uint8(img))
-        img.save(output_path)
+        imageio.imwrite(output_path, img)
+        # img = Image.fromarray(np.uint8(img))
+        # img.save(output_path)
         return jsonify({'status': 1,
                         'draw_url': 'http://127.0.0.1:5003/tmp/draw/colortrans_' + pid})
 
