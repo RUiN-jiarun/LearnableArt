@@ -257,7 +257,8 @@
                   v-model="dilate"
                   show-input
                   :min="1"
-                  :max="20"
+                  :max="35"
+                  :step="2"
                   style="margin-top: 10px;">
                 </el-slider>
               </div>

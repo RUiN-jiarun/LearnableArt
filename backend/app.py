@@ -84,7 +84,7 @@ def hist_match_page():
     if src and style:
         src_path = '.' + src[21:]
         style_path = '.' + style[21:]
-        pid = src_path[9:]
+        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
         if isSrc2Style:
             param = {"color_space": color_space, 
                     "source_path": src_path, 
@@ -144,7 +144,7 @@ def auto_mask_page():
             res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_size)
             img = Image.open(io.BytesIO(res)).convert("RGBA")
 
-            pid = src_path[9:]
+            pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
         else:
             if style_path.endswith('.jpg'):
                 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -152,8 +152,9 @@ def auto_mask_page():
             f = np.fromfile(style_path)
             res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_size)
             img = Image.open(io.BytesIO(res)).convert("RGBA")
-            pid = style_path[9:]
+            pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + style_path[9:]
         
+        pid = pid.split('.')[0] + '.png'
         output_path = './tmp/mask/mask_' + pid
         print(output_path)
         img.save(output_path)
@@ -173,7 +174,7 @@ def color_transfer_page():
     if src and ref:
         src_path = '.' + src[21:]
         ref_path = '.' + ref[21:]
-        pid = src_path[9:]
+        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
         img = color_trans(src_path, ref_path, isMasked, hist_match)
         output_path = './tmp/draw/colortrans_' + pid
         # imageio.imwrite(output_path, img)

@@ -72,7 +72,7 @@ def generate(
     bio = io.BytesIO()
     cutout.convert('1')
     # erode
-    # cutout = cutout.filter(PIL.ImageFilter.MinFilter(dilate_structure_size))
+    cutout = cutout.filter(PIL.ImageFilter.MinFilter(int(dilate_structure_size)))
     cutout.save(bio, "PNG")
     print('done')
     return bio.getbuffer()
