@@ -7,7 +7,7 @@ from flask import *
 
 from preprocessing.utils.application import run as match
 from preprocessing.core import Params
-from postprocessing.color_transfer import original_color_transform
+from postprocessing.color_transfer import color_trans
 
 import io
 from PIL import Image, ImageFile
@@ -165,6 +165,8 @@ def auto_mask_page():
 def color_transfer_page():
     src = request.values.get('src')
     ref = request.values.get('ref')
+    isMasked = request.values.get('isMasked')
+    hist_match = request.values.get('hist_match')
 
 
 

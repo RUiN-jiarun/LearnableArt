@@ -9,6 +9,7 @@ from scipy.misc import imread, imresize, imsave, fromimage, toimage
 
 # Util function to match histograms
 def match_histograms(source, template):
+
     oldshape = source.shape
     source = source.ravel()
     template = template.ravel()
@@ -85,30 +86,31 @@ parser.add_argument('--hist_match', type=int, default=0, help='Perform histogram
 
 args = parser.parse_args()
 
-if args.hist_match == 1:
-    image_suffix = "_histogram_color.png"
-    mode = "RGB"
-else:
-    image_suffix = "_original_color.png"
-    mode = "YCbCr"
+def color_trans(generated_image, content_image, mask, hist_match):
+    if hist_match == 1:
+        image_suffix = "_histogram_color.png"
+        mode = "RGB"
+    else:
+        image_suffix = "_original_color.png"
+        mode = "YCbCr"
 
-image_path = os.path.splitext(args.generated_image)[0] + image_suffix
+    image_path = os.path.splitext(generated_image)[0] + image_suffix
 
-generated_image = imread(args.generated_image, mode="RGB")
-img_width, img_height, _ = generated_image.shape
+    generated_image = imread(generated_image, mode="RGB")
+    img_width, img_height, _ = generated_image.shape
 
-content_image = imread(args.content_image, mode=mode)
-content_image = imresize(content_image, (img_width, img_height), interp='bicubic')
+    content_image = imread(content_image, mode=mode)
+    content_image = imresize(content_image, (img_width, img_height), interp='bicubic')
 
-mask_transfer = args.mask is not None
-if mask_transfer:
-    mask_img = load_mask(args.mask, generated_image.shape)
-else:
-    mask_img = None
+    mask_transfer = mask is not None
+    if mask_transfer:
+        mask_img = load_mask(mask, generated_image.shape)
+    else:
+        mask_img = None
 
-img = original_color_transform(content_image, generated_image, mask_img, args.hist_match, mode=mode)
-imsave(image_path, img)
+    img = original_color_transform(content_image, generated_image, mask_img, hist_match, mode=mode)
+    imsave(image_path, img)
 
-print("Image saved at path : %s" % image_path)
+    print("Image saved at path : %s" % image_path)
 
 
