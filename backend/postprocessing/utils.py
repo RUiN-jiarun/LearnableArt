@@ -57,7 +57,7 @@ def fromimage(img, mode='RGB'):
 
 
 def toimage(arr, mode='RGB'):
-    return Image.fromarray(arr, mode)
+    return Image.fromarray(np.uint8(arr)).convert(mode)
 
 def drawhist(path, savepath):
     src = Image.open(path)

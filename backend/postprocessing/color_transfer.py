@@ -37,7 +37,9 @@ def match_histograms(source, template):
 
 # util function to preserve image color
 def original_color_transform(content, generated, mask=None, hist_match=0, mode='YCbCr'):
-    generated = fromimage(toimage(generated, mode='RGB'), mode=mode)  # Convert to YCbCr color space
+    generated = np.asarray(toimage(generated, mode='RGB'))
+    # FIXME
+    generated.convert('YCbCr')  # Convert to YCbCr color space
 
     if mask is None:
         if hist_match == 1:
@@ -57,7 +59,7 @@ def original_color_transform(content, generated, mask=None, hist_match=0, mode='
                     else:
                         generated[i, j, 1:] = content[i, j, 1:]
 
-    generated = fromimage(toimage(generated, mode=mode), mode='RGB')  # Convert to RGB color space
+    generated = np.asarray(toimage(generated, mode=mode))  # Convert to RGB color space
     return generated
 
 
@@ -93,8 +95,9 @@ def color_trans(generated_image, content_image, mask, hist_match):
     else:
         # image_suffix = "_color.png"
         mode = "YCbCr"
+    # mode = hist_match
 
-    # image_path = os.path.splitext(generated_image)[0] + image_suffix
+    image_path = os.path.splitext(generated_image)[0] + "_color.png"
 
     generated_image = imread(generated_image, mode="RGB")
     img_width, img_height, _ = generated_image.shape
@@ -109,9 +112,10 @@ def color_trans(generated_image, content_image, mask, hist_match):
 
     img = original_color_transform(content_image, generated_image, mask_img, hist_match, mode=mode)
 
-    return img
-    # imsave(image_path, img)
+    # return img
+    imsave(image_path, img)
 
     # print("Image saved at path : %s" % image_path)
+
 
 
