@@ -143,7 +143,7 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="histmatch"
+                      @click="colortransfer"
                     >开始处理
                 </el-button>
                 </div>
@@ -158,32 +158,20 @@
                 </el-radio-group>
               </div>
 
-              <div class="param_block">
+              <!-- <div class="param_block">
                 <span>匹配算法</span>
                 <el-radio-group style="margin-top: 10px;" v-model="algorithm">
                   <el-radio label="fdm">特征分布匹配</el-radio>
                   <el-radio label="hm">直方图匹配</el-radio>
                 </el-radio-group>
-              </div>
+              </div> -->
               
               <div class="param_block">
-                <span>色彩空间</span>
-                <el-radio-group style="margin-top: 10px;" v-model="colorspace">
-                  <el-radio label="RGB">RGB</el-radio>
-                  <el-radio label="YCbCr">YCbCr</el-radio>
+                <span>匹配方式</span>
+                <el-radio-group style="margin-top: 10px;" v-model="match_mode">
+                  <el-radio label="RGB">分布匹配</el-radio>
+                  <el-radio label="YCbCr">直接匹配</el-radio>
                 </el-radio-group>
-              </div>
-              
-              <div class="param_block" v-if="algorithm=='hm'">
-                <span>匹配比例</span>
-                <el-slider
-                  v-model="match_proportion"
-                  show-input
-                  :min="0"
-                  :max="1"
-                  :step="0.01"
-                  style="margin-top: 10px;">
-                </el-slider>
               </div>
             </div>
             </div>
@@ -302,10 +290,9 @@ export default {
       dialogTableVisible: false,
       // 色彩迁移参数
       isMasked: 0,
-      algorithm: "fdm",
-      colorspace: "RGB",
-      channels: [0,1,2],
-      match_proportion: 1.0,
+      // algorithm: "fdm",
+      match_mode: "RGB",
+      // match_proportion: 1.0,
       // 蒙版参数
       isSrc: 1,
       isBackground: 1,
@@ -421,7 +408,7 @@ export default {
         type: type,
       });
     },
-    histmatch() {
+    colortransfer() {
       // console.log(this.srcList1[this.srcList1.length - 1]);
       // console.log(this.srcList2[this.srcList2.length - 1]);
       this.dialogTableVisible = true;
@@ -434,14 +421,14 @@ export default {
       }, 30);
       // console.log(JSON.parse(JSON.stringify(this.channels)));
       axios
-        .get(this.server_url + "/histmatch", 
+        .get(this.server_url + "/colortransfer", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      style: this.srcList2[this.srcList2.length - 1],
+                      ref: this.srcList2[this.srcList2.length - 1],
                       isMasked: this.isMasked,
-                      algorithm: this.algorithm,
-                      color_space: this.colorspace,
-                      match_proportion: this.match_proportion,
-                      channels: JSON.stringify(this.channels.sort(function(a, b){return a-b}))}})
+
+                      hist_match: this.match_mode,
+
+                      }})
         .then((response) => {
           
           this.percentage = 100;

@@ -9,23 +9,6 @@ from scipy.misc import imread, imresize, imsave, fromimage, toimage
 
 # Util function to match histograms
 def match_histograms(source, template):
-    """
-    Adjust the pixel values of a grayscale image such that its histogram
-    matches that of a target image
-
-    Arguments:
-    -----------
-        source: np.ndarray
-            Image to transform; the histogram is computed over the flattened
-            array
-        template: np.ndarray
-            Template image; can have different dimensions to source
-    Returns:
-    -----------
-        matched: np.ndarray
-            The transformed output image
-    """
-
     oldshape = source.shape
     source = source.ravel()
     template = template.ravel()

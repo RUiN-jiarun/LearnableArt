@@ -7,6 +7,7 @@ from flask import *
 
 from preprocessing.utils.application import run as match
 from preprocessing.core import Params
+from postprocessing.color_transfer import original_color_transform
 
 import io
 from PIL import Image, ImageFile
@@ -64,7 +65,7 @@ def upload_file():
     return jsonify({'status': 0})
 
 @app.route('/histmatch', methods=['GET'])
-def hist_match():
+def hist_match_page():
     src = request.values.get('src')
     style = request.values.get('style')
     isSrc2Style = request.values.get('isSrc2Style')
@@ -117,7 +118,7 @@ def hist_match():
     return jsonify({'status': 0})
 
 @app.route('/automask', methods=['GET'])
-def auto_mask():
+def auto_mask_page():
     src = request.values.get('src')
     style = request.values.get('style')
     isSrc = request.values.get('isSrc')
@@ -159,6 +160,13 @@ def auto_mask():
                         'draw_url': 'http://127.0.0.1:5003/tmp/mask/mask_' + pid})
 
     return jsonify({'status': 0})
+
+@app.route('/colortransfer', methods=['GET'])
+def color_transfer_page():
+    src = request.values.get('src')
+    ref = request.values.get('ref')
+
+
 
 
 @app.route("/download", methods=['GET'])
