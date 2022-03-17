@@ -37,15 +37,18 @@ def match_histograms(source, template):
 
 # util function to preserve image color
 def original_color_transform(content, generated, mask=None, hist_match=0, mode='YCbCr'):
-    generated = np.asarray(toimage(generated, mode='RGB'))
+    generated = fromimage(toimage(generated, mode='RGB'), mode=mode)  # Convert to YCbCr color space
+    # generated = np.asarray(toimage(generated, mode='RGB').convert(mode))
     # FIXME
-    generated.convert('YCbCr')  # Convert to YCbCr color space
+    # generated.convert('YCbCr')  # Convert to YCbCr color space
+    # content = np.asarray(toimage(content, mode='RGB'))
 
     if mask is None:
         if hist_match == 1:
             for channel in range(3):
                 generated[:, :, channel] = match_histograms(generated[:, :, channel], content[:, :, channel])
         else:
+            # print('yes')
             generated[:, :, 1:] = content[:, :, 1:]
     else:
         width, height, channels = generated.shape
@@ -59,7 +62,8 @@ def original_color_transform(content, generated, mask=None, hist_match=0, mode='
                     else:
                         generated[i, j, 1:] = content[i, j, 1:]
 
-    generated = np.asarray(toimage(generated, mode=mode))  # Convert to RGB color space
+    # generated = np.asarray(toimage(generated, mode=mode).convert('RGB'))  # Convert to RGB color space
+    generated = fromimage(toimage(generated, mode=mode), mode='RGB')  # Convert to RGB color space
     return generated
 
 

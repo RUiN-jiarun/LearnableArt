@@ -6,4 +6,4 @@ from postprocessing.color_transfer import color_trans
 # match("fdm", Params(param))
 
 color_trans("bird_muse_rgb_19_at_iteration_50.png", "bird.png", mask=0, hist_match=0)
-
+# color_trans("xxx.png", "golden_gate.jpg", mask=0, hist_match=0)

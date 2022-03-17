@@ -48,16 +48,11 @@ def imsave(path, img):
     return
     
 
-def fromimage(img, mode='RGB'):
-    if mode == 'RGB':
-        img = color.lab2rgb(img)
-    else:
-        img = color.rgb2lab(img)
-    return img
-
+def fromimage(img, mode="RGB"):
+    return np.array(img.convert(mode))
 
 def toimage(arr, mode='RGB'):
-    return Image.fromarray(np.uint8(arr)).convert(mode)
+    return Image.fromarray(arr, mode)
 
 def drawhist(path, savepath):
     src = Image.open(path)
