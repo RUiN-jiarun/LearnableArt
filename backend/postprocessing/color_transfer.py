@@ -1,10 +1,10 @@
 import argparse
 import os
 import numpy as np
-from scipy.interpolate import interp1d
 
 # scipy must below 1.3.0
-from scipy.misc import imread, imresize, imsave, fromimage, toimage
+# from scipy.misc import imread, imresize, imsave, fromimage, toimage
+from utils import imread, imresize, imsave, fromimage, toimage
 
 
 # Util function to match histograms
@@ -88,13 +88,13 @@ args = parser.parse_args()
 
 def color_trans(generated_image, content_image, mask, hist_match):
     if hist_match == 1:
-        image_suffix = "_histogram_color.png"
+        # image_suffix = "_color.png"
         mode = "RGB"
     else:
-        image_suffix = "_original_color.png"
+        # image_suffix = "_color.png"
         mode = "YCbCr"
 
-    image_path = os.path.splitext(generated_image)[0] + image_suffix
+    # image_path = os.path.splitext(generated_image)[0] + image_suffix
 
     generated_image = imread(generated_image, mode="RGB")
     img_width, img_height, _ = generated_image.shape
@@ -109,8 +109,10 @@ def color_trans(generated_image, content_image, mask, hist_match):
         mask_img = None
 
     img = original_color_transform(content_image, generated_image, mask_img, hist_match, mode=mode)
-    imsave(image_path, img)
 
-    print("Image saved at path : %s" % image_path)
+    return img
+    # imsave(image_path, img)
+
+    # print("Image saved at path : %s" % image_path)
 
 

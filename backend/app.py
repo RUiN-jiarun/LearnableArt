@@ -10,6 +10,7 @@ from preprocessing.core import Params
 from postprocessing.color_transfer import color_trans
 
 import io
+import imageio
 from PIL import Image, ImageFile
 from automask.u2net import mask
 import numpy as np
@@ -83,7 +84,7 @@ def hist_match_page():
     if src and style:
         src_path = '.' + src[21:]
         style_path = '.' + style[21:]
-        pid= src_path[9:]
+        pid = src_path[9:]
         if isSrc2Style:
             param = {"color_space": color_space, 
                     "source_path": src_path, 
@@ -143,7 +144,7 @@ def auto_mask_page():
             res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_size)
             img = Image.open(io.BytesIO(res)).convert("RGBA")
 
-            pid= src_path[9:]
+            pid = src_path[9:]
         else:
             if style_path.endswith('.jpg'):
                 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -151,7 +152,7 @@ def auto_mask_page():
             f = np.fromfile(style_path)
             res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_size)
             img = Image.open(io.BytesIO(res)).convert("RGBA")
-            pid= style_path[9:]
+            pid = style_path[9:]
         
         output_path = './tmp/mask/mask_' + pid
         print(output_path)
@@ -167,6 +168,20 @@ def color_transfer_page():
     ref = request.values.get('ref')
     isMasked = request.values.get('isMasked')
     hist_match = request.values.get('hist_match')
+    # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
+    # ./tmp/ct/xxxxx.jpg
+    if src and ref:
+        src_path = '.' + src[21:]
+        ref_path = '.' + ref[21:]
+        pid = src_path[9:]
+        img = color_trans(src_path, ref_path, isMasked, hist_match)
+        output_path = './tmp/draw/colortrans_' + pid
+        imageio.imwrite(output_path, img)
+        return jsonify({'status': 1,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/colortrans_' + pid})
+
+    return jsonify({'status': 0})
+    
 
 
 
