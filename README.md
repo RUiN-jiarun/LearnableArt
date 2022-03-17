@@ -12,3 +12,11 @@ python app.py
 cd frontend
 npm run serve
 ```
+
+
+
+## TODO
+
+* 后处理中可否自选颜色空间
+* 直接选择过程图片
+* 前端设计

@@ -4,7 +4,7 @@ import numpy as np
 
 # scipy must below 1.3.0
 # from scipy.misc import imread, imresize, imsave, fromimage, toimage
-from utils import imread, imresize, imsave, fromimage, toimage
+from .utils import imread, imresize, imsave, fromimage, toimage
 
 
 # Util function to match histograms
@@ -77,14 +77,14 @@ def load_mask(mask_path, shape):
     return mask
 
 
-parser = argparse.ArgumentParser(description='Neural style transfer color preservation.')
+# parser = argparse.ArgumentParser(description='Neural style transfer color preservation.')
 
-parser.add_argument('content_image', type=str, help='Path to content image')
-parser.add_argument('generated_image', type=str, help='Path to generated image')
-parser.add_argument('--mask', default=None, type=str, help='Path to mask image')
-parser.add_argument('--hist_match', type=int, default=0, help='Perform histogram matching for color matching')
+# parser.add_argument('content_image', type=str, help='Path to content image')
+# parser.add_argument('generated_image', type=str, help='Path to generated image')
+# parser.add_argument('--mask', default=None, type=str, help='Path to mask image')
+# parser.add_argument('--hist_match', type=int, default=0, help='Perform histogram matching for color matching')
 
-args = parser.parse_args()
+# args = parser.parse_args()
 
 def color_trans(generated_image, content_image, mask, hist_match):
     if hist_match == 1:
@@ -102,8 +102,7 @@ def color_trans(generated_image, content_image, mask, hist_match):
     content_image = imread(content_image, mode=mode)
     content_image = imresize(content_image, (img_width, img_height), interp='bicubic')
 
-    mask_transfer = mask is not None
-    if mask_transfer:
+    if mask == 1:
         mask_img = load_mask(mask, generated_image.shape)
     else:
         mask_img = None
