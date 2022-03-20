@@ -237,6 +237,51 @@
             </div>
             </div>
             <div v-if="activeName=='third'">
+              <div class="demo-image__preview1" >
+            <div
+              v-loading="loading"
+              element-loading-text="处理图片中"
+              element-loading-spinner="el-icon-loading"
+            >
+              <el-image
+                :src="url_5"
+                class="image_2"
+                :preview-src-list="srcList4"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error">等待处理
+                  </div>
+                </div>
+              </el-image>
+              
+              <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
+              <el-button
+                      v-show="showbutton1"
+                      type="primary"
+                      class="download_bt"
+                      @click="fdmmatch"
+                    >开始处理
+                </el-button>
+                </div>
+            </div>
+            
+            </div>
+            <div class="demo-image__preview1" style="float:left;">
+              <div class="param_block">
+                <span>匹配通道</span>
+                <el-checkbox-group 
+                  style="margin-top: 10px;" 
+                  v-model="channels"
+                  :min="1"
+                  :max="3">
+                  <el-checkbox :label="0">R</el-checkbox>
+                  <el-checkbox :label="1">G</el-checkbox>
+                  <el-checkbox :label="2">B</el-checkbox>
+                </el-checkbox-group>
+              </div>
+              
+            </div>
             </div>
             <div v-if="activeName=='fourth'">
               <div class="demo-image__preview1" >
@@ -267,7 +312,7 @@
                   </div>
               </div>
               </div>
-              <div class="demo-image__preview1" style="float:left; height:400px">
+              <div class="demo-image__preview1" style="float:left; height:400px;">
                 <div class="param_block">
                 <span>匹配方向</span>
                 <el-radio-group style="margin-top: 10px;" v-model="isSrc2Style">
@@ -555,6 +600,49 @@ export default {
           clearInterval(timer);
           if (response.data.status == 1) {
             this.url_4 = response.data.draw_url;
+            this.srcList3.push(this.url_3);
+            this.fullscreenLoading = false;
+            this.loading = false;
+            
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作完成", "点击图片以查看大图", "success");
+          } else {
+            this.fullscreenLoading = false;
+            this.loading = false;
+            
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作失败", "请重新检查", "error");
+          }
+          
+        });
+    },
+    fdmmatch() {
+      this.dialogTableVisible = true;
+      this.percentage = 0;
+      this.fullscreenLoading = true;
+      this.loading = true;
+      this.url_5 = "";
+      var timer = setInterval(() => {
+        this.myFunc();
+      }, 30);
+      // console.log(JSON.parse(JSON.stringify(this.channels)));
+      axios
+        .get(this.server_url + "/histmatch", 
+            {params: {src: this.srcList1[this.srcList1.length - 1], 
+                      style: this.srcList2[this.srcList2.length - 1],
+                      isSrc2Style: 1,
+                      algorithm: 'fdm',
+                      color_space: 'rgb',
+                      match_proportion: this.match_proportion,
+                      channels: JSON.stringify(this.channels.sort(function(a, b){return a-b}))}})
+        .then((response) => {
+          
+          this.percentage = 100;
+          clearInterval(timer);
+          if (response.data.status == 1) {
+            this.url_5 = response.data.draw_url;
             this.srcList3.push(this.url_3);
             this.fullscreenLoading = false;
             this.loading = false;
