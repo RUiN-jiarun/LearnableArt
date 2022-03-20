@@ -120,6 +120,8 @@
             </el-tab-pane>
             <el-tab-pane label="特征空间匹配" name="third">
             </el-tab-pane>
+            <el-tab-pane label="全参数" name="fourth">
+            </el-tab-pane>
 
             <div v-if="activeName=='first'">
             <div class="demo-image__preview1" >
@@ -234,7 +236,86 @@
               </div>
             </div>
             </div>
-            
+            <div v-if="activeName=='third'">
+            </div>
+            <div v-if="activeName=='fourth'">
+              <div class="demo-image__preview1" >
+              <div
+                v-loading="loading"
+                element-loading-text="处理图片中"
+                element-loading-spinner="el-icon-loading"
+              >
+                <el-image
+                  :src="url_6"
+                  class="image_2"
+                  :preview-src-list="srcList3"
+                  style="border-radius: 3px"
+                >
+                  <div slot="error">
+                    <div slot="placeholder" class="error">等待处理
+                    </div>
+                  </div>
+                </el-image>
+                <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
+                <el-button
+                        v-show="showbutton1"
+                        type="primary"
+                        class="download_bt"
+                        @click="histmatch"
+                      >开始处理
+                  </el-button>
+                  </div>
+              </div>
+              </div>
+              <div class="demo-image__preview1" style="float:left; height:400px">
+                <div class="param_block">
+                <span>匹配方向</span>
+                <el-radio-group style="margin-top: 10px;" v-model="isSrc2Style">
+                  <el-radio :label="1">风格图像到源</el-radio>
+                  <el-radio :label="0">源图像到风格</el-radio>
+                </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>匹配算法</span>
+                <el-radio-group style="margin-top: 10px;" v-model="algorithm">
+                  <el-radio label="fdm">特征分布匹配</el-radio>
+                  <el-radio label="hm">直方图匹配</el-radio>
+                </el-radio-group>
+              </div>
+              
+              <div class="param_block">
+                <span>色彩空间</span>
+                <el-radio-group style="margin-top: 10px;" v-model="colorspace">
+                  <el-radio label="rgb">RGB</el-radio>
+                  <el-radio label="hsv">HSV</el-radio>
+                  <el-radio label="lab">Lab</el-radio>
+                </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>匹配通道</span>
+                <el-checkbox-group 
+                  style="margin-top: 10px;" 
+                  v-model="channels"
+                  :min="1"
+                  :max="3">
+                  <el-checkbox :label="0">0</el-checkbox>
+                  <el-checkbox :label="1">1</el-checkbox>
+                  <el-checkbox :label="2">2</el-checkbox>
+                </el-checkbox-group>
+              </div>
+              <div class="param_block" v-if="algorithm=='hm'">
+                <span>匹配比例</span>
+                <el-slider
+                  v-model="match_proportion"
+                  show-input
+                  :min="0"
+                  :max="1"
+                  :step="0.01"
+                  style="margin-top: 10px;">
+                </el-slider>
+              </div>
+              </div>
+            </div>
             </el-tabs>
 
         </el-card>
@@ -258,11 +339,15 @@ export default {
       url_2: "",  // 风格图片
       url_3: "",  // 色域匹配结果
       url_4: "",  // 生成蒙版结果
+      url_5: "",  // 生成蒙版结果
+      url_6: "",  // 生成蒙版结果
       textarea: "",
       srcList1: [],
       srcList2: [],
       srcList3: [],
       srcList4: [],
+      srcList5: [],
+      srcList6: [],
       feature_list: [],
       feature_list_1: [],
       feat_list: [],
@@ -495,7 +580,7 @@ export default {
       this.percentage = 0;
       this.fullscreenLoading = true;
       this.loading = true;
-      this.url_3 = "";
+      this.url_6 = "";
       var timer = setInterval(() => {
         this.myFunc();
       }, 30);
@@ -514,7 +599,7 @@ export default {
           this.percentage = 100;
           clearInterval(timer);
           if (response.data.status == 1) {
-            this.url_3 = response.data.draw_url;
+            this.url_6 = response.data.draw_url;
             this.srcList3.push(this.url_3);
             this.fullscreenLoading = false;
             this.loading = false;
