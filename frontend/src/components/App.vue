@@ -13,7 +13,11 @@
             text-color="#bfcbd9"
             active-text-color="#049eff">
             <el-menu-item index="/"><i class="el-icon-menu"></i>首页</el-menu-item>
-            <el-menu-item index="pre"><i class="el-icon-document"></i>预处理</el-menu-item>
+            <el-submenu index="pre">
+              <template slot="title"><i class="el-icon-document"></i>预处理</template>
+              <el-menu-item index="match">色域匹配</el-menu-item>
+              <el-menu-item index="mask">智能蒙版</el-menu-item>
+            </el-submenu>
              
             
             <el-submenu index="3">

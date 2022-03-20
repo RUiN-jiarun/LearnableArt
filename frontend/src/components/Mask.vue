@@ -1,5 +1,5 @@
 <template>
-  <div id="Content">
+  <div id="Mask">
     <el-dialog
       title="上传中"
       :visible.sync="dialogTableVisible"
@@ -114,11 +114,9 @@
       <div id="info_patient">
         <el-card class="box-card" style="border-radius: 8px; width: 800px;height:500px;">
           <el-tabs v-model="activeName">
-            <el-tab-pane label="色彩直方图匹配" name="first">
+            <el-tab-pane label="色域匹配" name="first">
             </el-tab-pane>
-            <el-tab-pane label="亮度空间匹配" name="second">
-            </el-tab-pane>
-            <el-tab-pane label="特征空间匹配" name="third">
+            <el-tab-pane label="智能蒙版" name="second">
             </el-tab-pane>
 
             <div v-if="activeName=='first'">
@@ -144,14 +142,36 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="rgbmatch"
+                      @click="histmatch"
                     >开始处理
                 </el-button>
                 </div>
             </div>
             </div>
             <div class="demo-image__preview1" style="float:left; height:400px;">
+              <div class="param_block">
+                <span>匹配方向</span>
+                <el-radio-group style="margin-top: 10px;" v-model="isSrc2Style">
+                  <el-radio :label="1">风格图像到源</el-radio>
+                  <el-radio :label="0">源图像到风格</el-radio>
+                </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>匹配算法</span>
+                <el-radio-group style="margin-top: 10px;" v-model="algorithm">
+                  <el-radio label="fdm">特征分布匹配</el-radio>
+                  <el-radio label="hm">直方图匹配</el-radio>
+                </el-radio-group>
+              </div>
               
+              <div class="param_block">
+                <span>色彩空间</span>
+                <el-radio-group style="margin-top: 10px;" v-model="colorspace">
+                  <el-radio label="rgb">RGB</el-radio>
+                  <el-radio label="hsv">HSV</el-radio>
+                  <el-radio label="lab">Lab</el-radio>
+                </el-radio-group>
+              </div>
               <div class="param_block">
                 <span>匹配通道</span>
                 <el-checkbox-group 
@@ -159,12 +179,12 @@
                   v-model="channels"
                   :min="1"
                   :max="3">
-                  <el-checkbox :label="0">R</el-checkbox>
-                  <el-checkbox :label="1">G</el-checkbox>
-                  <el-checkbox :label="2">B</el-checkbox>
+                  <el-checkbox :label="0">0</el-checkbox>
+                  <el-checkbox :label="1">1</el-checkbox>
+                  <el-checkbox :label="2">2</el-checkbox>
                 </el-checkbox-group>
               </div>
-              <div class="param_block">
+              <div class="param_block" v-if="algorithm=='hm'">
                 <span>匹配比例</span>
                 <el-slider
                   v-model="match_proportion"
@@ -201,7 +221,7 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="labmatch"
+                      @click="automask"
                     >开始处理
                 </el-button>
                 </div>
@@ -210,25 +230,35 @@
             </div>
             <div class="demo-image__preview1" style="float:left;">
               <div class="param_block">
-                <span>匹配通道</span>
-                <el-checkbox-group 
-                  style="margin-top: 10px;" 
-                  v-model="channels"
-                  :min="1"
-                  :max="3">
-                  <el-checkbox :label="0">L</el-checkbox>
-                  <el-checkbox :label="1">a</el-checkbox>
-                  <el-checkbox :label="2">b</el-checkbox>
-                </el-checkbox-group>
+                <span>选择图像</span>
+              <el-radio-group style="margin-top: 10px;" v-model="isSrc">
+                <el-radio :label="1">源图像</el-radio>
+                <el-radio :label="0">风格图像</el-radio>
+              </el-radio-group>
               </div>
               <div class="param_block">
-                <span>匹配比例</span>
+                <span>蒙版类型</span>
+              <el-radio-group style="margin-top: 10px;" v-model="isBackground">
+                <el-radio :label="1">背景蒙版</el-radio>
+                <el-radio :label="0">前景蒙版</el-radio>
+              </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>算法模型</span>
+              <el-radio-group style="margin-top: 10px;" v-model="mask_model">
+                <el-radio label="u2netp">简易</el-radio>
+                <el-radio label="u2net">完整</el-radio>
+                <el-radio label="u2net_human_seg">人像</el-radio>
+              </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>膨胀尺寸</span>
                 <el-slider
-                  v-model="match_proportion"
+                  v-model="dilate"
                   show-input
-                  :min="0"
-                  :max="1"
-                  :step="0.01"
+                  :min="1"
+                  :max="35"
+                  :step="2"
                   style="margin-top: 10px;">
                 </el-slider>
               </div>
@@ -247,7 +277,7 @@
 import axios from "axios";
 
 export default {
-  name: "Content",
+  name: "Mask",
   data() {
     return {
       server_url: "http://127.0.0.1:5003",
@@ -401,92 +431,6 @@ export default {
         duration: 0,
         type: type,
       });
-    },
-    rgbmatch() {
-      this.dialogTableVisible = true;
-      this.percentage = 0;
-      this.fullscreenLoading = true;
-      this.loading = true;
-      this.url_3 = "";
-      var timer = setInterval(() => {
-        this.myFunc();
-      }, 30);
-      // console.log(JSON.parse(JSON.stringify(this.channels)));
-      axios
-        .get(this.server_url + "/histmatch", 
-            {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      style: this.srcList2[this.srcList2.length - 1],
-                      isSrc2Style: 1,
-                      algorithm: 'hm',
-                      color_space: 'rgb',
-                      match_proportion: this.match_proportion,
-                      channels: JSON.stringify(this.channels.sort(function(a, b){return a-b}))}})
-        .then((response) => {
-          
-          this.percentage = 100;
-          clearInterval(timer);
-          if (response.data.status == 1) {
-            this.url_3 = response.data.draw_url;
-            this.srcList3.push(this.url_3);
-            this.fullscreenLoading = false;
-            this.loading = false;
-            
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作完成", "点击图片以查看大图", "success");
-          } else {
-            this.fullscreenLoading = false;
-            this.loading = false;
-            
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作失败", "请重新检查", "error");
-          }
-          
-        });
-    },
-    labmatch() {
-      this.dialogTableVisible = true;
-      this.percentage = 0;
-      this.fullscreenLoading = true;
-      this.loading = true;
-      this.url_4 = "";
-      var timer = setInterval(() => {
-        this.myFunc();
-      }, 30);
-      // console.log(JSON.parse(JSON.stringify(this.channels)));
-      axios
-        .get(this.server_url + "/histmatch", 
-            {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      style: this.srcList2[this.srcList2.length - 1],
-                      isSrc2Style: 1,
-                      algorithm: 'hm',
-                      color_space: 'lab',
-                      match_proportion: this.match_proportion,
-                      channels: JSON.stringify(this.channels.sort(function(a, b){return a-b}))}})
-        .then((response) => {
-          
-          this.percentage = 100;
-          clearInterval(timer);
-          if (response.data.status == 1) {
-            this.url_4 = response.data.draw_url;
-            this.srcList3.push(this.url_3);
-            this.fullscreenLoading = false;
-            this.loading = false;
-            
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作完成", "点击图片以查看大图", "success");
-          } else {
-            this.fullscreenLoading = false;
-            this.loading = false;
-            
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作失败", "请重新检查", "error");
-          }
-          
-        });
     },
     histmatch() {
       // console.log(this.srcList1[this.srcList1.length - 1]);
@@ -784,7 +728,7 @@ div {
   margin: 0px 0px;
 }
 
-#Content {
+#Mask {
   width: 85%;
   height: 800px;
   background-color: #ffffff;

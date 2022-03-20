@@ -3,6 +3,7 @@
 import Vue from 'vue'
 import App from './components/App'
 import Content from './components/Content'
+import Mask from './components/Mask'
 import Optim from './components/Optim'
 import Home from './components/Home'
 // import Sidebar from './components/Sidebar'
@@ -33,9 +34,14 @@ const routes = [
         component: Home,
     },
     {
-        path: '/pre',
-        name: 'pre',
+        path: '/match',
+        name: 'match',
         component: Content,
+    },
+    {
+        path: '/mask',
+        name: 'mask',
+        component: Mask,
     },
     {
         path: '/post',

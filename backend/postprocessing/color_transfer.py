@@ -38,10 +38,7 @@ def match_histograms(source, template):
 # util function to preserve image color
 def original_color_transform(content, generated, mask=None, hist_match=0, mode='YCbCr'):
     generated = fromimage(toimage(generated, mode='RGB'), mode=mode)  # Convert to YCbCr color space
-    # generated = np.asarray(toimage(generated, mode='RGB').convert(mode))
-    # FIXME
-    # generated.convert('YCbCr')  # Convert to YCbCr color space
-    # content = np.asarray(toimage(content, mode='RGB'))
+
 
     if mask is None:
         if hist_match == 1:
