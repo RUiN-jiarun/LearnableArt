@@ -211,18 +211,7 @@
             
             </div>
             <div class="demo-image__preview1" style="float:left;">
-              <div class="param_block">
-                <span>匹配通道</span>
-                <el-checkbox-group 
-                  style="margin-top: 10px;" 
-                  v-model="channels"
-                  :min="1"
-                  :max="3">
-                  <el-checkbox :label="0">L</el-checkbox>
-                  <el-checkbox :label="1">a</el-checkbox>
-                  <el-checkbox :label="2">b</el-checkbox>
-                </el-checkbox-group>
-              </div>
+              
               <div class="param_block">
                 <span>匹配比例</span>
                 <el-slider
@@ -579,6 +568,7 @@ export default {
       var timer = setInterval(() => {
         this.myFunc();
       }, 30);
+      this.channels = [0];
       // console.log(JSON.parse(JSON.stringify(this.channels)));
       axios
         .get(this.server_url + "/histmatch", 
