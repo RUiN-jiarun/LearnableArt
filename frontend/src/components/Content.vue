@@ -269,18 +269,13 @@
             </div>
             <div class="demo-image__preview1" style="float:left;">
               <div class="param_block">
-                <span>匹配通道</span>
-                <el-checkbox-group 
-                  style="margin-top: 10px;" 
-                  v-model="channels"
-                  :min="1"
-                  :max="3">
-                  <el-checkbox :label="0">R</el-checkbox>
-                  <el-checkbox :label="1">G</el-checkbox>
-                  <el-checkbox :label="2">B</el-checkbox>
-                </el-checkbox-group>
+                <span>匹配方式</span>
+                <el-radio-group style="margin-top: 10px;" v-model="colorspace">
+                  <el-radio label="rgb" style="margin-top: 10px;">基于色彩</el-radio><br>
+                  <el-radio label="hsv" style="margin-top: 10px;">基于色调</el-radio><br>
+                  <el-radio label="lab" style="margin-top: 10px;">基于亮度</el-radio><br>
+                </el-radio-group>
               </div>
-              
             </div>
             </div>
             <div v-if="activeName=='fourth'">
@@ -628,13 +623,20 @@ export default {
         this.myFunc();
       }, 30);
       // console.log(JSON.parse(JSON.stringify(this.channels)));
+      if (this.color_space == 'rgb') {
+        this.channels = [0,1,2];
+      } else if (this.color_space == 'lab') {
+        this.channels = [0];
+      } else if (this.color_space == 'hsv') {
+        this.channels = [0,1];
+      }
       axios
         .get(this.server_url + "/histmatch", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
                       style: this.srcList2[this.srcList2.length - 1],
                       isSrc2Style: 1,
                       algorithm: 'fdm',
-                      color_space: 'rgb',
+                      color_space: this.color_space,
                       match_proportion: this.match_proportion,
                       channels: JSON.stringify(this.channels.sort(function(a, b){return a-b}))}})
         .then((response) => {
