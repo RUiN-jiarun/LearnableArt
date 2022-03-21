@@ -585,7 +585,7 @@ export default {
           clearInterval(timer);
           if (response.data.status == 1) {
             this.url_4 = response.data.draw_url;
-            this.srcList3.push(this.url_3);
+            this.srcList4.push(this.url_4);
             this.fullscreenLoading = false;
             this.loading = false;
             
@@ -635,7 +635,7 @@ export default {
           clearInterval(timer);
           if (response.data.status == 1) {
             this.url_5 = response.data.draw_url;
-            this.srcList3.push(this.url_3);
+            this.srcList5.push(this.url_5);
             this.fullscreenLoading = false;
             this.loading = false;
             
@@ -680,7 +680,7 @@ export default {
           clearInterval(timer);
           if (response.data.status == 1) {
             this.url_6 = response.data.draw_url;
-            this.srcList3.push(this.url_3);
+            this.srcList6.push(this.url_6);
             this.fullscreenLoading = false;
             this.loading = false;
             
@@ -698,46 +698,7 @@ export default {
           
         });
     },
-    automask() {
-      this.dialogTableVisible = true;
-      this.percentage = 0;
-      this.fullscreenLoading = true;
-      this.loading = true;
-      this.url_4 = "";
-      var timer = setInterval(() => {
-        this.myFunc();
-      }, 30);
-      axios
-        .get(this.server_url + "/automask", 
-            {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      style: this.srcList2[this.srcList2.length - 1],
-                      model: this.mask_model,
-                      isSrc: this.isSrc,
-                      isBackground: this.isBackground,
-                      dilate: this.dilate}})
-        .then((response) => {
-          this.percentage = 100;
-          clearInterval(timer);
-          if (response.data.status == 1) {
-            this.url_4 = response.data.draw_url;
-            this.srcList4.push(this.url_4);
-            this.fullscreenLoading = false;
-            this.loading = false;
-
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作完成", "点击图片以查看大图", "success");
-          } else {
-            this.fullscreenLoading = false;
-            this.loading = false;
-
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作失败", "请重新检查", "error");
-          }
-          
-        });
-    },
+    
   },
   mounted() {
     this.drawChart();

@@ -80,12 +80,13 @@ def hist_match_page():
 
     channels = channels.lstrip('[').rstrip(']')
     # print(channels)
-    
+    pid = ""
     if src and style:
         src_path = '.' + src[21:]
         style_path = '.' + style[21:]
-        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+        # pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
         if isSrc2Style:
+            pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
             param = {"color_space": color_space, 
                     "source_path": src_path, 
                     "reference_path": style_path, 
@@ -95,6 +96,7 @@ def hist_match_page():
                     "plot": "False",
                     "match_proportion": match_proportion}
         else:
+            pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + style_path[9:]
             param = {"color_space": color_space, 
                     "source_path": style_path, 
                     "reference_path": src_path, 

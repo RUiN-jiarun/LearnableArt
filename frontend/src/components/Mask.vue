@@ -114,9 +114,8 @@
       <div id="info_patient">
         <el-card class="box-card" style="border-radius: 8px; width: 800px;height:500px;">
           <el-tabs v-model="activeName">
-            <el-tab-pane label="色域匹配" name="first">
-            </el-tab-pane>
-            <el-tab-pane label="智能蒙版" name="second">
+
+            <el-tab-pane label="智能蒙版" name="first">
             </el-tab-pane>
 
             <div v-if="activeName=='first'">
@@ -128,84 +127,6 @@
             >
               <el-image
                 :src="url_3"
-                class="image_2"
-                :preview-src-list="srcList3"
-                style="border-radius: 3px"
-              >
-                <div slot="error">
-                  <div slot="placeholder" class="error">等待处理
-                  </div>
-                </div>
-              </el-image>
-              <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
-              <el-button
-                      v-show="showbutton1"
-                      type="primary"
-                      class="download_bt"
-                      @click="histmatch"
-                    >开始处理
-                </el-button>
-                </div>
-            </div>
-            </div>
-            <div class="demo-image__preview1" style="float:left; height:400px;">
-              <div class="param_block">
-                <span>匹配方向</span>
-                <el-radio-group style="margin-top: 10px;" v-model="isSrc2Style">
-                  <el-radio :label="1">风格图像到源</el-radio>
-                  <el-radio :label="0">源图像到风格</el-radio>
-                </el-radio-group>
-              </div>
-              <div class="param_block">
-                <span>匹配算法</span>
-                <el-radio-group style="margin-top: 10px;" v-model="algorithm">
-                  <el-radio label="fdm">特征分布匹配</el-radio>
-                  <el-radio label="hm">直方图匹配</el-radio>
-                </el-radio-group>
-              </div>
-              
-              <div class="param_block">
-                <span>色彩空间</span>
-                <el-radio-group style="margin-top: 10px;" v-model="colorspace">
-                  <el-radio label="rgb">RGB</el-radio>
-                  <el-radio label="hsv">HSV</el-radio>
-                  <el-radio label="lab">Lab</el-radio>
-                </el-radio-group>
-              </div>
-              <div class="param_block">
-                <span>匹配通道</span>
-                <el-checkbox-group 
-                  style="margin-top: 10px;" 
-                  v-model="channels"
-                  :min="1"
-                  :max="3">
-                  <el-checkbox :label="0">0</el-checkbox>
-                  <el-checkbox :label="1">1</el-checkbox>
-                  <el-checkbox :label="2">2</el-checkbox>
-                </el-checkbox-group>
-              </div>
-              <div class="param_block" v-if="algorithm=='hm'">
-                <span>匹配比例</span>
-                <el-slider
-                  v-model="match_proportion"
-                  show-input
-                  :min="0"
-                  :max="1"
-                  :step="0.01"
-                  style="margin-top: 10px;">
-                </el-slider>
-              </div>
-            </div>
-            </div>
-            <div v-if="activeName=='second'">
-            <div class="demo-image__preview1" >
-            <div
-              v-loading="loading"
-              element-loading-text="处理图片中"
-              element-loading-spinner="el-icon-loading"
-            >
-              <el-image
-                :src="url_4"
                 class="image_2"
                 :preview-src-list="srcList4"
                 style="border-radius: 3px;"
@@ -432,57 +353,13 @@ export default {
         type: type,
       });
     },
-    histmatch() {
-      // console.log(this.srcList1[this.srcList1.length - 1]);
-      // console.log(this.srcList2[this.srcList2.length - 1]);
-      this.dialogTableVisible = true;
-      this.percentage = 0;
-      this.fullscreenLoading = true;
-      this.loading = true;
-      this.url_3 = "";
-      var timer = setInterval(() => {
-        this.myFunc();
-      }, 30);
-      // console.log(JSON.parse(JSON.stringify(this.channels)));
-      axios
-        .get(this.server_url + "/histmatch", 
-            {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      style: this.srcList2[this.srcList2.length - 1],
-                      isSrc2Style: this.isSrc2Style,
-                      algorithm: this.algorithm,
-                      color_space: this.colorspace,
-                      match_proportion: this.match_proportion,
-                      channels: JSON.stringify(this.channels.sort(function(a, b){return a-b}))}})
-        .then((response) => {
-          
-          this.percentage = 100;
-          clearInterval(timer);
-          if (response.data.status == 1) {
-            this.url_3 = response.data.draw_url;
-            this.srcList3.push(this.url_3);
-            this.fullscreenLoading = false;
-            this.loading = false;
-            
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作完成", "点击图片以查看大图", "success");
-          } else {
-            this.fullscreenLoading = false;
-            this.loading = false;
-            
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作失败", "请重新检查", "error");
-          }
-          
-        });
-    },
+    
     automask() {
       this.dialogTableVisible = true;
       this.percentage = 0;
       this.fullscreenLoading = true;
       this.loading = true;
-      this.url_4 = "";
+      this.url_3 = "";
       var timer = setInterval(() => {
         this.myFunc();
       }, 30);
@@ -498,8 +375,8 @@ export default {
           this.percentage = 100;
           clearInterval(timer);
           if (response.data.status == 1) {
-            this.url_4 = response.data.draw_url;
-            this.srcList4.push(this.url_4);
+            this.url_3 = response.data.draw_url;
+            this.srcList3.push(this.url_3);
             this.fullscreenLoading = false;
             this.loading = false;
 
