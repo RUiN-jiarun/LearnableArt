@@ -609,11 +609,11 @@ export default {
         this.myFunc();
       }, 30);
       // console.log(JSON.parse(JSON.stringify(this.channels)));
-      if (this.color_space == 'rgb') {
+      if (this.colorspace == 'rgb') {
         this.channels = [0,1,2];
-      } else if (this.color_space == 'lab') {
+      } else if (this.colorspace == 'lab') {
         this.channels = [0];
-      } else if (this.color_space == 'hsv') {
+      } else if (this.colorspace == 'hsv') {
         this.channels = [0,1];
       }
       axios
@@ -622,7 +622,7 @@ export default {
                       style: this.srcList2[this.srcList2.length - 1],
                       isSrc2Style: 1,
                       algorithm: 'fdm',
-                      color_space: this.color_space,
+                      color_space: this.colorspace,
                       match_proportion: this.match_proportion,
                       channels: JSON.stringify(this.channels.sort(function(a, b){return a-b}))}})
         .then((response) => {

@@ -77,7 +77,7 @@ def hist_match_page():
     param = {}
     # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
     # ./tmp/ct/xxxxx.jpg
-
+    print(color_space)
     channels = channels.lstrip('[').rstrip(']')
     # print(channels)
     pid = ""
