@@ -172,17 +172,7 @@
                 <el-radio label="u2net_human_seg">人像</el-radio>
               </el-radio-group>
               </div>
-              <div class="param_block">
-                <span>膨胀尺寸</span>
-                <el-slider
-                  v-model="dilate"
-                  show-input
-                  :min="1"
-                  :max="35"
-                  :step="2"
-                  style="margin-top: 10px;">
-                </el-slider>
-              </div>
+              
             </div>
             </div>
             
@@ -232,16 +222,11 @@ export default {
         opacity: 0,
       },
       dialogTableVisible: false,
-      // 色域匹配参数
-      isSrc2Style: 1,
-      algorithm: "fdm",
-      colorspace: "rgb",
-      channels: [0,1,2],
-      match_proportion: 1.0,
+
       // 蒙版参数
       isSrc: 1,
       isBackground: 1,
-      dilate: 1,
+      // dilate: 1,
       mask_model: "u2netp",
     };
   },
@@ -370,7 +355,7 @@ export default {
                       model: this.mask_model,
                       isSrc: this.isSrc,
                       isBackground: this.isBackground,
-                      dilate: this.dilate}})
+                      dilate: 1}})
         .then((response) => {
           this.percentage = 100;
           clearInterval(timer);

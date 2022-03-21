@@ -72,7 +72,9 @@ def generate(
     bio = io.BytesIO()
     cutout.convert('1')
     # erode
-    cutout = cutout.filter(PIL.ImageFilter.MinFilter(int(dilate_structure_size)))
+    # cutout = cutout.filter(PIL.ImageFilter.MinFilter(int(dilate_structure_size)))
+    # kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(int(dilate_structure_size),int(dilate_structure_size)))
+    # cutout = cv2.erode(cutout, kernel)
     cutout.save(bio, "PNG")
     print('done')
     return bio.getbuffer()

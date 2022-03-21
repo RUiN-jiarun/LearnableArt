@@ -395,17 +395,13 @@ export default {
         opacity: 0,
       },
       dialogTableVisible: false,
+      
       // 色域匹配参数
       isSrc2Style: 1,
       algorithm: "fdm",
       colorspace: "rgb",
       channels: [0,1,2],
       match_proportion: 1.0,
-      // 蒙版参数
-      isSrc: 1,
-      isBackground: 1,
-      dilate: 1,
-      mask_model: "u2netp",
     };
   },
   created: function () {

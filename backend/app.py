@@ -130,7 +130,7 @@ def auto_mask_page():
     model_name = request.values.get('model')
     # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
     # ./tmp/ct/xxxxx.jpg
-    
+    print(isSrc)
     if src and style:
         src_path = '.' + src[21:]
         style_path = '.' + style[21:]
