@@ -77,7 +77,7 @@ def hist_match_page():
     param = {}
     # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
     # ./tmp/ct/xxxxx.jpg
-    print(color_space)
+    # print(color_space)
     channels = channels.lstrip('[').rstrip(']')
     # print(channels)
     pid = ""
@@ -126,11 +126,11 @@ def auto_mask_page():
     style = request.values.get('style')
     isSrc = request.values.get('isSrc')
     isBackground = request.values.get('isBackground')
-    dilate_size = request.values.get('dilate')
     model_name = request.values.get('model')
     # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
     # ./tmp/ct/xxxxx.jpg
-    print(isSrc)
+    # print(isSrc)
+    pid = ""
     if src and style:
         src_path = '.' + src[21:]
         style_path = '.' + style[21:]
@@ -143,7 +143,7 @@ def auto_mask_page():
                 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
             f = np.fromfile(src_path)
-            res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_size)
+            res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=1)
             img = Image.open(io.BytesIO(res)).convert("RGBA")
 
             pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
@@ -152,7 +152,7 @@ def auto_mask_page():
                 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
             f = np.fromfile(style_path)
-            res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=dilate_size)
+            res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=1)
             img = Image.open(io.BytesIO(res)).convert("RGBA")
             pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + style_path[9:]
         

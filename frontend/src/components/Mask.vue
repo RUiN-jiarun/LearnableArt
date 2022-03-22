@@ -114,8 +114,11 @@
       <div id="info_patient">
         <el-card class="box-card" style="border-radius: 8px; width: 800px;height:500px;">
           <el-tabs v-model="activeName">
-
-            <el-tab-pane label="智能蒙版" name="first">
+            <el-tab-pane label="前景蒙版" name="first">
+            </el-tab-pane>
+            <el-tab-pane label="背景蒙版" name="second">
+            </el-tab-pane>
+            <el-tab-pane label="全参数" name="third">
             </el-tab-pane>
 
             <div v-if="activeName=='first'">
@@ -142,6 +145,98 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
+                      @click="frontmask"
+                    >开始处理
+                </el-button>
+                </div>
+            </div>
+            
+            </div>
+            <div class="demo-image__preview1" style="float:left;">
+              <div class="param_block">
+                <p>蒙版生成可能需要10秒左右，请您耐心等待。</p>
+              </div>
+              <div class="param_block">
+                <span>选择图像</span>
+              <el-radio-group style="margin-top: 10px;" v-model="isSrc">
+                <el-radio :label="1">源图像</el-radio>
+                <el-radio :label="0">风格图像</el-radio>
+              </el-radio-group>
+              </div>
+              
+              
+            </div>
+            </div>
+            <div v-if="activeName=='second'">
+            <div class="demo-image__preview1" >
+            <div
+              v-loading="loading"
+              element-loading-text="处理图片中"
+              element-loading-spinner="el-icon-loading"
+            >
+              <el-image
+                :src="url_4"
+                class="image_2"
+                :preview-src-list="srcList4"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error">等待处理
+                  </div>
+                </div>
+              </el-image>
+              
+              <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
+              <el-button
+                      v-show="showbutton1"
+                      type="primary"
+                      class="download_bt"
+                      @click="backmask"
+                    >开始处理
+                </el-button>
+                </div>
+            </div>
+            
+            </div>
+            <div class="demo-image__preview1" style="float:left;">
+              <div class="param_block">
+                <p>蒙版生成可能需要10秒左右，请您耐心等待。</p>
+              </div>
+              <div class="param_block">
+                <span>选择图像</span>
+              <el-radio-group style="margin-top: 10px;" v-model="isSrc">
+                <el-radio :label="1">源图像</el-radio>
+                <el-radio :label="0">风格图像</el-radio>
+              </el-radio-group>
+              </div>
+              
+              
+            </div>
+            </div>
+            <div v-if="activeName=='third'">
+            <div class="demo-image__preview1" >
+            <div
+              v-loading="loading"
+              element-loading-text="处理图片中"
+              element-loading-spinner="el-icon-loading"
+            >
+              <el-image
+                :src="url_5"
+                class="image_2"
+                :preview-src-list="srcList4"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error">等待处理
+                  </div>
+                </div>
+              </el-image>
+              
+              <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
+              <el-button
+                      v-show="showbutton1"
+                      type="primary"
+                      class="download_bt"
                       @click="automask"
                     >开始处理
                 </el-button>
@@ -150,6 +245,9 @@
             
             </div>
             <div class="demo-image__preview1" style="float:left;">
+              <div class="param_block">
+                <p>蒙版生成可能需要10秒左右，请您耐心等待。</p>
+              </div>
               <div class="param_block">
                 <span>选择图像</span>
               <el-radio-group style="margin-top: 10px;" v-model="isSrc">
@@ -199,11 +297,13 @@ export default {
       url_2: "",  // 风格图片
       url_3: "",  // 色域匹配结果
       url_4: "",  // 生成蒙版结果
+      url_5: "",  // 生成蒙版结果
       textarea: "",
       srcList1: [],
       srcList2: [],
       srcList3: [],
       srcList4: [],
+      srcList5: [],
       feature_list: [],
       feature_list_1: [],
       feat_list: [],
@@ -338,8 +438,7 @@ export default {
         type: type,
       });
     },
-    
-    automask() {
+    frontmask() {
       this.dialogTableVisible = true;
       this.percentage = 0;
       this.fullscreenLoading = true;
@@ -354,14 +453,91 @@ export default {
                       style: this.srcList2[this.srcList2.length - 1],
                       model: this.mask_model,
                       isSrc: this.isSrc,
-                      isBackground: this.isBackground,
-                      dilate: 1}})
+                      isBackground: 0}})
         .then((response) => {
           this.percentage = 100;
           clearInterval(timer);
           if (response.data.status == 1) {
             this.url_3 = response.data.draw_url;
-            this.srcList3.push(this.url_3);
+            this.srcList5.push(this.url_3);
+            this.fullscreenLoading = false;
+            this.loading = false;
+
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作完成", "点击图片以查看大图", "success");
+          } else {
+            this.fullscreenLoading = false;
+            this.loading = false;
+
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作失败", "请重新检查", "error");
+          }
+          
+        });
+    },
+    backmask() {
+      this.dialogTableVisible = true;
+      this.percentage = 0;
+      this.fullscreenLoading = true;
+      this.loading = true;
+      this.url_4 = "";
+      var timer = setInterval(() => {
+        this.myFunc();
+      }, 30);
+      axios
+        .get(this.server_url + "/automask", 
+            {params: {src: this.srcList1[this.srcList1.length - 1], 
+                      style: this.srcList2[this.srcList2.length - 1],
+                      model: this.mask_model,
+                      isSrc: this.isSrc,
+                      isBackground: 1}})
+        .then((response) => {
+          this.percentage = 100;
+          clearInterval(timer);
+          if (response.data.status == 1) {
+            this.url_4 = response.data.draw_url;
+            this.srcList4.push(this.url_4);
+            this.fullscreenLoading = false;
+            this.loading = false;
+
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作完成", "点击图片以查看大图", "success");
+          } else {
+            this.fullscreenLoading = false;
+            this.loading = false;
+
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作失败", "请重新检查", "error");
+          }
+          
+        });
+    },
+    automask() {
+      this.dialogTableVisible = true;
+      this.percentage = 0;
+      this.fullscreenLoading = true;
+      this.loading = true;
+      this.url_5 = "";
+      var timer = setInterval(() => {
+        this.myFunc();
+      }, 30);
+      axios
+        .get(this.server_url + "/automask", 
+            {params: {src: this.srcList1[this.srcList1.length - 1], 
+                      style: this.srcList2[this.srcList2.length - 1],
+                      model: this.mask_model,
+                      isSrc: this.isSrc,
+                      isBackground: this.isBackground}})
+        .then((response) => {
+          this.percentage = 100;
+          clearInterval(timer);
+          if (response.data.status == 1) {
+            this.url_5 = response.data.draw_url;
+            this.srcList5.push(this.url_5);
             this.fullscreenLoading = false;
             this.loading = false;
 
