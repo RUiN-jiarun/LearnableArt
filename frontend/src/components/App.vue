@@ -18,15 +18,18 @@
               <el-menu-item index="match">色域匹配</el-menu-item>
               <el-menu-item index="mask">智能蒙版</el-menu-item>
             </el-submenu>
-             
-            
-            <el-submenu index="3">
-              <template slot="title"><i class="el-icon-document"></i>编辑</template>
+            <el-submenu index="nst">
+              <template slot="title"><i class="el-icon-document"></i>风格迁移</template>
               <el-menu-item index="index">编辑1</el-menu-item>
               <el-menu-item index="index2">编辑2</el-menu-item>
               <el-menu-item index="index3">编辑3</el-menu-item>
             </el-submenu>
-            <el-menu-item index="post"><i class="el-icon-document"></i>后处理</el-menu-item>
+            <el-submenu index="post">
+              <template slot="title"><i class="el-icon-document"></i>后处理</template>
+              <el-menu-item index="post"><i class="el-icon-document"></i>色彩迁移</el-menu-item>
+              
+            </el-submenu>
+            
           </el-menu>
         </el-col>
         <el-col :span="150">
