@@ -1,0 +1,12 @@
+*.swp
+out*.png
+*.png
+*.jpg
+*.pyc
+*.pth
+examples/
+!models/download_models.py
+__pycache__/
+test/
+INSTALL.md 
+
