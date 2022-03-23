@@ -8,13 +8,15 @@ import torchvision.transforms as transforms
 from PIL import Image
 from CaffeLoader import loadCaffemodel, ModelParallel
 
+import matplotlib.pyplot as plt
+
 import argparse
 parser = argparse.ArgumentParser()
 # Basic options
 parser.add_argument("-style_image", help="Style target image", default='examples/inputs/la_muse.jpg')
 parser.add_argument("-style_blend_weights", default=None)
-parser.add_argument("-content_image", help="Content target image", default='examples/inputs/bird_muse_fdm_rgb.png')
-parser.add_argument("-image_size", help="Maximum height / width of generated image", type=int, default=800)
+parser.add_argument("-content_image", help="Content target image", default='examples/inputs/bird.png')
+parser.add_argument("-image_size", help="Maximum height / width of generated image", type=int, default=600)
 parser.add_argument("-gpu", help="Zero-indexed ID of the GPU to use; for CPU mode set -gpu = c", default=0)
 
 # Optimization options
@@ -44,9 +46,12 @@ parser.add_argument("-disable_check", action='store_true')
 parser.add_argument("-backend", choices=['nn', 'cudnn', 'mkl', 'mkldnn', 'openmp', 'mkl,cudnn', 'cudnn,mkl'], default='cudnn')
 parser.add_argument("-cudnn_autotune", action='store_true')
 parser.add_argument("-seed", type=int, default=-1)
+parser.add_argument("-plot", action='store_true')
 
 parser.add_argument("-content_layers", help="layers for content", default='relu4_2')
 # parser.add_argument("-style_layers", help="layers for style", default='relu1_1,relu2_1,relu3_1,relu4_1,relu5_1')
+# Improvement 2
+# Use all layers for style feature extraction and reconstruction
 parser.add_argument("-style_layers", help="layers for style", default='relu1_1,relu1_2,relu2_1,relu2_2,relu3_1,relu3_2,relu3_3,relu3_4,relu4_1,relu4_2,relu4_3,relu4_4,relu5_1,relu5_2,relu5_3,relu5_4')
 
 parser.add_argument("-multidevice_strategy", default='4,7,29')
@@ -127,7 +132,6 @@ def main():
                     net.add_module(str(len(net)), loss_module)
                     content_losses.append(loss_module)
                 
-                # TODO: Use all layers for style feature extraction and reconstruction
                 # TODO: Add chained inference
                 if layerList['C'][c] in style_layers:
                     print("Setting up style layer " + str(i) + ": " + str(layerList['C'][c]))
@@ -208,6 +212,9 @@ def main():
             img = content_image.clone()
     img = nn.Parameter(img)
 
+    # Initialize params for plot
+    loss_list = []
+
     def maybe_print(t, loss):
         if params.print_iter > 0 and t % params.print_iter == 0:
             print("Iteration " + str(t) + " / "+ str(params.num_iterations))
@@ -259,12 +266,22 @@ def main():
         maybe_save(num_calls[0])
         maybe_print(num_calls[0], loss)
 
+        loss_list.append(loss)
+
         return loss
 
     optimizer, loopVal = setup_optimizer(img)
     while num_calls[0] <= loopVal:
-         optimizer.step(feval)
+        optimizer.step(feval)
 
+    if params.plot:
+        x1 = range(0, params.num_iterations)
+        y1 = loss_list
+        plt.plot(x1, y1)
+        plt.xlabel('Iters')
+        plt.ylabel('Total Loss')
+        plt.show()
+        # plt.savefig('loss.jpg')   # FIXME: save bug
 
 # Configure the optimizer
 def setup_optimizer(img):
