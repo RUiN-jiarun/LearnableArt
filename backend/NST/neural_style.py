@@ -46,7 +46,8 @@ parser.add_argument("-cudnn_autotune", action='store_true')
 parser.add_argument("-seed", type=int, default=-1)
 
 parser.add_argument("-content_layers", help="layers for content", default='relu4_2')
-parser.add_argument("-style_layers", help="layers for style", default='relu1_1,relu2_1,relu3_1,relu4_1,relu5_1')
+# parser.add_argument("-style_layers", help="layers for style", default='relu1_1,relu2_1,relu3_1,relu4_1,relu5_1')
+parser.add_argument("-style_layers", help="layers for style", default='relu1_1,relu1_2,relu2_1,relu2_2,relu3_1,relu3_2,relu3_3,relu3_4,relu4_1,relu4_2,relu4_3,relu4_4,relu5_1,relu5_2,relu5_3,relu5_4')
 
 parser.add_argument("-multidevice_strategy", default='4,7,29')
 params = parser.parse_args()
