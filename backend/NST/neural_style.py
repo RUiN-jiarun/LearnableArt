@@ -6,17 +6,17 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 
 from PIL import Image
-from CaffeLoader import loadCaffemodel, ModelParallel
+from models import loadModel, ModelParallel
 
 import matplotlib.pyplot as plt
 
 import argparse
 parser = argparse.ArgumentParser()
 # Basic options
-parser.add_argument("-style_image", help="Style target image", default='examples/inputs/la_muse.jpg')
+parser.add_argument("-style_image", help="Style target image", default='examples/inputs/farmer_paint.png')
 parser.add_argument("-style_blend_weights", default=None)
 parser.add_argument("-content_image", help="Content target image", default='examples/inputs/bird.png')
-parser.add_argument("-image_size", help="Maximum height / width of generated image", type=int, default=600)
+parser.add_argument("-image_size", help="Maximum height / width of generated image", type=int, default=800)
 parser.add_argument("-gpu", help="Zero-indexed ID of the GPU to use; for CPU mode set -gpu = c", default=0)
 
 # Optimization options
@@ -64,7 +64,7 @@ Image.MAX_IMAGE_PIXELS = 1000000000 # Support gigapixel images
 def main():
     dtype, multidevice, backward_device = setup_gpu()
 
-    cnn, layerList = loadCaffemodel(params.model_file, params.pooling, params.gpu, params.disable_check)
+    cnn, layerList = loadModel(params.model_file, params.pooling, params.gpu, params.disable_check)
 
     content_image = preprocess(params.content_image, params.image_size).type(dtype)
     style_image_input = params.style_image.split(',')
@@ -462,8 +462,49 @@ class GramMatrix(nn.Module):
         x_flat = input.view(C, H * W)
         # Improvement 1
         # The Gram matrix of an image tensor (feature-wise outer product) using shifted activations
-        return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
+        return torch.mm(x_flat.add(-10), (x_flat.add(-10)).t())
 
+# Improvement: Space Conversion Map Based Gram Matrix 
+class ImprovedGramMatrixX(nn.Module):
+
+    def forward(self, input):
+        B, C, H, W = input.size()
+        print(input.size())
+        dshift = input.index_fill(2, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
+        ushift = input.index_fill(2, torch.tensor([H-1, H-2, H-3, H-4]).to('cuda:0'), 0)
+        lshift = input.index_fill(3, torch.tensor([0]).to('cuda:0'), 0)
+        rshift = input.index_fill(3, torch.tensor([W-1, W-2, W-3, W-4]).to('cuda:0'), 0)
+        
+        x_flat = input.view(C, H * W)   # flatten
+
+        l_flat = lshift.view(C, H * W)
+        r_flat = rshift.view(C, H * W)
+        d_flat = dshift.view(C, H * W)
+        u_flat = ushift.view(C, H * W)
+
+        # return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
+        return torch.matmul(lshift, rshift.t())
+
+class ImprovedGramMatrixY(nn.Module):
+
+    def forward(self, input):
+        B, C, H, W = input.size()
+
+        dshift = input.index_fill(2, torch.tensor([0,1]).to('cuda:0'), 0)
+        ushift = input.index_fill(2, torch.tensor([H-1, H-2]).to('cuda:0'), 0)
+        # lshift = input.index_fill(3, torch.tensor([0,1,2,3]), 0)
+        # rshift = input.index_fill(3, torch.tensor([W-1, W-2, W-3, W-4]), 0)
+        
+        x_flat = input.view(C, H * W)   # flatten
+
+        # l_flat = lshift.view(C, H * W)
+        # r_flat = rshift.view(C, H * W)
+        d_flat = dshift.view(C, H * W)
+        u_flat = ushift.view(C, H * W)
+
+        # return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
+        # return (torch.mm(u_flat, x_flat.t()) * torch.mm(d_flat, x_flat.t()))
+        return torch.mm(u_flat, d_flat.t())
 
 # Define an nn Module to compute style loss
 class StyleLoss(nn.Module):
@@ -473,13 +514,18 @@ class StyleLoss(nn.Module):
         self.target = torch.Tensor()
         self.strength = strength
         self.gram = GramMatrix()
+
+        # Improvement Test
+        self.gramx = ImprovedGramMatrixX()
+        self.gramy = ImprovedGramMatrixY()
+
         self.crit = nn.MSELoss()
         self.mode = 'None'
         self.blend_weight = None
         self.normalize = normalize
 
     def forward(self, input):
-        self.G = self.gram(input)
+        self.G = self.gramy(input)
         self.G = self.G.div(input.nelement())
         if self.mode == 'capture':
             if self.blend_weight == None:

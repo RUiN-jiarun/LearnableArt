@@ -226,7 +226,7 @@ def modelSelector(model_file, pooling):
 
 
 # Print like Torch7/loadcaffe
-def print_loadcaffe(cnn, layerList):
+def print_model(cnn, layerList):
     c = 0
     for l in list(cnn):
          if "Conv2d" in str(l):
@@ -238,7 +238,7 @@ def print_loadcaffe(cnn, layerList):
 
 
 # Load the model, and configure pooling layer type
-def loadCaffemodel(model_file, pooling, use_gpu, disable_check):
+def loadModel(model_file, pooling, use_gpu, disable_check):
     cnn, layerList = modelSelector(str(model_file).lower(), pooling)
 
     cnn.load_state_dict(torch.load(model_file), strict=(not disable_check))
@@ -249,6 +249,6 @@ def loadCaffemodel(model_file, pooling, use_gpu, disable_check):
         cnn = cnn.cuda()
     cnn = cnn.features
 
-    print_loadcaffe(cnn, layerList)
+    print_model(cnn, layerList)
 
     return cnn, layerList
