@@ -24,7 +24,7 @@ parser.add_argument("-content_weight", type=float, default=5e0)
 parser.add_argument("-style_weight", type=float, default=1e2)
 parser.add_argument("-normalize_weights", action='store_true')
 parser.add_argument("-normalize_gradients", action='store_true')
-parser.add_argument("-tv_weight", type=float, default=1e-3)
+parser.add_argument("-tv_weight", type=float, default=1e-4)
 parser.add_argument("-num_iterations", type=int, default=1000)
 parser.add_argument("-init", choices=['random', 'image'], default='image')
 parser.add_argument("-init_image", default=None)
@@ -53,6 +53,8 @@ parser.add_argument("-content_layers", help="layers for content", default='relu4
 # Improvement 2
 # Use all layers for style feature extraction and reconstruction
 parser.add_argument("-style_layers", help="layers for style", default='relu1_1,relu1_2,relu2_1,relu2_2,relu3_1,relu3_2,relu3_3,relu3_4,relu4_1,relu4_2,relu4_3,relu4_4,relu5_1,relu5_2,relu5_3,relu5_4')
+# parser.add_argument("-style_layers", help="layers for style", default='conv1_1,conv1_2,conv2_1,conv2_2,conv3_1,conv3_2,conv3_3,conv3_4,conv4_1,conv4_2,conv4_3,conv4_4,conv5_1,conv5_2,conv5_3,conv5_4')
+
 
 parser.add_argument("-multidevice_strategy", default='4,7,29')
 params = parser.parse_args()
@@ -462,7 +464,7 @@ class GramMatrix(nn.Module):
         x_flat = input.view(C, H * W)
         # Improvement 1
         # The Gram matrix of an image tensor (feature-wise outer product) using shifted activations
-        return torch.mm(x_flat.add(-10), (x_flat.add(-10)).t())
+        return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
 
 # Improvement: Space Conversion Map Based Gram Matrix 
 class ImprovedGramMatrixX(nn.Module):
@@ -483,7 +485,7 @@ class ImprovedGramMatrixX(nn.Module):
         # u_flat = ushift.view(C, H * W)
 
         # return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
-        return torch.matmul(l_flat, r_flat.t())
+        return 0.5 * (torch.mm(l_flat.add(-1), (r_flat.add(-1)).t()) + torch.mm(r_flat.add(-1), (l_flat.add(-1)).t()))
 
 class ImprovedGramMatrixY(nn.Module):
 
@@ -504,7 +506,7 @@ class ImprovedGramMatrixY(nn.Module):
 
         # return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
         # return (torch.mm(u_flat, x_flat.t()) * torch.mm(d_flat, x_flat.t()))
-        return torch.mm(u_flat, d_flat.t())
+        return 0.5 * (torch.mm(u_flat.add(-1), (d_flat.add(-1)).t()) + torch.mm(d_flat.add(-1), (u_flat.add(-1)).t()))
 
 # Define an nn Module to compute style loss
 class StyleLoss(nn.Module):
@@ -526,12 +528,13 @@ class StyleLoss(nn.Module):
 
     def forward(self, input):
         # Improvement: New Loss Function
-        self.G = self.gram(input)
+        # self.G = self.gram(input)
         
         self.Gx = self.gramx(input)
         self.Gy = self.gramy(input)
 
         # TODO: New self.G
+        self.G = 0.5 * (self.Gx + self.Gy)
 
         self.G = self.G.div(input.nelement())
         if self.mode == 'capture':
