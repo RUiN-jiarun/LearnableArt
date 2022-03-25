@@ -469,29 +469,29 @@ class ImprovedGramMatrixX(nn.Module):
 
     def forward(self, input):
         B, C, H, W = input.size()
-        print(input.size())
-        dshift = input.index_fill(2, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
-        ushift = input.index_fill(2, torch.tensor([H-1, H-2, H-3, H-4]).to('cuda:0'), 0)
-        lshift = input.index_fill(3, torch.tensor([0]).to('cuda:0'), 0)
+
+        # dshift = input.index_fill(2, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
+        # ushift = input.index_fill(2, torch.tensor([H-1, H-2, H-3, H-4]).to('cuda:0'), 0)
+        lshift = input.index_fill(3, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
         rshift = input.index_fill(3, torch.tensor([W-1, W-2, W-3, W-4]).to('cuda:0'), 0)
         
         x_flat = input.view(C, H * W)   # flatten
 
         l_flat = lshift.view(C, H * W)
         r_flat = rshift.view(C, H * W)
-        d_flat = dshift.view(C, H * W)
-        u_flat = ushift.view(C, H * W)
+        # d_flat = dshift.view(C, H * W)
+        # u_flat = ushift.view(C, H * W)
 
         # return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
-        return torch.matmul(lshift, rshift.t())
+        return torch.matmul(l_flat, r_flat.t())
 
 class ImprovedGramMatrixY(nn.Module):
 
     def forward(self, input):
         B, C, H, W = input.size()
 
-        dshift = input.index_fill(2, torch.tensor([0,1]).to('cuda:0'), 0)
-        ushift = input.index_fill(2, torch.tensor([H-1, H-2]).to('cuda:0'), 0)
+        dshift = input.index_fill(2, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
+        ushift = input.index_fill(2, torch.tensor([H-1, H-2, H-3, H-4]).to('cuda:0'), 0)
         # lshift = input.index_fill(3, torch.tensor([0,1,2,3]), 0)
         # rshift = input.index_fill(3, torch.tensor([W-1, W-2, W-3, W-4]), 0)
         
@@ -525,7 +525,14 @@ class StyleLoss(nn.Module):
         self.normalize = normalize
 
     def forward(self, input):
-        self.G = self.gramy(input)
+        # Improvement: New Loss Function
+        self.G = self.gram(input)
+        
+        self.Gx = self.gramx(input)
+        self.Gy = self.gramy(input)
+
+        # TODO: New self.G
+
         self.G = self.G.div(input.nelement())
         if self.mode == 'capture':
             if self.blend_weight == None:
