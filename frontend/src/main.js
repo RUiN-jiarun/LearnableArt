@@ -12,6 +12,8 @@ import axios from 'axios'
 import Element from 'element-ui'
 import echarts from "echarts";
 
+import Photoshop from 'vue-color'
+
 Vue.prototype.$echarts = echarts;
 import '../node_modules/element-ui/lib/theme-chalk/index.css'
 import '../src/assets/style.css'
@@ -67,5 +69,8 @@ Vue.component("App", App);
 new Vue({
     el: '#app',
     router,
-    render: h => h(App)
+    render: h => h(App),
+    components: {
+        'photoshop-picker': Photoshop
+      }
 })
