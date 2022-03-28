@@ -1,8 +1,9 @@
 import torch
 
 t = torch.tensor([[[[1,2,3,4,5],[2,3,4,5,6],[3,4,5,6,7],[4,5,6,7,8]],[[1,2,3,4,5],[2,3,4,5,6],[3,4,5,6,7],[4,5,6,7,8]]],[[[1,2,3,4,5],[2,3,4,5,6],[3,4,5,6,7],[4,5,6,7,8]],[[1,2,3,4,5],[2,3,4,5,6],[3,4,5,6,7],[4,5,6,7,8]]]])
-x = t.index_fill(2, torch.tensor([0,1,2]), 0)
-y = t.index_fill(3, torch.tensor([0,1]), 0)
+B, C, H, W = t.size()
+x = t.index_fill(2, torch.tensor([H-1, H-2, H-3]), 0)
+y = t.index_fill(3, torch.tensor([W-1, W-2]), 0)
 z = t.add(-1)
 
 print(t.size())

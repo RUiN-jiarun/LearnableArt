@@ -31,9 +31,10 @@ parser.add_argument("-init_image", default=None)
 parser.add_argument("-optimizer", choices=['lbfgs', 'adam'], default='lbfgs')
 parser.add_argument("-learning_rate", type=float, default=1e0)
 parser.add_argument("-lbfgs_num_correction", type=int, default=100)
+parser.add_argument("-improve_gram", action='store_true')
 
 # Output options
-parser.add_argument("-print_iter", type=int, default=25)
+parser.add_argument("-print_iter", type=int, default=100)
 parser.add_argument("-save_iter", type=int, default=200)
 parser.add_argument("-output_image", default='out.png')
 
@@ -474,8 +475,8 @@ class ImprovedGramMatrixX(nn.Module):
 
         # dshift = input.index_fill(2, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
         # ushift = input.index_fill(2, torch.tensor([H-1, H-2, H-3, H-4]).to('cuda:0'), 0)
-        lshift = input.index_fill(3, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
-        rshift = input.index_fill(3, torch.tensor([W-1, W-2, W-3, W-4]).to('cuda:0'), 0)
+        rshift = input.index_fill(3, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
+        lshift = input.index_fill(3, torch.tensor([W-1, W-2, W-3, W-4]).to('cuda:0'), 0)
         
         x_flat = input.view(C, H * W)   # flatten
 
@@ -485,7 +486,8 @@ class ImprovedGramMatrixX(nn.Module):
         # u_flat = ushift.view(C, H * W)
 
         # return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
-        return 0.5 * (torch.mm(l_flat.add(-1), (r_flat.add(-1)).t()) + torch.mm(r_flat.add(-1), (l_flat.add(-1)).t()))
+        # return torch.mm(l_flat.add(-1), r_flat.add(-1).t())
+        return 0.5 * (torch.mm(l_flat.add(-1), (x_flat.add(-1)).t()) + torch.mm(r_flat.add(-1), (x_flat.add(-1)).t()))
 
 class ImprovedGramMatrixY(nn.Module):
 
@@ -505,8 +507,8 @@ class ImprovedGramMatrixY(nn.Module):
         u_flat = ushift.view(C, H * W)
 
         # return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
-        # return (torch.mm(u_flat, x_flat.t()) * torch.mm(d_flat, x_flat.t()))
-        return 0.5 * (torch.mm(u_flat.add(-1), (d_flat.add(-1)).t()) + torch.mm(d_flat.add(-1), (u_flat.add(-1)).t()))
+        # return torch.mm(u_flat.add(-1), x_flat.add(-1).t())
+        return 0.5 * (torch.mm(u_flat.add(-1), (x_flat.add(-1)).t()) + torch.mm(d_flat.add(-1), (x_flat.add(-1)).t()))
 
 # Define an nn Module to compute style loss
 class StyleLoss(nn.Module):
@@ -528,13 +530,14 @@ class StyleLoss(nn.Module):
 
     def forward(self, input):
         # Improvement: New Loss Function
-        # self.G = self.gram(input)
-        
-        self.Gx = self.gramx(input)
-        self.Gy = self.gramy(input)
+        if params.improve_gram:
+            self.Gx = self.gramx(input)
+            self.Gy = self.gramy(input)
 
-        # TODO: New self.G
-        self.G = 0.5 * (self.Gx + self.Gy)
+            # TODO: New self.G
+            self.G = 0.5 * (self.Gx + self.Gy)
+        else:
+            self.G = self.gram(input)
 
         self.G = self.G.div(input.nelement())
         if self.mode == 'capture':
