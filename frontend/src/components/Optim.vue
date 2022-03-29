@@ -199,7 +199,7 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="automask"
+                      @click="palettetransfer"
                     >开始处理
                 </el-button>
                 </div>
@@ -207,10 +207,7 @@
             
             </div>
             <div class="demo-image__preview1" style="float:left;">
-
                 <sketch-picker v-model="colors" />
-
-              
             </div>
             </div>
             
@@ -407,10 +404,7 @@ export default {
             {params: {src: this.srcList1[this.srcList1.length - 1], 
                       ref: this.srcList2[this.srcList2.length - 1],
                       isMasked: this.isMasked,
-
-                      hist_match: this.match_mode,
-
-                      }})
+                      hist_match: this.match_mode,}})
         .then((response) => {
           
           this.percentage = 100;
@@ -435,23 +429,22 @@ export default {
           
         });
     },
-    automask() {
+    palettetransfer() {
       this.dialogTableVisible = true;
       this.percentage = 0;
       this.fullscreenLoading = true;
       this.loading = true;
       this.url_4 = "";
+      // console.log(this.colors);
       var timer = setInterval(() => {
         this.myFunc();
       }, 30);
       axios
-        .get(this.server_url + "/automask", 
+        .get(this.server_url + "/colortransfer", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      style: this.srcList2[this.srcList2.length - 1],
-                      model: this.mask_model,
-                      isSrc: this.isSrc,
-                      isBackground: this.isBackground,
-                      dilate: this.dilate}})
+                      ref: this.srcList2[this.srcList2.length - 1],
+                      isMasked: this.isMasked,
+                      hist_match: this.match_mode,}})
         .then((response) => {
           this.percentage = 100;
           clearInterval(timer);
