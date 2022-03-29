@@ -465,7 +465,7 @@ class GramMatrix(nn.Module):
         x_flat = input.view(C, H * W)
         # Improvement 1
         # The Gram matrix of an image tensor (feature-wise outer product) using shifted activations
-        return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
+        return torch.mm(x_flat.add(-10), (x_flat.add(-10)).t())
 
 # Improvement: Space Conversion Map Based Gram Matrix 
 class ImprovedGramMatrixX(nn.Module):
@@ -534,7 +534,6 @@ class StyleLoss(nn.Module):
             self.Gx = self.gramx(input)
             self.Gy = self.gramy(input)
 
-            # TODO: New self.G
             self.G = 0.5 * (self.Gx + self.Gy)
         else:
             self.G = self.gram(input)
