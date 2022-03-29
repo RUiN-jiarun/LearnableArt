@@ -114,9 +114,9 @@
       <div id="info_patient">
         <el-card class="box-card" style="border-radius: 8px; width: 800px;height:500px;">
           <el-tabs v-model="activeName">
-            <el-tab-pane label="色彩迁移" name="first">
+            <el-tab-pane label="参考图迁移" name="first">
             </el-tab-pane>
-            <el-tab-pane label="智能蒙版" name="second">
+            <el-tab-pane label="调色盘迁移" name="second">
             </el-tab-pane>
 
             <div v-if="activeName=='first'">
@@ -207,38 +207,10 @@
             
             </div>
             <div class="demo-image__preview1" style="float:left;">
-              <div class="param_block">
-                <span>选择图像</span>
-              <el-radio-group style="margin-top: 10px;" v-model="isSrc">
-                <el-radio :label="1">源图像</el-radio>
-                <el-radio :label="0">风格图像</el-radio>
-              </el-radio-group>
-              </div>
-              <div class="param_block">
-                <span>蒙版类型</span>
-              <el-radio-group style="margin-top: 10px;" v-model="isBackground">
-                <el-radio :label="1">背景蒙版</el-radio>
-                <el-radio :label="0">前景蒙版</el-radio>
-              </el-radio-group>
-              </div>
-              <div class="param_block">
-                <span>算法模型</span>
-              <el-radio-group style="margin-top: 10px;" v-model="mask_model">
-                <el-radio label="u2netp">简易</el-radio>
-                <el-radio label="u2net">完整</el-radio>
-                <el-radio label="u2net_human_seg">人像</el-radio>
-              </el-radio-group>
-              </div>
-              <div class="param_block">
-                <span>膨胀尺寸</span>
-                <el-slider
-                  v-model="dilate"
-                  show-input
-                  :min="1"
-                  :max="20"
-                  style="margin-top: 10px;">
-                </el-slider>
-              </div>
+
+                <sketch-picker v-model="colors" />
+
+              
             </div>
             </div>
             
@@ -252,9 +224,14 @@
 
 <script>
 import axios from "axios";
+import {Sketch} from "vue-color";
 
 export default {
   name: "Optim",
+  components: {
+    // 'photoshop-picker': Photoshop,
+    'sketch-picker': Sketch,
+  },
   data() {
     return {
       server_url: "http://127.0.0.1:5003",
@@ -293,11 +270,16 @@ export default {
       // algorithm: "fdm",
       match_mode: 0,
       // match_proportion: 1.0,
-      // 蒙版参数
-      isSrc: 1,
-      isBackground: 1,
-      dilate: 1,
-      mask_model: "u2netp",
+
+      // 调色盘
+      colors : {
+        hex: '#194d33',
+        hex8: '#194D33A8',
+        hsl: { h: 150, s: 0.5, l: 0.2, a: 1 },
+        hsv: { h: 150, s: 0.66, v: 0.30, a: 1 },
+        rgba: { r: 25, g: 77, b: 51, a: 1 },
+        a: 1
+      }
     };
   },
   created: function () {
