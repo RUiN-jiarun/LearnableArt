@@ -25,7 +25,7 @@ parser.add_argument("-style_weight", type=float, default=1e2)
 parser.add_argument("-normalize_weights", action='store_true')
 parser.add_argument("-normalize_gradients", action='store_true')
 parser.add_argument("-tv_weight", type=float, default=1e-4)
-parser.add_argument("-num_iterations", type=int, default=1000)
+parser.add_argument("-num_iterations", type=int, default=600)
 parser.add_argument("-init", choices=['random', 'image'], default='image')
 parser.add_argument("-init_image", default=None)
 parser.add_argument("-optimizer", choices=['lbfgs', 'adam'], default='lbfgs')
@@ -471,44 +471,50 @@ class GramMatrix(nn.Module):
 class ImprovedGramMatrixX(nn.Module):
 
     def forward(self, input):
-        B, C, H, W = input.size()
-
+        # B, C, H, W = input.size()
+        # print(B, C, H, W)
         # dshift = input.index_fill(2, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
         # ushift = input.index_fill(2, torch.tensor([H-1, H-2, H-3, H-4]).to('cuda:0'), 0)
-        rshift = input.index_fill(3, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
-        lshift = input.index_fill(3, torch.tensor([W-1, W-2, W-3, W-4]).to('cuda:0'), 0)
-        
-        x_flat = input.view(C, H * W)   # flatten
+        # rshift = input.index_fill(3, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
+        # lshift = input.index_fill(3, torch.tensor([W-1, W-2, W-3, W-4]).to('cuda:0'), 0)
+        rshift = input[:,:,:,4:]
+        lshift = input[:,:,:,:-4]
+        B, C, H, W = rshift.size()
+        # print(B, C, H, W)
+        # x_flat = input.view(C, H * W)   # flatten
 
-        l_flat = lshift.view(C, H * W)
-        r_flat = rshift.view(C, H * W)
+        l_flat = lshift.contiguous().view(C, H * W)
+        r_flat = rshift.contiguous().view(C, H * W)
         # d_flat = dshift.view(C, H * W)
         # u_flat = ushift.view(C, H * W)
 
         # return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
-        # return torch.mm(l_flat.add(-1), r_flat.add(-1).t())
-        return 0.5 * (torch.mm(l_flat.add(-1), (x_flat.add(-1)).t()) + torch.mm(r_flat.add(-1), (x_flat.add(-1)).t()))
+        return torch.mm(l_flat.add(-5), r_flat.add(-5).t())
+        # return 0.5 * (torch.mm(l_flat.add(-1), (x_flat.add(-1)).t()) + torch.mm(r_flat.add(-1), (x_flat.add(-1)).t()))
 
 class ImprovedGramMatrixY(nn.Module):
 
     def forward(self, input):
-        B, C, H, W = input.size()
+        # B, C, H, W = input.size()
 
-        dshift = input.index_fill(2, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
-        ushift = input.index_fill(2, torch.tensor([H-1, H-2, H-3, H-4]).to('cuda:0'), 0)
+        # dshift = input.index_fill(2, torch.tensor([0,1,2,3]).to('cuda:0'), 0)
+        # ushift = input.index_fill(2, torch.tensor([H-1, H-2, H-3, H-4]).to('cuda:0'), 0)
         # lshift = input.index_fill(3, torch.tensor([0,1,2,3]), 0)
         # rshift = input.index_fill(3, torch.tensor([W-1, W-2, W-3, W-4]), 0)
-        
-        x_flat = input.view(C, H * W)   # flatten
+        dshift = input[:,:,4:,:]
+        ushift = input[:,:,:-4,:]
+        B, C, H, W = ushift.size()
+
+        # x_flat = input.view(C, H * W)   # flatten
 
         # l_flat = lshift.view(C, H * W)
         # r_flat = rshift.view(C, H * W)
-        d_flat = dshift.view(C, H * W)
-        u_flat = ushift.view(C, H * W)
+        d_flat = dshift.contiguous().view(C, H * W)
+        u_flat = ushift.contiguous().view(C, H * W)
 
         # return torch.mm(x_flat.add(-1), (x_flat.add(-1)).t())
-        # return torch.mm(u_flat.add(-1), x_flat.add(-1).t())
-        return 0.5 * (torch.mm(u_flat.add(-1), (x_flat.add(-1)).t()) + torch.mm(d_flat.add(-1), (x_flat.add(-1)).t()))
+        return torch.mm(u_flat.add(-5), d_flat.add(-5).t())
+        # return 0.5 * (torch.mm(u_flat.add(-1), (x_flat.add(-1)).t()) + torch.mm(d_flat.add(-1), (x_flat.add(-1)).t()))
 
 # Define an nn Module to compute style loss
 class StyleLoss(nn.Module):
