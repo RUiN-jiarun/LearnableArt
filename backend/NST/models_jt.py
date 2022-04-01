@@ -81,7 +81,7 @@ def print_model(cnn, layerList):
             break
 
 # Load the model, and configure pooling layer type
-def loadModel(model_file, pooling, use_gpu, disable_check):
+def loadModel(model_file, pooling, use_gpu):
     cnn, layerList = modelSelector(str(model_file).lower(), pooling)
 
     cnn.load_state_dict(jittor.load(model_file))
@@ -98,4 +98,4 @@ def loadModel(model_file, pooling, use_gpu, disable_check):
     return cnn, layerList
 
 if __name__ == '__main__':
-    loadModel('models/vgg19.pkl', 'max', use_gpu='cuda:0', disable_check=False)
+    loadModel('models/vgg19.pkl', 'max', use_gpu='cuda:0')
