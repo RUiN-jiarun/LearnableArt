@@ -88,4 +88,21 @@ Sequential(
   (36): MaxPool2d(kernel_size=2, stride=2, padding=0, dilation=1, ceil_mode=False)
 )
 
+conv1_1: 64 3 3 3
+conv1_2: 64 64 3 3
+conv2_1: 128 64 3 3
+conv2_2: 128 128 3 3
+conv3_1: 256 128 3 3
+conv3_2: 256 256 3 3
+conv3_3: 256 256 3 3
+conv3_4: 256 256 3 3
+conv4_1: 512 256 3 3
+conv4_2: 512 512 3 3
+conv4_3: 512 512 3 3
+conv4_4: 512 512 3 3
+conv5_1: 512 512 3 3
+conv5_2: 512 512 3 3
+conv5_3: 512 512 3 3
+conv5_4: 512 512 3 3
+
 {'C': ['conv1_1', 'conv1_2', 'conv2_1', 'conv2_2', 'conv3_1', 'conv3_2', 'conv3_3', 'conv3_4', 'conv4_1', 'conv4_2', 'conv4_3', 'conv4_4', 'conv5_1', 'conv5_2', 'conv5_3', 'conv5_4'], 'R': ['relu1_1', 'relu1_2', 'relu2_1', 'relu2_2', 'relu3_1', 'relu3_2', 'relu3_3', 'relu3_4', 'relu4_1', 'relu4_2', 'relu4_3', 'relu4_4', 'relu5_1', 'relu5_2', 'relu5_3', 'relu5_4'], 'P': ['pool1', 'pool2', 'pool3', 'pool4', 'pool5']}

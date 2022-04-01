@@ -68,9 +68,14 @@ def modelSelector(model_file, pooling):
 def print_model(cnn, layerList):
     c = 0
     for l in list(cnn):
-        if "Conv2d" in str(l):
-            in_c, out_c, ks  = str(l.in_channels), str(l.out_channels), str(l.kernel_size)
-            print(layerList['C'][c] +": " +  (out_c + " " + in_c + " " + ks).replace(")",'').replace("(",'').replace(",",'') )
+        if "Conv" in str(l):
+            s = str(l)[5:]
+            in_c = s.split(', ')[0]
+            out_c = s.split(', ')[1]
+            kernel_size = s.split(', (')[1].split(')')[0]
+            # print(in_c, out_c, kernel_size)
+            # in_c, out_c, ks  = str(l.in_channels), str(l.out_channels), str(l.kernel_size)
+            print(layerList['C'][c] +": " +  (out_c + " " + in_c + " " + kernel_size).replace(")",'').replace("(",'').replace(",",'') )
             c+=1
         if c == len(layerList['C']):
             break
@@ -87,8 +92,8 @@ def loadModel(model_file, pooling, use_gpu, disable_check):
         cnn = cnn.cuda()
     
     cnn = cnn.features
-    print(cnn)
-    # print_model(cnn, layerList)
+    # print(list(cnn)[0])
+    print_model(cnn, layerList)
 
     return cnn, layerList
 
