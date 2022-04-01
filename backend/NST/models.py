@@ -229,12 +229,12 @@ def modelSelector(model_file, pooling):
 def print_model(cnn, layerList):
     c = 0
     for l in list(cnn):
-         if "Conv2d" in str(l):
-             in_c, out_c, ks  = str(l.in_channels), str(l.out_channels), str(l.kernel_size)
-             print(layerList['C'][c] +": " +  (out_c + " " + in_c + " " + ks).replace(")",'').replace("(",'').replace(",",'') )
-             c+=1
-         if c == len(layerList['C']):
-             break
+        if "Conv2d" in str(l):
+            in_c, out_c, ks  = str(l.in_channels), str(l.out_channels), str(l.kernel_size)
+            print(layerList['C'][c] +": " +  (out_c + " " + in_c + " " + ks).replace(")",'').replace("(",'').replace(",",'') )
+            c+=1
+        if c == len(layerList['C']):
+            break
 
 
 # Load the model, and configure pooling layer type
@@ -248,7 +248,10 @@ def loadModel(model_file, pooling, use_gpu, disable_check):
     if "c" not in str(use_gpu).lower() or "c" not in str(use_gpu[0]).lower():
         cnn = cnn.cuda()
     cnn = cnn.features
-
+    # print(cnn)
     print_model(cnn, layerList)
 
     return cnn, layerList
+
+if __name__ == '__main__':
+    loadModel('models/vgg19-d01eb7cb.pth', 'max', use_gpu='cuda:0', disable_check=False)

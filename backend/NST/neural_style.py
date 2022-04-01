@@ -13,10 +13,10 @@ import matplotlib.pyplot as plt
 import argparse
 parser = argparse.ArgumentParser()
 # Basic options
-parser.add_argument("-style_image", help="Style target image", default='examples/inputs/farmer_paint.png')
+parser.add_argument("-style_image", help="Style target image", default='examples/inputs/the_scream.jpg')
 parser.add_argument("-style_blend_weights", default=None)
-parser.add_argument("-content_image", help="Content target image", default='examples/inputs/bird.png')
-parser.add_argument("-image_size", help="Maximum height / width of generated image", type=int, default=800)
+parser.add_argument("-content_image", help="Content target image", default='examples/inputs/mill.jpg')
+parser.add_argument("-image_size", help="Maximum height / width of generated image", type=int, default=700)
 parser.add_argument("-gpu", help="Zero-indexed ID of the GPU to use; for CPU mode set -gpu = c", default=0)
 
 # Optimization options
@@ -25,7 +25,7 @@ parser.add_argument("-style_weight", type=float, default=1e2)
 parser.add_argument("-normalize_weights", action='store_true')
 parser.add_argument("-normalize_gradients", action='store_true')
 parser.add_argument("-tv_weight", type=float, default=1e-4)
-parser.add_argument("-num_iterations", type=int, default=600)
+parser.add_argument("-num_iterations", type=int, default=1000)
 parser.add_argument("-init", choices=['random', 'image'], default='image')
 parser.add_argument("-init_image", default=None)
 parser.add_argument("-optimizer", choices=['lbfgs', 'adam'], default='lbfgs')
