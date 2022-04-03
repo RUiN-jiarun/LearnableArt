@@ -88,8 +88,8 @@ def loadModel(model_file, pooling, use_gpu):
     print("Successfully loaded " + str(model_file))
 
     # Maybe convert the model to cuda now, to avoid later issues
-    if "c" not in str(use_gpu).lower() or "c" not in str(use_gpu[0]).lower():
-        cnn = cnn.cuda()
+    # if "c" not in str(use_gpu).lower() or "c" not in str(use_gpu[0]).lower():
+    #     cnn = cnn.cuda()
     
     cnn = cnn.features
     # print(list(cnn)[0])

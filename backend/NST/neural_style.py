@@ -114,177 +114,178 @@ def main():
     style_layers = params.style_layers.split(',')
 
     # Set up the network, inserting style and content loss modules
-    cnn = copy.deepcopy(cnn)
-    content_losses, style_losses, tv_losses = [], [], []
-    next_content_idx, next_style_idx = 1, 1
-    net = nn.Sequential()
-    c, r = 0, 0
-    if params.tv_weight > 0:
-        tv_mod = TVLoss(params.tv_weight).type(dtype)
-        net.add_module(str(len(net)), tv_mod)
-        tv_losses.append(tv_mod)
+    print(cnn)
+    # cnn = copy.deepcopy(cnn)
+    # content_losses, style_losses, tv_losses = [], [], []
+    # next_content_idx, next_style_idx = 1, 1
+    # net = nn.Sequential()
+    # c, r = 0, 0
+    # if params.tv_weight > 0:
+    #     tv_mod = TVLoss(params.tv_weight).type(dtype)
+    #     net.add_module(str(len(net)), tv_mod)
+    #     tv_losses.append(tv_mod)
 
-    for i, layer in enumerate(list(cnn), 1):
-        if next_content_idx <= len(content_layers) or next_style_idx <= len(style_layers):
-            if isinstance(layer, nn.Conv2d):
-                net.add_module(str(len(net)), layer)
+    # for i, layer in enumerate(list(cnn), 1):
+    #     if next_content_idx <= len(content_layers) or next_style_idx <= len(style_layers):
+    #         if isinstance(layer, nn.Conv2d):
+    #             net.add_module(str(len(net)), layer)
 
-                if layerList['C'][c] in content_layers:
-                    print("Setting up content layer " + str(i) + ": " + str(layerList['C'][c]))
-                    loss_module = ContentLoss(params.content_weight, params.normalize_gradients)
-                    net.add_module(str(len(net)), loss_module)
-                    content_losses.append(loss_module)
+    #             if layerList['C'][c] in content_layers:
+    #                 print("Setting up content layer " + str(i) + ": " + str(layerList['C'][c]))
+    #                 loss_module = ContentLoss(params.content_weight, params.normalize_gradients)
+    #                 net.add_module(str(len(net)), loss_module)
+    #                 content_losses.append(loss_module)
                 
-                # TODO: Add chained inference
-                if layerList['C'][c] in style_layers:
-                    print("Setting up style layer " + str(i) + ": " + str(layerList['C'][c]))
-                    loss_module = StyleLoss(params.style_weight, params.normalize_gradients)
-                    net.add_module(str(len(net)), loss_module)
-                    style_losses.append(loss_module)
-                c+=1
+    #             # TODO: Add chained inference
+    #             if layerList['C'][c] in style_layers:
+    #                 print("Setting up style layer " + str(i) + ": " + str(layerList['C'][c]))
+    #                 loss_module = StyleLoss(params.style_weight, params.normalize_gradients)
+    #                 net.add_module(str(len(net)), loss_module)
+    #                 style_losses.append(loss_module)
+    #             c+=1
 
-            if isinstance(layer, nn.ReLU):
-                net.add_module(str(len(net)), layer)
+    #         if isinstance(layer, nn.ReLU):
+    #             net.add_module(str(len(net)), layer)
 
-                if layerList['R'][r] in content_layers:
-                    print("Setting up content layer " + str(i) + ": " + str(layerList['R'][r]))
-                    loss_module = ContentLoss(params.content_weight, params.normalize_gradients)
-                    net.add_module(str(len(net)), loss_module)
-                    content_losses.append(loss_module)
-                    next_content_idx += 1
+    #             if layerList['R'][r] in content_layers:
+    #                 print("Setting up content layer " + str(i) + ": " + str(layerList['R'][r]))
+    #                 loss_module = ContentLoss(params.content_weight, params.normalize_gradients)
+    #                 net.add_module(str(len(net)), loss_module)
+    #                 content_losses.append(loss_module)
+    #                 next_content_idx += 1
 
-                if layerList['R'][r] in style_layers:
-                    print("Setting up style layer " + str(i) + ": " + str(layerList['R'][r]))
-                    loss_module = StyleLoss(params.style_weight, params.normalize_gradients)
-                    net.add_module(str(len(net)), loss_module)
-                    style_losses.append(loss_module)
-                    next_style_idx += 1
-                r+=1
+    #             if layerList['R'][r] in style_layers:
+    #                 print("Setting up style layer " + str(i) + ": " + str(layerList['R'][r]))
+    #                 loss_module = StyleLoss(params.style_weight, params.normalize_gradients)
+    #                 net.add_module(str(len(net)), loss_module)
+    #                 style_losses.append(loss_module)
+    #                 next_style_idx += 1
+    #             r+=1
 
-            if isinstance(layer, nn.MaxPool2d) or isinstance(layer, nn.AvgPool2d):
-                net.add_module(str(len(net)), layer)
+    #         if isinstance(layer, nn.MaxPool2d) or isinstance(layer, nn.AvgPool2d):
+    #             net.add_module(str(len(net)), layer)
 
-    if multidevice:
-        net = setup_multi_device(net)
+    # if multidevice:
+    #     net = setup_multi_device(net)
 
-    # Capture content targets
-    for i in content_losses:
-        i.mode = 'capture'
-    print("Capturing content targets")
-    print_torch(net, multidevice)
-    net(content_image)
+    # # Capture content targets
+    # for i in content_losses:
+    #     i.mode = 'capture'
+    # print("Capturing content targets")
+    # print_torch(net, multidevice)
+    # net(content_image)
 
-    # Capture style targets
-    for i in content_losses:
-        i.mode = 'None'
+    # # Capture style targets
+    # for i in content_losses:
+    #     i.mode = 'None'
 
-    for i, image in enumerate(style_images_caffe):
-        print("Capturing style target " + str(i+1))
-        for j in style_losses:
-            j.mode = 'capture'
-            j.blend_weight = style_blend_weights[i]
-        net(style_images_caffe[i])
+    # for i, image in enumerate(style_images_caffe):
+    #     print("Capturing style target " + str(i+1))
+    #     for j in style_losses:
+    #         j.mode = 'capture'
+    #         j.blend_weight = style_blend_weights[i]
+    #     net(style_images_caffe[i])
 
-    # Set all loss modules to loss mode
-    for i in content_losses:
-        i.mode = 'loss'
-    for i in style_losses:
-        i.mode = 'loss'
+    # # Set all loss modules to loss mode
+    # for i in content_losses:
+    #     i.mode = 'loss'
+    # for i in style_losses:
+    #     i.mode = 'loss'
 
-    # Maybe normalize content and style weights
-    if params.normalize_weights:
-        normalize_weights(content_losses, style_losses)
+    # # Maybe normalize content and style weights
+    # if params.normalize_weights:
+    #     normalize_weights(content_losses, style_losses)
 
-    # Freeze the network in order to prevent
-    # unnecessary gradient calculations
-    for param in net.parameters():
-        param.requires_grad = False
+    # # Freeze the network in order to prevent
+    # # unnecessary gradient calculations
+    # for param in net.parameters():
+    #     param.requires_grad = False
 
-    # Initialize the image
-    if params.seed >= 0:
-        torch.manual_seed(params.seed)
-        torch.cuda.manual_seed_all(params.seed)
-        torch.backends.cudnn.deterministic=True
-    if params.init == 'random':
-        B, C, H, W = content_image.size()
-        img = torch.randn(C, H, W).mul(0.001).unsqueeze(0).type(dtype)
-    elif params.init == 'image':
-        if params.init_image != None:
-            img = init_image.clone()
-        else:
-            img = content_image.clone()
-    img = nn.Parameter(img)
+    # # Initialize the image
+    # if params.seed >= 0:
+    #     torch.manual_seed(params.seed)
+    #     torch.cuda.manual_seed_all(params.seed)
+    #     torch.backends.cudnn.deterministic=True
+    # if params.init == 'random':
+    #     B, C, H, W = content_image.size()
+    #     img = torch.randn(C, H, W).mul(0.001).unsqueeze(0).type(dtype)
+    # elif params.init == 'image':
+    #     if params.init_image != None:
+    #         img = init_image.clone()
+    #     else:
+    #         img = content_image.clone()
+    # img = nn.Parameter(img)
 
-    # Initialize params for plot
-    loss_list = []
+    # # Initialize params for plot
+    # loss_list = []
 
-    def maybe_print(t, loss):
-        if params.print_iter > 0 and t % params.print_iter == 0:
-            print("Iteration " + str(t) + " / "+ str(params.num_iterations))
-            for i, loss_module in enumerate(content_losses):
-                print("  Content " + str(i+1) + " loss: " + str(loss_module.loss.item()))
-            for i, loss_module in enumerate(style_losses):
-                print("  Style " + str(i+1) + " loss: " + str(loss_module.loss.item()))
-            print("  Total loss: " + str(loss.item()))
+    # def maybe_print(t, loss):
+    #     if params.print_iter > 0 and t % params.print_iter == 0:
+    #         print("Iteration " + str(t) + " / "+ str(params.num_iterations))
+    #         for i, loss_module in enumerate(content_losses):
+    #             print("  Content " + str(i+1) + " loss: " + str(loss_module.loss.item()))
+    #         for i, loss_module in enumerate(style_losses):
+    #             print("  Style " + str(i+1) + " loss: " + str(loss_module.loss.item()))
+    #         print("  Total loss: " + str(loss.item()))
 
-    def maybe_save(t):
-        should_save = params.save_iter > 0 and t % params.save_iter == 0
-        should_save = should_save or t == params.num_iterations
-        if should_save:
-            output_filename, file_extension = os.path.splitext(params.output_image)
-            if t == params.num_iterations:
-                filename = output_filename + str(file_extension)
-            else:
-                filename = str(output_filename) + "_" + str(t) + str(file_extension)
-            disp = deprocess(img.clone())
+    # def maybe_save(t):
+    #     should_save = params.save_iter > 0 and t % params.save_iter == 0
+    #     should_save = should_save or t == params.num_iterations
+    #     if should_save:
+    #         output_filename, file_extension = os.path.splitext(params.output_image)
+    #         if t == params.num_iterations:
+    #             filename = output_filename + str(file_extension)
+    #         else:
+    #             filename = str(output_filename) + "_" + str(t) + str(file_extension)
+    #         disp = deprocess(img.clone())
 
-            # Maybe perform postprocessing for color-independent style transfer
-            if params.original_colors == 1:
-                disp = original_colors(deprocess(content_image.clone()), disp)
+    #         # Maybe perform postprocessing for color-independent style transfer
+    #         if params.original_colors == 1:
+    #             disp = original_colors(deprocess(content_image.clone()), disp)
 
-            disp.save(str(filename))
+    #         disp.save(str(filename))
 
-    # Function to evaluate loss and gradient. We run the net forward and
-    # backward to get the gradient, and sum up losses from the loss modules.
-    # optim.lbfgs internally handles iteration and calls this function many
-    # times, so we manually count the number of iterations to handle printing
-    # and saving intermediate results.
-    num_calls = [0]
-    def feval():
-        num_calls[0] += 1
-        optimizer.zero_grad()
-        net(img)
-        loss = 0
+    # # Function to evaluate loss and gradient. We run the net forward and
+    # # backward to get the gradient, and sum up losses from the loss modules.
+    # # optim.lbfgs internally handles iteration and calls this function many
+    # # times, so we manually count the number of iterations to handle printing
+    # # and saving intermediate results.
+    # num_calls = [0]
+    # def feval():
+    #     num_calls[0] += 1
+    #     optimizer.zero_grad()
+    #     net(img)
+    #     loss = 0
 
-        for mod in content_losses:
-            loss += mod.loss.to(backward_device)
-        for mod in style_losses:
-            loss += mod.loss.to(backward_device)
-        if params.tv_weight > 0:
-            for mod in tv_losses:
-                loss += mod.loss.to(backward_device)
+    #     for mod in content_losses:
+    #         loss += mod.loss.to(backward_device)
+    #     for mod in style_losses:
+    #         loss += mod.loss.to(backward_device)
+    #     if params.tv_weight > 0:
+    #         for mod in tv_losses:
+    #             loss += mod.loss.to(backward_device)
 
-        loss.backward()
+    #     loss.backward()
 
-        maybe_save(num_calls[0])
-        maybe_print(num_calls[0], loss)
+    #     maybe_save(num_calls[0])
+    #     maybe_print(num_calls[0], loss)
 
-        loss_list.append(loss)
+    #     loss_list.append(loss)
 
-        return loss
+    #     return loss
 
-    optimizer, loopVal = setup_optimizer(img)
-    while num_calls[0] <= loopVal:
-        optimizer.step(feval)
+    # optimizer, loopVal = setup_optimizer(img)
+    # while num_calls[0] <= loopVal:
+    #     optimizer.step(feval)
 
-    if params.plot:
-        x1 = range(0, params.num_iterations)
-        y1 = loss_list
-        plt.plot(x1, y1)
-        plt.xlabel('Iters')
-        plt.ylabel('Total Loss')
-        plt.show()
-        # plt.savefig('loss.jpg')   # FIXME: save bug
+    # if params.plot:
+    #     x1 = range(0, params.num_iterations)
+    #     y1 = loss_list
+    #     plt.plot(x1, y1)
+    #     plt.xlabel('Iters')
+    #     plt.ylabel('Total Loss')
+    #     plt.show()
+    #     # plt.savefig('loss.jpg')   # FIXME: save bug
 
 # Configure the optimizer
 def setup_optimizer(img):

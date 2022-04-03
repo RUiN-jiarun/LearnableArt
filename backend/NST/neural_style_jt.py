@@ -1,7 +1,8 @@
 import os
-import jittor
+import jittor as jt
 from jittor import nn
 from jittor import optim
+from jittor import transform
 
 from PIL import Image
 from models_jt import loadModel
@@ -56,7 +57,105 @@ parser.add_argument("-multidevice_strategy", default='4,7,29')
 params = parser.parse_args()
 
 
-
-
 def main():
+    dtype, multidevice, backward_device = setup_gpu()
+
     cnn, layerList = loadModel(params.model_file, params.pooling, params.gpu)
+
+    content_image = preprocess(params.content_image, params.image_size)
+    # print(content_image)
+    style_image_input = params.style_image.split(',')
+    style_image_list, ext = [], [".jpg", ".jpeg", ".png", ".tiff"]
+    for image in style_image_input:
+        if os.path.isdir(image):
+            images = (image + "/" + file for file in os.listdir(image)
+            if os.path.splitext(file)[1].lower() in ext)
+            style_image_list.extend(images)
+        else:
+            style_image_list.append(image)
+    style_images_caffe = []
+    for image in style_image_list:
+        style_size = int(params.image_size * params.style_scale)
+        img_caffe = preprocess(image, style_size)
+        style_images_caffe.append(img_caffe)
+    
+    if params.init_image != None:
+        image_size = (content_image.size(2), content_image.size(3))
+        init_image = preprocess(params.init_image, image_size)
+    
+    style_blend_weights = []
+    if params.style_blend_weights == None:
+        # Style blending not specified, so use equal weighting
+        for i in style_image_list:
+            style_blend_weights.append(1.0)
+        for i, blend_weights in enumerate(style_blend_weights):
+            style_blend_weights[i] = int(style_blend_weights[i])
+    else:
+        style_blend_weights = params.style_blend_weights.split(',')
+        assert len(style_blend_weights) == len(style_image_list), \
+          "-style_blend_weights and -style_images must have the same number of elements!"
+    style_blend_sum = 0
+    for i, blend_weights in enumerate(style_blend_weights):
+        style_blend_weights[i] = float(style_blend_weights[i])
+        style_blend_sum = float(style_blend_sum) + style_blend_weights[i]
+    for i, blend_weights in enumerate(style_blend_weights):
+        style_blend_weights[i] = float(style_blend_weights[i]) / float(style_blend_sum)
+
+    content_layers = params.content_layers.split(',')
+    style_layers = params.style_layers.split(',')
+
+    print(cnn)
+
+
+
+
+def setup_gpu():
+    def setup_cuda():
+        jt.flags.use_cuda = 1
+
+    def setup_cpu():
+        jt.flags.use_cuda = 0
+    
+    multidevice = False
+    if "," in str(params.gpu):
+        devices = params.gpu.split(',')
+        multidevice = True
+
+        if 'c' in str(devices[0]).lower():
+            backward_device = "cpu"
+            setup_cuda()
+        else:
+            backward_device = "cuda:" + devices[0]
+            setup_cpu()
+        dtype = jt.Var
+
+    elif "c" not in str(params.gpu).lower():
+        setup_cuda()
+        dtype, backward_device = jt.Var, "cuda:" + str(params.gpu)
+    else:
+        setup_cpu()
+        dtype, backward_device = jt.Var, "cpu"
+    return dtype, multidevice, backward_device
+
+def preprocess(image_name, image_size):
+    image = Image.open(image_name).convert('RGB')
+    if type(image_size) is not tuple:
+        image_size = tuple([int((float(image_size) / max(image.size))*x) for x in (image.height, image.width)])
+    Loader = transform.Compose([transform.Resize(image_size), transform.ToTensor()])
+    rgb2bgr = transform.Compose([transform.Lambda(lambda x: x[jt.int32([2,1,0])])])
+    Normalize = transform.Compose([transform.ImageNormalize(mean=[103.939, 116.779, 123.68], std=[1,1,1])])
+    tensor = jt.unsqueeze(Normalize(rgb2bgr(Loader(image) * 255)), dim=0)
+    return tensor
+    # return a numpy.ndarray
+
+def deprocess(output_tensor):
+    Normalize = transform.Compose([transform.ImageNormalize(mean=[-103.939, -116.779, -123.68], std=[1,1,1])])
+    bgr2rgb = transform.Compose([transform.Lambda(lambda x: x[jt.int32([2,1,0])])])
+    output_tensor = bgr2rgb(Normalize(jt.squeeze(output_tensor, dim=0))) / 255
+    output_tensor = output_tensor.clamp(0, 1)
+    Image2PIL = transform.ToPILImage()
+    image = Image2PIL(output_tensor)
+    return image
+
+if __name__ == "__main__":
+    main()
