@@ -114,66 +114,66 @@ def main():
     style_layers = params.style_layers.split(',')
 
     # Set up the network, inserting style and content loss modules
-    print(cnn)
-    # cnn = copy.deepcopy(cnn)
-    # content_losses, style_losses, tv_losses = [], [], []
-    # next_content_idx, next_style_idx = 1, 1
-    # net = nn.Sequential()
-    # c, r = 0, 0
-    # if params.tv_weight > 0:
-    #     tv_mod = TVLoss(params.tv_weight).type(dtype)
-    #     net.add_module(str(len(net)), tv_mod)
-    #     tv_losses.append(tv_mod)
+    # print(cnn)
+    cnn = copy.deepcopy(cnn)
+    content_losses, style_losses, tv_losses = [], [], []
+    next_content_idx, next_style_idx = 1, 1
+    net = nn.Sequential()
+    c, r = 0, 0
+    if params.tv_weight > 0:
+        tv_mod = TVLoss(params.tv_weight).type(dtype)
+        net.add_module(str(len(net)), tv_mod)
+        tv_losses.append(tv_mod)
 
-    # for i, layer in enumerate(list(cnn), 1):
-    #     if next_content_idx <= len(content_layers) or next_style_idx <= len(style_layers):
-    #         if isinstance(layer, nn.Conv2d):
-    #             net.add_module(str(len(net)), layer)
+    for i, layer in enumerate(list(cnn), 1):
+        if next_content_idx <= len(content_layers) or next_style_idx <= len(style_layers):
+            if isinstance(layer, nn.Conv2d):
+                net.add_module(str(len(net)), layer)
 
-    #             if layerList['C'][c] in content_layers:
-    #                 print("Setting up content layer " + str(i) + ": " + str(layerList['C'][c]))
-    #                 loss_module = ContentLoss(params.content_weight, params.normalize_gradients)
-    #                 net.add_module(str(len(net)), loss_module)
-    #                 content_losses.append(loss_module)
+                if layerList['C'][c] in content_layers:
+                    print("Setting up content layer " + str(i) + ": " + str(layerList['C'][c]))
+                    loss_module = ContentLoss(params.content_weight, params.normalize_gradients)
+                    net.add_module(str(len(net)), loss_module)
+                    content_losses.append(loss_module)
                 
-    #             # TODO: Add chained inference
-    #             if layerList['C'][c] in style_layers:
-    #                 print("Setting up style layer " + str(i) + ": " + str(layerList['C'][c]))
-    #                 loss_module = StyleLoss(params.style_weight, params.normalize_gradients)
-    #                 net.add_module(str(len(net)), loss_module)
-    #                 style_losses.append(loss_module)
-    #             c+=1
+                # TODO: Add chained inference
+                if layerList['C'][c] in style_layers:
+                    print("Setting up style layer " + str(i) + ": " + str(layerList['C'][c]))
+                    loss_module = StyleLoss(params.style_weight, params.normalize_gradients)
+                    net.add_module(str(len(net)), loss_module)
+                    style_losses.append(loss_module)
+                c+=1
 
-    #         if isinstance(layer, nn.ReLU):
-    #             net.add_module(str(len(net)), layer)
+            if isinstance(layer, nn.ReLU):
+                net.add_module(str(len(net)), layer)
 
-    #             if layerList['R'][r] in content_layers:
-    #                 print("Setting up content layer " + str(i) + ": " + str(layerList['R'][r]))
-    #                 loss_module = ContentLoss(params.content_weight, params.normalize_gradients)
-    #                 net.add_module(str(len(net)), loss_module)
-    #                 content_losses.append(loss_module)
-    #                 next_content_idx += 1
+                if layerList['R'][r] in content_layers:
+                    print("Setting up content layer " + str(i) + ": " + str(layerList['R'][r]))
+                    loss_module = ContentLoss(params.content_weight, params.normalize_gradients)
+                    net.add_module(str(len(net)), loss_module)
+                    content_losses.append(loss_module)
+                    next_content_idx += 1
 
-    #             if layerList['R'][r] in style_layers:
-    #                 print("Setting up style layer " + str(i) + ": " + str(layerList['R'][r]))
-    #                 loss_module = StyleLoss(params.style_weight, params.normalize_gradients)
-    #                 net.add_module(str(len(net)), loss_module)
-    #                 style_losses.append(loss_module)
-    #                 next_style_idx += 1
-    #             r+=1
+                if layerList['R'][r] in style_layers:
+                    print("Setting up style layer " + str(i) + ": " + str(layerList['R'][r]))
+                    loss_module = StyleLoss(params.style_weight, params.normalize_gradients)
+                    net.add_module(str(len(net)), loss_module)
+                    style_losses.append(loss_module)
+                    next_style_idx += 1
+                r+=1
 
-    #         if isinstance(layer, nn.MaxPool2d) or isinstance(layer, nn.AvgPool2d):
-    #             net.add_module(str(len(net)), layer)
+            if isinstance(layer, nn.MaxPool2d) or isinstance(layer, nn.AvgPool2d):
+                net.add_module(str(len(net)), layer)
+    # print(net)
+    if multidevice:
+        net = setup_multi_device(net)
 
-    # if multidevice:
-    #     net = setup_multi_device(net)
-
-    # # Capture content targets
-    # for i in content_losses:
-    #     i.mode = 'capture'
-    # print("Capturing content targets")
-    # print_torch(net, multidevice)
-    # net(content_image)
+    # Capture content targets
+    for i in content_losses:
+        i.mode = 'capture'
+    print("Capturing content targets")
+    print_torch(net, multidevice)
+    net(content_image)
 
     # # Capture style targets
     # for i in content_losses:

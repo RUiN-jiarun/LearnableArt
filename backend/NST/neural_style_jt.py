@@ -1,4 +1,5 @@
 import os
+import copy
 import jittor as jt
 from jittor import nn
 from jittor import optim
@@ -104,8 +105,63 @@ def main():
     content_layers = params.content_layers.split(',')
     style_layers = params.style_layers.split(',')
 
-    print(cnn)
+    # print(cnn)
+    cnn = copy.deepcopy(cnn)
+    content_losses, style_losses, tv_losses = [], [], []
+    next_content_idx, next_style_idx = 1, 1
+    net = nn.Sequential()
+    c, r = 0, 0
+    if params.tv_weight > 0:
+        tv_mod = TVLoss(params.tv_weight)
+        net.add_module(str(len(net)), tv_mod)
+        tv_losses.append(tv_mod)
 
+    for i, layer in enumerate(list(cnn), 1):
+        if next_content_idx <= len(content_layers) or next_style_idx <= len(style_layers):
+            if isinstance(layer, nn.Conv2d):
+                net.add_module(str(len(net)), layer)
+
+                if layerList['C'][c] in content_layers:
+                    print("Setting up content layer " + str(i) + ": " + str(layerList['C'][c]))
+                    loss_module = ContentLoss(params.content_weight, params.normalize_gradients)
+                    net.add_module(str(len(net)), loss_module)
+                    content_losses.append(loss_module)
+                
+                # TODO: Add chained inference
+                if layerList['C'][c] in style_layers:
+                    print("Setting up style layer " + str(i) + ": " + str(layerList['C'][c]))
+                    loss_module = StyleLoss(params.style_weight)
+                    net.add_module(str(len(net)), loss_module)
+                    style_losses.append(loss_module)
+                c+=1
+
+            if isinstance(layer, nn.ReLU):
+                net.add_module(str(len(net)), layer)
+
+                if layerList['R'][r] in content_layers:
+                    print("Setting up content layer " + str(i) + ": " + str(layerList['R'][r]))
+                    loss_module = ContentLoss(params.content_weight)
+                    net.add_module(str(len(net)), loss_module)
+                    content_losses.append(loss_module)
+                    next_content_idx += 1
+
+                if layerList['R'][r] in style_layers:
+                    print("Setting up style layer " + str(i) + ": " + str(layerList['R'][r]))
+                    loss_module = StyleLoss(params.style_weight)
+                    net.add_module(str(len(net)), loss_module)
+                    style_losses.append(loss_module)
+                    next_style_idx += 1
+                r+=1
+
+            if isinstance(layer, nn.MaxPool2d) or isinstance(layer, nn.AvgPool2d):
+                net.add_module(str(len(net)), layer)
+    # print(net)
+
+    for i in content_losses:
+        i.mode = 'capture'
+    print("Capturing content targets")
+    # print_torch(net, multidevice)         # TODO: print like torch
+    net(content_image)
 
 
 
@@ -156,6 +212,89 @@ def deprocess(output_tensor):
     Image2PIL = transform.ToPILImage()
     image = Image2PIL(output_tensor)
     return image
+
+
+
+class ContentLoss(nn.Module):
+
+    def __init__(self, strength):
+        super(ContentLoss, self).__init__()
+        self.strength = strength
+        self.crit = nn.MSELoss()
+        self.mode = 'None'
+
+    def forward(self, input):
+        if self.mode == 'loss':
+            loss = self.crit(input, self.target)
+            self.loss = loss * self.strength
+        elif self.mode == 'capture':
+            self.target = input.detach()
+        return input
+
+class GramMatrix(nn.Module):
+
+    def forward(self, input):
+        B, C, H, W = input.size()
+        x_flat = input.view(C, H * W)
+        # Improvement 1
+        # The Gram matrix of an image tensor (feature-wise outer product) using shifted activations
+        return jt.mm(x_flat.add(-10), (x_flat.add(-10)).t())
+
+
+class StyleLoss(nn.Module):
+
+    def __init__(self, strength):
+        super(StyleLoss, self).__init__()
+        # self.target = jt.Var()
+        self.strength = strength
+        self.gram = GramMatrix()
+
+        # Improvement Test
+        # self.gramx = ImprovedGramMatrixX()
+        # self.gramy = ImprovedGramMatrixY()
+
+        self.crit = nn.MSELoss()
+        self.mode = 'None'
+        self.blend_weight = None
+
+    def forward(self, input):
+        # Improvement: New Loss Function
+        if params.improve_gram:
+            pass
+            # self.Gx = self.gramx(input)
+            # self.Gy = self.gramy(input)
+
+            # self.G = 0.5 * (self.Gx + self.Gy)
+        else:
+            self.G = self.gram(input)
+
+        self.G = self.G.div(input.nelement())
+        if self.mode == 'capture':
+            if self.blend_weight == None:
+                self.target = self.G.detach()
+            elif self.target.nelement() == 0:
+                self.target = self.G.detach().mul(self.blend_weight)
+            else:
+                self.target = self.target.add(self.blend_weight, self.G.detach())
+        elif self.mode == 'loss':
+            loss = self.crit(self.G, self.target)
+            self.loss = self.strength * loss
+        return input
+
+
+
+class TVLoss(nn.Module):
+
+    def __init__(self, strength):
+        super(TVLoss, self).__init__()
+        self.strength = strength
+
+    def forward(self, input):
+        self.x_diff = input[:,:,1:,:] - input[:,:,:-1,:]
+        self.y_diff = input[:,:,:,1:] - input[:,:,:,:-1]
+        self.loss = self.strength * (jt.sum(jt.abs(self.x_diff)) + jt.sum(jt.abs(self.y_diff)))
+        return input
+
 
 if __name__ == "__main__":
     main()
