@@ -172,34 +172,35 @@ def main():
     for i in content_losses:
         i.mode = 'capture'
     print("Capturing content targets")
-    print_torch(net, multidevice)
+    # print_torch(net, multidevice)
     net(content_image)
+    # print(content_losses)
 
-    # # Capture style targets
-    # for i in content_losses:
-    #     i.mode = 'None'
+    # Capture style targets
+    for i in content_losses:
+        i.mode = 'None'
 
-    # for i, image in enumerate(style_images_caffe):
-    #     print("Capturing style target " + str(i+1))
-    #     for j in style_losses:
-    #         j.mode = 'capture'
-    #         j.blend_weight = style_blend_weights[i]
-    #     net(style_images_caffe[i])
+    for i, image in enumerate(style_images_caffe):
+        print("Capturing style target " + str(i+1))
+        for j in style_losses:
+            j.mode = 'capture'
+            j.blend_weight = style_blend_weights[i]
+        net(style_images_caffe[i])
 
-    # # Set all loss modules to loss mode
-    # for i in content_losses:
-    #     i.mode = 'loss'
-    # for i in style_losses:
-    #     i.mode = 'loss'
+    # Set all loss modules to loss mode
+    for i in content_losses:
+        i.mode = 'loss'
+    for i in style_losses:
+        i.mode = 'loss'
 
     # # Maybe normalize content and style weights
     # if params.normalize_weights:
     #     normalize_weights(content_losses, style_losses)
 
-    # # Freeze the network in order to prevent
-    # # unnecessary gradient calculations
-    # for param in net.parameters():
-    #     param.requires_grad = False
+    # Freeze the network in order to prevent
+    # unnecessary gradient calculations
+    for param in net.parameters():
+        param.requires_grad = False
 
     # # Initialize the image
     # if params.seed >= 0:

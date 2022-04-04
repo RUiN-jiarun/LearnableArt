@@ -157,11 +157,36 @@ def main():
                 net.add_module(str(len(net)), layer)
     # print(net)
 
+    # Capture content targets
     for i in content_losses:
         i.mode = 'capture'
     print("Capturing content targets")
     # print_torch(net, multidevice)         # TODO: print like torch
-    net(content_image)
+    net(jt.Var(content_image))
+    # print(content_losses)
+
+    # Capture style targets
+    for i in content_losses:
+        i.mode = 'None'
+
+    for i, image in enumerate(style_images_caffe):
+        print("Capturing style target " + str(i+1))
+        for j in style_losses:
+            j.mode = 'capture'
+            j.blend_weight = style_blend_weights[i]
+        net(jt.Var(style_images_caffe[i]))
+    
+    # Set all loss modules to loss mode
+    for i in content_losses:
+        i.mode = 'loss'
+    for i in style_losses:
+        i.mode = 'loss'
+
+    # TODO: Freeze the network in order to prevent
+    # unnecessary gradient calculations
+    # for param in net.parameters():
+    #     param.requires_grad = False
+
 
 
 
@@ -223,7 +248,7 @@ class ContentLoss(nn.Module):
         self.crit = nn.MSELoss()
         self.mode = 'None'
 
-    def forward(self, input):
+    def execute(self, input):
         if self.mode == 'loss':
             loss = self.crit(input, self.target)
             self.loss = loss * self.strength
@@ -233,12 +258,12 @@ class ContentLoss(nn.Module):
 
 class GramMatrix(nn.Module):
 
-    def forward(self, input):
+    def execute(self, input):
         B, C, H, W = input.size()
         x_flat = input.view(C, H * W)
         # Improvement 1
         # The Gram matrix of an image tensor (feature-wise outer product) using shifted activations
-        return jt.mm(x_flat.add(-10), (x_flat.add(-10)).t())
+        return jt.matmul(x_flat.add(-10), (x_flat.add(-10)).t())
 
 
 class StyleLoss(nn.Module):
@@ -257,7 +282,7 @@ class StyleLoss(nn.Module):
         self.mode = 'None'
         self.blend_weight = None
 
-    def forward(self, input):
+    def execute(self, input):
         # Improvement: New Loss Function
         if params.improve_gram:
             pass
@@ -268,7 +293,7 @@ class StyleLoss(nn.Module):
         else:
             self.G = self.gram(input)
 
-        self.G = self.G.div(input.nelement())
+        self.G = self.G.divide(input.numel())
         if self.mode == 'capture':
             if self.blend_weight == None:
                 self.target = self.G.detach()
@@ -289,7 +314,7 @@ class TVLoss(nn.Module):
         super(TVLoss, self).__init__()
         self.strength = strength
 
-    def forward(self, input):
+    def execute(self, input):
         self.x_diff = input[:,:,1:,:] - input[:,:,:-1,:]
         self.y_diff = input[:,:,:,1:] - input[:,:,:,:-1]
         self.loss = self.strength * (jt.sum(jt.abs(self.x_diff)) + jt.sum(jt.abs(self.y_diff)))
