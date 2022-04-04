@@ -184,8 +184,50 @@ def main():
 
     # TODO: Freeze the network in order to prevent
     # unnecessary gradient calculations
-    # for param in net.parameters():
-    #     param.requires_grad = False
+    for param in net.parameters():
+        param.requires_grad = False
+    
+    # Initialize the image
+    # if params.seed >= 0:
+    #     jt.manual_seed(params.seed)
+    #     jt.cuda.manual_seed_all(params.seed)
+    #     jt.backends.cudnn.deterministic=True
+    if params.init == 'random':
+        B, C, H, W = content_image.size()
+        img = jt.randn(C, H, W).mul(0.001).unsqueeze(0)
+    elif params.init == 'image':
+        if params.init_image != None:
+            img = jt.Var(init_image).clone()
+        else:
+            img = jt.Var(content_image).clone()
+    img = nn.Parameter(img)
+    # print(img)
+
+    def maybe_print(t, loss):
+        if params.print_iter > 0 and t % params.print_iter == 0:
+            print("Iteration " + str(t) + " / "+ str(params.num_iterations))
+            for i, loss_module in enumerate(content_losses):
+                print("  Content " + str(i+1) + " loss: " + str(loss_module.loss.item()))
+            for i, loss_module in enumerate(style_losses):
+                print("  Style " + str(i+1) + " loss: " + str(loss_module.loss.item()))
+            print("  Total loss: " + str(loss.item()))
+
+    def maybe_save(t):
+        should_save = params.save_iter > 0 and t % params.save_iter == 0
+        should_save = should_save or t == params.num_iterations
+        if should_save:
+            output_filename, file_extension = os.path.splitext(params.output_image)
+            if t == params.num_iterations:
+                filename = output_filename + str(file_extension)
+            else:
+                filename = str(output_filename) + "_" + str(t) + str(file_extension)
+            disp = deprocess(img.clone())
+
+            # Maybe perform postprocessing for color-independent style transfer
+            # if params.original_colors == 1:
+            #     disp = original_colors(deprocess(content_image.clone()), disp)
+
+            disp.save(str(filename))
 
 
 
@@ -297,10 +339,10 @@ class StyleLoss(nn.Module):
         if self.mode == 'capture':
             if self.blend_weight == None:
                 self.target = self.G.detach()
-            elif self.target.nelement() == 0:
-                self.target = self.G.detach().mul(self.blend_weight)
-            else:
-                self.target = self.target.add(self.blend_weight, self.G.detach())
+            # elif self.target.numel() == 0:
+            #     self.target = self.G.detach().mul(self.blend_weight)
+            # else:
+            #     self.target = self.target.add(self.blend_weight, self.G.detach())
         elif self.mode == 'loss':
             loss = self.crit(self.G, self.target)
             self.loss = self.strength * loss

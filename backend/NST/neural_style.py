@@ -202,49 +202,50 @@ def main():
     for param in net.parameters():
         param.requires_grad = False
 
-    # # Initialize the image
-    # if params.seed >= 0:
-    #     torch.manual_seed(params.seed)
-    #     torch.cuda.manual_seed_all(params.seed)
-    #     torch.backends.cudnn.deterministic=True
-    # if params.init == 'random':
-    #     B, C, H, W = content_image.size()
-    #     img = torch.randn(C, H, W).mul(0.001).unsqueeze(0).type(dtype)
-    # elif params.init == 'image':
-    #     if params.init_image != None:
-    #         img = init_image.clone()
-    #     else:
-    #         img = content_image.clone()
-    # img = nn.Parameter(img)
+    # Initialize the image
+    if params.seed >= 0:
+        torch.manual_seed(params.seed)
+        torch.cuda.manual_seed_all(params.seed)
+        torch.backends.cudnn.deterministic=True
+    if params.init == 'random':
+        B, C, H, W = content_image.size()
+        img = torch.randn(C, H, W).mul(0.001).unsqueeze(0).type(dtype)
+    elif params.init == 'image':
+        if params.init_image != None:
+            img = init_image.clone()
+        else:
+            img = content_image.clone()
+    img = nn.Parameter(img)
+    print(img)
 
     # # Initialize params for plot
     # loss_list = []
 
-    # def maybe_print(t, loss):
-    #     if params.print_iter > 0 and t % params.print_iter == 0:
-    #         print("Iteration " + str(t) + " / "+ str(params.num_iterations))
-    #         for i, loss_module in enumerate(content_losses):
-    #             print("  Content " + str(i+1) + " loss: " + str(loss_module.loss.item()))
-    #         for i, loss_module in enumerate(style_losses):
-    #             print("  Style " + str(i+1) + " loss: " + str(loss_module.loss.item()))
-    #         print("  Total loss: " + str(loss.item()))
+    def maybe_print(t, loss):
+        if params.print_iter > 0 and t % params.print_iter == 0:
+            print("Iteration " + str(t) + " / "+ str(params.num_iterations))
+            for i, loss_module in enumerate(content_losses):
+                print("  Content " + str(i+1) + " loss: " + str(loss_module.loss.item()))
+            for i, loss_module in enumerate(style_losses):
+                print("  Style " + str(i+1) + " loss: " + str(loss_module.loss.item()))
+            print("  Total loss: " + str(loss.item()))
 
-    # def maybe_save(t):
-    #     should_save = params.save_iter > 0 and t % params.save_iter == 0
-    #     should_save = should_save or t == params.num_iterations
-    #     if should_save:
-    #         output_filename, file_extension = os.path.splitext(params.output_image)
-    #         if t == params.num_iterations:
-    #             filename = output_filename + str(file_extension)
-    #         else:
-    #             filename = str(output_filename) + "_" + str(t) + str(file_extension)
-    #         disp = deprocess(img.clone())
+    def maybe_save(t):
+        should_save = params.save_iter > 0 and t % params.save_iter == 0
+        should_save = should_save or t == params.num_iterations
+        if should_save:
+            output_filename, file_extension = os.path.splitext(params.output_image)
+            if t == params.num_iterations:
+                filename = output_filename + str(file_extension)
+            else:
+                filename = str(output_filename) + "_" + str(t) + str(file_extension)
+            disp = deprocess(img.clone())
 
-    #         # Maybe perform postprocessing for color-independent style transfer
-    #         if params.original_colors == 1:
-    #             disp = original_colors(deprocess(content_image.clone()), disp)
+            # Maybe perform postprocessing for color-independent style transfer
+            if params.original_colors == 1:
+                disp = original_colors(deprocess(content_image.clone()), disp)
 
-    #         disp.save(str(filename))
+            disp.save(str(filename))
 
     # # Function to evaluate loss and gradient. We run the net forward and
     # # backward to get the gradient, and sum up losses from the loss modules.
