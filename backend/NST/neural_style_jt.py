@@ -4,6 +4,7 @@ import jittor as jt
 from jittor import nn
 from jittor import optim
 from jittor import transform
+from lbfgs_jt import LBFGS
 
 from PIL import Image
 from models_jt import loadModel
@@ -228,7 +229,80 @@ def main():
             #     disp = original_colors(deprocess(content_image.clone()), disp)
 
             disp.save(str(filename))
+    
+    # Function to evaluate loss and gradient. We run the net forward and
+    # backward to get the gradient, and sum up losses from the loss modules.
+    # optim.lbfgs internally handles iteration and calls this function many
+    # times, so we manually count the number of iterations to handle printing
+    # and saving intermediate results.
+    num_calls = [0]
 
+    # # Initialize params for plot
+    loss_list = []
+
+    def feval():
+        num_calls[0] += 1
+        optimizer.zero_grad()
+        net(img)
+        loss = 0
+
+        for mod in content_losses:
+            loss += mod.loss
+        for mod in style_losses:
+            loss += mod.loss
+        if params.tv_weight > 0:
+            for mod in tv_losses:
+                loss += mod.loss
+
+        loss.backward()
+
+        maybe_save(num_calls[0])
+        maybe_print(num_calls[0], loss)
+
+        # loss_list.append(loss)
+
+        return loss
+
+    optimizer, loopVal = setup_optimizer(img)
+    while num_calls[0] <= loopVal:
+        # optimizer.step(feval)
+        num_calls[0] += 1
+        optimizer.zero_grad()
+        net(img)
+        loss = 0
+
+        for mod in content_losses:
+            loss += mod.loss
+        for mod in style_losses:
+            loss += mod.loss
+        if params.tv_weight > 0:
+            for mod in tv_losses:
+                loss += mod.loss
+
+        optimizer.backward(loss)
+        optimizer.step()
+        maybe_save(num_calls[0])
+        maybe_print(num_calls[0], loss)
+
+
+# Configure the optimizer
+def setup_optimizer(img):
+    if params.optimizer == 'lbfgs':
+        print("Running optimization with L-BFGS")
+        optim_state = {
+            'max_iter': params.num_iterations,
+            'tolerance_change': -1,
+            'tolerance_grad': -1,
+        }
+        if params.lbfgs_num_correction != 100:
+            optim_state['history_size'] = params.lbfgs_num_correction
+        optimizer = LBFGS([img], **optim_state)
+        loopVal = 1
+    elif params.optimizer == 'adam':
+        print("Running optimization with ADAM")
+        optimizer = optim.Adam([img], lr = params.learning_rate)
+        loopVal = params.num_iterations - 1
+    return optimizer, loopVal
 
 
 
@@ -307,7 +381,7 @@ class GramMatrix(nn.Module):
         # The Gram matrix of an image tensor (feature-wise outer product) using shifted activations
         return jt.matmul(x_flat.add(-10), (x_flat.add(-10)).t())
 
-
+# FIXME
 class StyleLoss(nn.Module):
 
     def __init__(self, strength):
@@ -344,7 +418,7 @@ class StyleLoss(nn.Module):
             # else:
             #     self.target = self.target.add(self.blend_weight, self.G.detach())
         elif self.mode == 'loss':
-            loss = self.crit(self.G, self.target)
+            loss = self.crit(self.G, self.G.detach())
             self.loss = self.strength * loss
         return input
 

@@ -219,7 +219,7 @@ def main():
     print(img)
 
     # # Initialize params for plot
-    # loss_list = []
+    loss_list = []
 
     def maybe_print(t, loss):
         if params.print_iter > 0 and t % params.print_iter == 0:
@@ -247,38 +247,38 @@ def main():
 
             disp.save(str(filename))
 
-    # # Function to evaluate loss and gradient. We run the net forward and
-    # # backward to get the gradient, and sum up losses from the loss modules.
-    # # optim.lbfgs internally handles iteration and calls this function many
-    # # times, so we manually count the number of iterations to handle printing
-    # # and saving intermediate results.
-    # num_calls = [0]
-    # def feval():
-    #     num_calls[0] += 1
-    #     optimizer.zero_grad()
-    #     net(img)
-    #     loss = 0
+    # Function to evaluate loss and gradient. We run the net forward and
+    # backward to get the gradient, and sum up losses from the loss modules.
+    # optim.lbfgs internally handles iteration and calls this function many
+    # times, so we manually count the number of iterations to handle printing
+    # and saving intermediate results.
+    num_calls = [0]
+    def feval():
+        num_calls[0] += 1
+        optimizer.zero_grad()
+        net(img)
+        loss = 0
 
-    #     for mod in content_losses:
-    #         loss += mod.loss.to(backward_device)
-    #     for mod in style_losses:
-    #         loss += mod.loss.to(backward_device)
-    #     if params.tv_weight > 0:
-    #         for mod in tv_losses:
-    #             loss += mod.loss.to(backward_device)
+        for mod in content_losses:
+            loss += mod.loss.to(backward_device)
+        for mod in style_losses:
+            loss += mod.loss.to(backward_device)
+        if params.tv_weight > 0:
+            for mod in tv_losses:
+                loss += mod.loss.to(backward_device)
 
-    #     loss.backward()
+        loss.backward()
 
-    #     maybe_save(num_calls[0])
-    #     maybe_print(num_calls[0], loss)
+        maybe_save(num_calls[0])
+        maybe_print(num_calls[0], loss)
 
-    #     loss_list.append(loss)
+        loss_list.append(loss)
 
-    #     return loss
+        return loss
 
-    # optimizer, loopVal = setup_optimizer(img)
-    # while num_calls[0] <= loopVal:
-    #     optimizer.step(feval)
+    optimizer, loopVal = setup_optimizer(img)
+    while num_calls[0] <= loopVal:
+        optimizer.step(feval)
 
     # if params.plot:
     #     x1 = range(0, params.num_iterations)
