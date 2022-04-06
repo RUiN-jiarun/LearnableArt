@@ -345,16 +345,21 @@ def preprocess(image_name, image_size):
     return tensor
     # return a numpy.ndarray
 
-def deprocess(output_tensor):
+def deprocess(output):
     Normalize = transform.Compose([transform.ImageNormalize(mean=[-103.939, -116.779, -123.68], std=[1,1,1])])
     bgr2rgb = transform.Compose([transform.Lambda(lambda x: x[jt.int32([2,1,0])])])
-    output_tensor = bgr2rgb(Normalize(jt.squeeze(output_tensor, dim=0))) / 255
-    output_tensor = output_tensor.clamp(0, 1)
+    output = bgr2rgb(Normalize(jt.squeeze(output, dim=0))) / 255
+    output = output.clamp(0, 1)
+    print(output.ndim)
     Image2PIL = transform.ToPILImage()
-    image = Image2PIL(output_tensor)
+    image = Image2PIL(output)
     return image
 
-
+def test():
+    content_image = preprocess(params.content_image, params.image_size)
+    # print(jt.Var(content_image))
+    img = deprocess(jt.Var(content_image))
+    print(img)
 
 class ContentLoss(nn.Module):
 
@@ -381,12 +386,12 @@ class GramMatrix(nn.Module):
         # The Gram matrix of an image tensor (feature-wise outer product) using shifted activations
         return jt.matmul(x_flat.add(-10), (x_flat.add(-10)).t())
 
-# FIXME
+
 class StyleLoss(nn.Module):
 
     def __init__(self, strength):
         super(StyleLoss, self).__init__()
-        # self.target = jt.Var()
+        self.target = jt.Var([])
         self.strength = strength
         self.gram = GramMatrix()
 
@@ -413,12 +418,12 @@ class StyleLoss(nn.Module):
         if self.mode == 'capture':
             if self.blend_weight == None:
                 self.target = self.G.detach()
-            # elif self.target.numel() == 0:
-            #     self.target = self.G.detach().mul(self.blend_weight)
-            # else:
-            #     self.target = self.target.add(self.blend_weight, self.G.detach())
+            elif self.target.numel() == 0:
+                self.target = self.G.detach().multiply(self.blend_weight)
+            else:
+                self.target = self.target.add(self.blend_weight, self.G.detach())
         elif self.mode == 'loss':
-            loss = self.crit(self.G, self.G.detach())
+            loss = self.crit(self.G, self.target)
             self.loss = self.strength * loss
         return input
 
@@ -438,4 +443,5 @@ class TVLoss(nn.Module):
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    test()

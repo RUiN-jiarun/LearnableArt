@@ -376,10 +376,16 @@ def deprocess(output_tensor):
     bgr2rgb = transforms.Compose([transforms.Lambda(lambda x: x[torch.LongTensor([2,1,0])])])
     output_tensor = bgr2rgb(Normalize(output_tensor.squeeze(0).cpu())) / 255
     output_tensor.clamp_(0, 1)
+    print(output_tensor.ndim)
     Image2PIL = transforms.ToPILImage()
     image = Image2PIL(output_tensor.cpu())
     return image
 
+def test():
+    content_image = preprocess(params.content_image, params.image_size)
+    # print(content_image)
+    img = deprocess(content_image)
+    print(img)
 
 # Combine the Y channel of the generated image and the UV/CbCr channels of the
 # content image to perform color-independent style transfer.
@@ -577,4 +583,5 @@ class TVLoss(nn.Module):
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    test()
