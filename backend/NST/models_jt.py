@@ -1,7 +1,8 @@
+import torch
 import jittor as jt
 from jittor import init
 from jittor import nn
-import jittor
+
 
 class VGG(nn.Module):
 
@@ -83,8 +84,8 @@ def print_model(cnn, layerList):
 # Load the model, and configure pooling layer type
 def loadModel(model_file, pooling, use_gpu):
     cnn, layerList = modelSelector(str(model_file).lower(), pooling)
-
-    cnn.load_state_dict(jittor.load(model_file))
+    model = torch.load(model_file)
+    cnn.load_state_dict(torch.load(model_file))
     print("Successfully loaded " + str(model_file))
 
     # Maybe convert the model to cuda now, to avoid later issues
@@ -97,5 +98,3 @@ def loadModel(model_file, pooling, use_gpu):
 
     return cnn, layerList
 
-if __name__ == '__main__':
-    loadModel('models/vgg19.pkl', 'max', use_gpu='cuda:0')

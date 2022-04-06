@@ -254,4 +254,9 @@ def loadModel(model_file, pooling, use_gpu, disable_check):
     return cnn, layerList
 
 if __name__ == '__main__':
-    loadModel('models/vgg19-d01eb7cb.pth', 'max', use_gpu='cuda:0', disable_check=False)
+    cnn, layerList = loadModel('models/vgg19-d01eb7cb.pth', 'max', use_gpu='cuda:0', disable_check=False)
+    model = torch.load('models/vgg19-d01eb7cb.pth')
+    print(model)
+    # torch.save(model, 'models/vgg19-tuned.pkl')
+    # model2 = torch.load('models/vgg19.pkl')
+    # print(model2)

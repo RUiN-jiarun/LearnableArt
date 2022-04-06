@@ -41,7 +41,7 @@ parser.add_argument("-output_image", default='out.png')
 parser.add_argument("-style_scale", type=float, default=1.0)
 parser.add_argument("-original_colors", type=int, choices=[0, 1], default=0)
 parser.add_argument("-pooling", choices=['avg', 'max'], default='max')
-parser.add_argument("-model_file", type=str, default='models/vgg19.pkl')
+parser.add_argument("-model_file", type=str, default='models/vgg19-d01eb7cb.pth')
 parser.add_argument("-backend", choices=['nn', 'cudnn', 'mkl', 'mkldnn', 'openmp', 'mkl,cudnn', 'cudnn,mkl'], default='cudnn')
 parser.add_argument("-cudnn_autotune", action='store_true')
 parser.add_argument("-seed", type=int, default=-1)
@@ -194,8 +194,8 @@ def main():
     #     jt.cuda.manual_seed_all(params.seed)
     #     jt.backends.cudnn.deterministic=True
     if params.init == 'random':
-        B, C, H, W = content_image.size()
-        img = jt.randn(C, H, W).mul(0.001).unsqueeze(0)
+        B, C, H, W = content_image.shape
+        img = jt.randn(C, H, W).multiply(0.001).unsqueeze(0)
     elif params.init == 'image':
         if params.init_image != None:
             img = jt.Var(init_image).clone()
@@ -350,6 +350,9 @@ def deprocess(output):
     bgr2rgb = transform.Compose([transform.Lambda(lambda x: x[jt.int32([2,1,0])])])
     output = bgr2rgb(Normalize(jt.squeeze(output, dim=0))) / 255
     output = output.clamp(0, 1)
+    
+    # change (H,W,C) to (C,H,W)
+    output = output.transpose((1,2,0))
     print(output.ndim)
     Image2PIL = transform.ToPILImage()
     image = Image2PIL(output)
@@ -443,5 +446,5 @@ class TVLoss(nn.Module):
 
 
 if __name__ == "__main__":
-    # main()
-    test()
+    main()
+    # test()
