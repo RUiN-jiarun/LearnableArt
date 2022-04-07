@@ -389,6 +389,34 @@ class GramMatrix(nn.Module):
         # The Gram matrix of an image tensor (feature-wise outer product) using shifted activations
         return jt.matmul(x_flat.add(-10), (x_flat.add(-10)).t())
 
+# Improvement: Space Conversion Map Based Gram Matrix 
+class ImprovedGramMatrixX(nn.Module):
+
+    def execute(self, input):
+        rshift = input[:,:,:,4:]
+        lshift = input[:,:,:,:-4]
+        B, C, H, W = rshift.size()
+        # print(B, C, H, W)
+        # x_flat = input.view(C, H * W)   # flatten
+
+        l_flat = lshift.contiguous().view(C, H * W)
+        r_flat = rshift.contiguous().view(C, H * W)
+
+        return jt.matmul(l_flat.add(-5), r_flat.add(-5).t())
+
+class ImprovedGramMatrixY(nn.Module):
+
+    def execute(self, input):
+        dshift = input[:,:,4:,:]
+        ushift = input[:,:,:-4,:]
+        B, C, H, W = ushift.size()
+
+        # x_flat = input.view(C, H * W)   # flatten
+
+        d_flat = dshift.contiguous().view(C, H * W)
+        u_flat = ushift.contiguous().view(C, H * W)
+
+        return jt.matmul(u_flat.add(-5), d_flat.add(-5).t())
 
 class StyleLoss(nn.Module):
 
@@ -399,8 +427,8 @@ class StyleLoss(nn.Module):
         self.gram = GramMatrix()
 
         # Improvement Test
-        # self.gramx = ImprovedGramMatrixX()
-        # self.gramy = ImprovedGramMatrixY()
+        self.gramx = ImprovedGramMatrixX()
+        self.gramy = ImprovedGramMatrixY()
 
         self.crit = nn.MSELoss()
         self.mode = 'None'
@@ -409,11 +437,10 @@ class StyleLoss(nn.Module):
     def execute(self, input):
         # Improvement: New Loss Function
         if params.improve_gram:
-            pass
-            # self.Gx = self.gramx(input)
-            # self.Gy = self.gramy(input)
+            self.Gx = self.gramx(input)
+            self.Gy = self.gramy(input)
 
-            # self.G = 0.5 * (self.Gx + self.Gy)
+            self.G = 0.5 * (self.Gx + self.Gy)
         else:
             self.G = self.gram(input)
 
