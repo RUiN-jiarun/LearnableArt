@@ -20,14 +20,14 @@
             </el-submenu>
             <el-submenu index="nst">
               <template slot="title"><i class="el-icon-document"></i>风格迁移</template>
-              <el-menu-item index="index">编辑1</el-menu-item>
+              <el-menu-item index="nst">风格迁移</el-menu-item>
               <el-menu-item index="index2">编辑2</el-menu-item>
               <el-menu-item index="index3">编辑3</el-menu-item>
             </el-submenu>
             <el-submenu index="post">
               <template slot="title"><i class="el-icon-document"></i>后处理</template>
-              <el-menu-item index="post"><i class="el-icon-document"></i>色彩迁移</el-menu-item>
-              
+              <el-menu-item index="post">色彩迁移</el-menu-item>
+              <el-menu-item index="cut">蒙版裁切</el-menu-item>
             </el-submenu>
             
           </el-menu>

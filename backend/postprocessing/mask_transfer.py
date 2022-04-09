@@ -5,7 +5,7 @@ from __future__ import absolute_import
 import argparse
 import os
 import numpy as np
-from scipy.misc import imread, imresize, imsave
+from .utils import imread, imresize, imsave
 
 
 # util function to load masks

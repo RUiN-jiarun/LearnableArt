@@ -6,6 +6,7 @@ import Content from './components/Content'
 import Mask from './components/Mask'
 import Optim from './components/Optim'
 import Home from './components/Home'
+import NST from './components/NST'
 // import Sidebar from './components/Sidebar'
 import VueRouter from 'vue-router'
 import axios from 'axios'
@@ -49,6 +50,11 @@ const routes = [
         path: '/post',
         name: 'post',
         component: Optim,
+    },
+    {
+        path: '/nst',
+        name: 'nst',
+        component: NST,
     }
 ]
 
