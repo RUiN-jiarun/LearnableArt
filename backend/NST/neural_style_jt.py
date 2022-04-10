@@ -4,10 +4,10 @@ import jittor as jt
 from jittor import nn
 from jittor import optim
 from jittor import transform
-from lbfgs_jt import LBFGS
+from .lbfgs_jt import LBFGS
 
 from PIL import Image
-from models_jt import loadModel
+from .models_jt import loadModel
 
 import argparse
 parser = argparse.ArgumentParser()
@@ -27,7 +27,7 @@ parser.add_argument("-tv_weight", type=float, default=1e-4)
 parser.add_argument("-num_iterations", type=int, default=1000)
 parser.add_argument("-init", choices=['random', 'image'], default='image')
 parser.add_argument("-init_image", default=None)
-parser.add_argument("-optimizer", choices=['lbfgs', 'adam'], default='lbfgs')
+parser.add_argument("-optimizer", choices=['lbfgs', 'adam'], default='adam')
 parser.add_argument("-learning_rate", type=float, default=1e0)
 parser.add_argument("-lbfgs_num_correction", type=int, default=100)
 parser.add_argument("-improve_gram", action='store_true')
@@ -57,6 +57,12 @@ parser.add_argument("-style_layers", help="layers for style", default='relu1_1,r
 
 parser.add_argument("-multidevice_strategy", default='4,7,29')
 params = parser.parse_args()
+
+def param_main(content_image, style_image):
+    params.content_image = content_image
+    params.style_image = style_image
+    print(params)
+    # main()
 
 
 def main():

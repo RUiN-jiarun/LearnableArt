@@ -8,6 +8,7 @@ from flask import *
 from preprocessing.utils.application import run as match
 from preprocessing.core import Params
 from postprocessing.color_transfer import color_trans
+from NST.neural_style_jt import main as nst
 
 import io
 import imageio
@@ -173,7 +174,7 @@ def color_transfer_page():
     hist_match = request.values.get('hist_match')
     # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
     # ./tmp/ct/xxxxx.jpg
-    print(hist_match)
+    # print(hist_match)
     if src and ref:
         src_path = '.' + src[21:]
         ref_path = '.' + ref[21:]
@@ -189,7 +190,15 @@ def color_transfer_page():
     return jsonify({'status': 0})
     
 
-
+@app.route('/nstjt', methods=['POST'])
+def nst_jt_page():
+    src = request.values.get('src')
+    ref = request.values.get('ref')
+    if src and ref:
+        src_path = '.' + src[21:]
+        ref_path = '.' + ref[21:]
+        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+        
 
 
 @app.route("/download", methods=['GET'])
