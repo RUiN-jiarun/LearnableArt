@@ -372,19 +372,19 @@ class ContentLoss(nn.Module):
         self.crit = nn.MSELoss()
         self.mode = 'None'
 
-    def execute(self, input):
+    def execute(self, x):
         if self.mode == 'loss':
-            loss = self.crit(input, self.target)
+            loss = self.crit(x, self.target)
             self.loss = loss * self.strength
         elif self.mode == 'capture':
-            self.target = input.detach()
-        return input
+            self.target = x.detach()
+        return x
 
 class GramMatrix(nn.Module):
 
-    def execute(self, input):
-        B, C, H, W = input.size()
-        x_flat = input.view(C, H * W)
+    def execute(self, x):
+        B, C, H, W = x.size()
+        x_flat = x.view(C, H * W)
         # Improvement 1
         # The Gram matrix of an image tensor (feature-wise outer product) using shifted activations
         return jt.matmul(x_flat.add(-10), (x_flat.add(-10)).t())
@@ -392,12 +392,12 @@ class GramMatrix(nn.Module):
 # Improvement: Space Conversion Map Based Gram Matrix 
 class ImprovedGramMatrixX(nn.Module):
 
-    def execute(self, input):
-        rshift = input[:,:,:,4:]
-        lshift = input[:,:,:,:-4]
+    def execute(self, x):
+        rshift = x[:,:,:,4:]
+        lshift = x[:,:,:,:-4]
         B, C, H, W = rshift.size()
         # print(B, C, H, W)
-        # x_flat = input.view(C, H * W)   # flatten
+        # x_flat = x.view(C, H * W)   # flatten
 
         l_flat = lshift.contiguous().view(C, H * W)
         r_flat = rshift.contiguous().view(C, H * W)
@@ -406,12 +406,12 @@ class ImprovedGramMatrixX(nn.Module):
 
 class ImprovedGramMatrixY(nn.Module):
 
-    def execute(self, input):
-        dshift = input[:,:,4:,:]
-        ushift = input[:,:,:-4,:]
+    def execute(self, x):
+        dshift = x[:,:,4:,:]
+        ushift = x[:,:,:-4,:]
         B, C, H, W = ushift.size()
 
-        # x_flat = input.view(C, H * W)   # flatten
+        # x_flat = x.view(C, H * W)   # flatten
 
         d_flat = dshift.contiguous().view(C, H * W)
         u_flat = ushift.contiguous().view(C, H * W)
@@ -434,17 +434,17 @@ class StyleLoss(nn.Module):
         self.mode = 'None'
         self.blend_weight = None
 
-    def execute(self, input):
+    def execute(self, x):
         # Improvement: New Loss Function
         if params.improve_gram:
-            self.Gx = self.gramx(input)
-            self.Gy = self.gramy(input)
+            self.Gx = self.gramx(x)
+            self.Gy = self.gramy(x)
 
             self.G = 0.5 * (self.Gx + self.Gy)
         else:
-            self.G = self.gram(input)
+            self.G = self.gram(x)
 
-        self.G = self.G.divide(input.numel())
+        self.G = self.G.divide(x.numel())
         if self.mode == 'capture':
             if self.blend_weight == None:
                 self.target = self.G.detach()
@@ -455,7 +455,7 @@ class StyleLoss(nn.Module):
         elif self.mode == 'loss':
             loss = self.crit(self.G, self.target)
             self.loss = self.strength * loss
-        return input
+        return x
 
 
 
@@ -465,11 +465,11 @@ class TVLoss(nn.Module):
         super(TVLoss, self).__init__()
         self.strength = strength
 
-    def execute(self, input):
-        self.x_diff = input[:,:,1:,:] - input[:,:,:-1,:]
-        self.y_diff = input[:,:,:,1:] - input[:,:,:,:-1]
+    def execute(self, x):
+        self.x_diff = x[:,:,1:,:] - x[:,:,:-1,:]
+        self.y_diff = x[:,:,:,1:] - x[:,:,:,:-1]
         self.loss = self.strength * (jt.sum(jt.abs(self.x_diff)) + jt.sum(jt.abs(self.y_diff)))
-        return input
+        return x
 
 
 if __name__ == "__main__":
