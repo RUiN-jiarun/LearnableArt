@@ -45,7 +45,7 @@
               </el-image>
             </div>
             <div class="img_info_1" style="border-radius: 0 0 5px 5px">
-              <span style="color: white; letter-spacing: 6px">目标图像</span>
+              <span style="color: white; letter-spacing: 6px">原始图像</span>
             </div>
             <div class="img_info_1" style="border-radius: 5px; background-color: #ffffff">
               <el-button
@@ -87,7 +87,7 @@
               </el-image>
             </div>
             <div class="img_info_1" style="border-radius: 0 0 5px 5px">
-              <span style="color: white; letter-spacing: 4px">参考图像</span>
+              <span style="color: white; letter-spacing: 4px">风格图像</span>
             </div>
             <div class="img_info_1" style="border-radius: 5px; background-color: #ffffff">
               <el-button
@@ -114,9 +114,9 @@
       <div id="info_patient">
         <el-card class="box-card" style="border-radius: 8px; width: 800px;height:500px;">
           <el-tabs v-model="activeName">
-            <el-tab-pane label="参考图迁移" name="first">
+            <el-tab-pane label="简单迁移" name="first">
             </el-tab-pane>
-            <el-tab-pane label="调色盘迁移" name="second">
+            <el-tab-pane label="eee" name="second">
             </el-tab-pane>
 
             <div v-if="activeName=='first'">
@@ -126,7 +126,7 @@
               element-loading-text="处理图片中"
               element-loading-spinner="el-icon-loading"
             >
-              <div>请在参考图像中上传色域参考图</div>
+              <div>TEST：傻瓜风格迁移</div>
               <el-image
                 :src="url_3"
                 class="image_2"
@@ -134,10 +134,14 @@
                 style="border-radius: 3px"
               >
                 <div slot="error">
-                  <div slot="placeholder" class="error">等待处理
+                  <div slot="placeholder" class="error">
+                    <el-progress :percentage="percentage"></el-progress>
                   </div>
+                  
                 </div>
               </el-image>
+              <!-- <el-progress :percentage="percentage"></el-progress> -->
+              <!-- <div>请耐心等待</div> -->
               <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
               <el-button
                       v-show="showbutton1"
@@ -390,15 +394,15 @@ export default {
     colortransfer() {
       // console.log(this.srcList1[this.srcList1.length - 1]);
       // console.log(this.srcList2[this.srcList2.length - 1]);
-      this.dialogTableVisible = true;
+      // this.dialogTableVisible = true;
       this.percentage = 0;
-      this.fullscreenLoading = true;
-      this.loading = true;
+      // this.fullscreenLoading = true;
+      // this.loading = true;
       this.url_3 = "";
       var timer = setInterval(() => {
         this.myFunc();
+        // TODO: get backend data
       }, 30);
-      // console.log(JSON.parse(JSON.stringify(this.channels)));
       axios
         .get(this.server_url + "/colortransfer", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
@@ -603,7 +607,7 @@ export default {
 
 .error {
   margin: 100px auto;
-  width: 50%;
+  width: 100%;
   padding: 10px;
   text-align: center;
 }
