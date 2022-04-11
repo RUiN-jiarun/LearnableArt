@@ -112,7 +112,7 @@
         </el-card>
       </div>
       <div id="info_patient">
-        <el-card class="box-card" style="border-radius: 8px; width: 800px;height:500px;">
+        <el-card class="box-card" style="border-radius: 8px; width: 900px;height:500px;">
           <el-tabs v-model="activeName">
             <el-tab-pane label="简单迁移" name="first">
             </el-tab-pane>
@@ -121,11 +121,11 @@
 
             <div v-if="activeName=='first'">
             <div class="demo-image__preview1" >
-            <div
+            <!-- <div
               v-loading="loading"
               element-loading-text="处理图片中"
               element-loading-spinner="el-icon-loading"
-            >
+            > -->
               <div>TEST：傻瓜风格迁移</div>
               <el-image
                 :src="url_3"
@@ -142,41 +142,32 @@
               </el-image>
               <!-- <el-progress :percentage="percentage"></el-progress> -->
               <!-- <div>请耐心等待</div> -->
+              
               <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
               <el-button
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="colortransfer"
+                      @click="nst"
                     >开始处理
                 </el-button>
                 </div>
-            </div>
+            <!-- </div> -->
             </div>
             <div class="demo-image__preview1" style="float:left; height:400px;">
-              <div class="param_block">
-                <span>是否使用蒙版</span>
-                <el-radio-group style="margin-top: 10px;" v-model="isMasked">
-                  <el-radio :label="1">是</el-radio>
-                  <el-radio :label="0">否</el-radio>
-                </el-radio-group>
-              </div>
-
-              <!-- <div class="param_block">
-                <span>匹配算法</span>
-                <el-radio-group style="margin-top: 10px;" v-model="algorithm">
-                  <el-radio label="fdm">特征分布匹配</el-radio>
-                  <el-radio label="hm">直方图匹配</el-radio>
-                </el-radio-group>
-              </div> -->
-              
-              <div class="param_block">
-                <span>匹配方式</span>
-                <el-radio-group style="margin-top: 10px;" v-model="match_mode">
-                  <el-radio :label="1">分布匹配</el-radio>
-                  <el-radio :label="0">直接匹配</el-radio>
-                </el-radio-group>
-              </div>
+              <el-image
+                :src="url_4"
+                class="image_3"
+                :preview-src-list="srcList4"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error" style="margin-top: 50px;">
+                    <el-progress :percentage="percentage"></el-progress>
+                  </div>
+                  
+                </div>
+              </el-image>
             </div>
             </div>
             <div v-if="activeName=='second'">
@@ -391,7 +382,7 @@ export default {
         type: type,
       });
     },
-    colortransfer() {
+    nst() {
       // console.log(this.srcList1[this.srcList1.length - 1]);
       // console.log(this.srcList2[this.srcList2.length - 1]);
       // this.dialogTableVisible = true;
@@ -400,15 +391,22 @@ export default {
       // this.loading = true;
       this.url_3 = "";
       var timer = setInterval(() => {
-        this.myFunc();
+        // this.myFunc();
         // TODO: get backend data
-      }, 30);
+      //   $.ajax({
+      //   url: "/nstjt",
+      //   type: "GET",
+      //   // data: senddata,
+      //   dataType: "json",
+      //   success: function (data) {
+      //     console.log(data)
+      //   }
+      // })
+      }, 1000);
       axios
-        .get(this.server_url + "/colortransfer", 
+        .get(this.server_url + "/nstjt", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      ref: this.srcList2[this.srcList2.length - 1],
-                      isMasked: this.isMasked,
-                      hist_match: this.match_mode,}})
+                      ref: this.srcList2[this.srcList2.length - 1],}})
         .then((response) => {
           
           this.percentage = 100;
@@ -441,8 +439,16 @@ export default {
       this.url_4 = "";
       // console.log(this.colors);
       var timer = setInterval(() => {
-        this.myFunc();
-      }, 30);
+      //   $.ajax({
+      //   url: "/nstjt",
+      //   type: "GET",
+      //   data: senddata,
+      //   dataType: "json",
+      //   success: function (data) {
+      //     console.log(data)
+      //   }
+      // })
+      }, 1000);
       axios
         .get(this.server_url + "/colortransfer", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
@@ -576,6 +582,14 @@ export default {
 .image_2 {
   width: 275px;
   height: 260px;
+  background: #ffffff;
+  /* display: inline-block; */
+  /* float:left; */
+}
+
+.image_3 {
+  width: 150px;
+  height: 145px;
   background: #ffffff;
   /* display: inline-block; */
   /* float:left; */
