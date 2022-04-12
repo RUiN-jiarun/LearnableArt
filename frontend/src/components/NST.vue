@@ -112,7 +112,7 @@
         </el-card>
       </div>
       <div id="info_patient">
-        <el-card class="box-card" style="border-radius: 8px; width: 900px;height:500px;">
+        <el-card class="box-card" style="border-radius: 8px; width: 950px; height:550px;">
           <el-tabs v-model="activeName">
             <el-tab-pane label="简单迁移" name="first">
             </el-tab-pane>
@@ -120,7 +120,7 @@
             </el-tab-pane>
 
             <div v-if="activeName=='first'">
-            <div class="demo-image__preview1" >
+            <div class="demo-image__preview1" style="float: left; width: 30%; margin: 50px 20px;">
             <!-- <div
               v-loading="loading"
               element-loading-text="处理图片中"
@@ -154,7 +154,7 @@
                 </div>
             <!-- </div> -->
             </div>
-            <div class="demo-image__preview1" style="float:left; height:400px;">
+            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
               <el-image
                 :src="url_4"
                 class="image_3"
@@ -165,7 +165,68 @@
                   <div slot="placeholder" class="error" style="margin-top: 50px;">
                     <el-progress :percentage="percentage"></el-progress>
                   </div>
-                  
+                </div>
+              </el-image>
+              <el-image
+                :src="url_4"
+                class="image_3"
+                :preview-src-list="srcList4"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error" style="margin-top: 50px;">
+                    <el-progress :percentage="percentage"></el-progress>
+                  </div>
+                </div>
+              </el-image>
+              <el-image
+                :src="url_4"
+                class="image_3"
+                :preview-src-list="srcList4"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error" style="margin-top: 50px;">
+                    <el-progress :percentage="percentage"></el-progress>
+                  </div>
+                </div>
+              </el-image>
+            </div>
+            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
+              <el-image
+                :src="url_4"
+                class="image_3"
+                :preview-src-list="srcList4"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error" style="margin-top: 50px;">
+                    <el-progress :percentage="percentage"></el-progress>
+                  </div>
+                </div>
+              </el-image>
+              <el-image
+                :src="url_4"
+                class="image_3"
+                :preview-src-list="srcList4"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error" style="margin-top: 50px;">
+                    <el-progress :percentage="percentage"></el-progress>
+                  </div>
+                </div>
+              </el-image>
+              <el-image
+                :src="url_4"
+                class="image_3"
+                :preview-src-list="srcList4"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error" style="margin-top: 50px;">
+                    <el-progress :percentage="percentage"></el-progress>
+                  </div>
                 </div>
               </el-image>
             </div>
