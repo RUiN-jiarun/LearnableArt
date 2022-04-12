@@ -58,9 +58,10 @@ parser.add_argument("-style_layers", help="layers for style", default='relu1_1,r
 parser.add_argument("-multidevice_strategy", default='4,7,29')
 params = parser.parse_args()
 
-def param_main(content_image, style_image):
+def param_main(content_image, style_image, output_image):
     params.content_image = content_image
     params.style_image = style_image
+    params.output_image = output_image
     print(params)
     # main()
 

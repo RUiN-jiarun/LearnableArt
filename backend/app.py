@@ -197,11 +197,29 @@ def nst_jt_page():
     if src and ref:
         src_path = '.' + src[21:]
         ref_path = '.' + ref[21:]
+        # global pid
         pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
         output_path = './tmp/draw/trans_' + pid
         # TODO: NST Here
-        nst(content_image=src_path, style_image=ref_path)
+        nst(content_image=src_path, style_image=ref_path, output_image=output_path)
+        return jsonify({'status': 1,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/trans_' + pid})
 
+    return jsonify({'status': 0})
+
+@app.route('/nstjttmp', methods=['GET'])
+def nst_jt_tmp():
+    src = request.values.get('src')
+    if src:
+        src_path = '.' + src[21:]
+        # TODO: pid??
+        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+        output_path = './tmp/draw/trans_' + pid
+        
+        return jsonify({'status': 1,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/trans_' + pid})
+
+    return jsonify({'status': 0})
 
 
 @app.route("/download", methods=['GET'])

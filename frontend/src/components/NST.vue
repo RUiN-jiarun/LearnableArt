@@ -156,9 +156,9 @@
             </div>
             <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
               <el-image
-                :src="url_4"
+                :src="url_4_1"
                 class="image_3"
-                :preview-src-list="srcList4"
+                :preview-src-list="srcList4_1"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -168,9 +168,9 @@
                 </div>
               </el-image>
               <el-image
-                :src="url_4"
+                :src="url_4_2"
                 class="image_3"
-                :preview-src-list="srcList4"
+                :preview-src-list="srcList4_2"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -180,9 +180,9 @@
                 </div>
               </el-image>
               <el-image
-                :src="url_4"
+                :src="url_4_3"
                 class="image_3"
-                :preview-src-list="srcList4"
+                :preview-src-list="srcList4_3"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -194,9 +194,9 @@
             </div>
             <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
               <el-image
-                :src="url_4"
+                :src="url_4_4"
                 class="image_3"
-                :preview-src-list="srcList4"
+                :preview-src-list="srcList4_4"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -206,9 +206,9 @@
                 </div>
               </el-image>
               <el-image
-                :src="url_4"
+                :src="url_4_5"
                 class="image_3"
-                :preview-src-list="srcList4"
+                :preview-src-list="srcList4_5"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -218,9 +218,9 @@
                 </div>
               </el-image>
               <el-image
-                :src="url_4"
+                :src="url_4_6"
                 class="image_3"
-                :preview-src-list="srcList4"
+                :preview-src-list="srcList4_6"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -293,16 +293,26 @@ export default {
       centerDialogVisible: true,
       url_1: "",  // 原始图片
       url_2: "",  // 风格图片
-      url_3: "",  // 色域匹配结果
-      url_4: "",  // 生成蒙版结果
+      url_3: "",  // 转换结果
+      url_4_1: "",  // 过程图片
+      url_4_2: "",
+      url_4_3: "",
+      url_4_4: "",
+      url_4_5: "",
+      url_4_6: "",
       textarea: "",
       srcList1: [],
       srcList2: [],
       srcList3: [],
-      srcList4: [],
-      feature_list: [],
-      feature_list_1: [],
-      feat_list: [],
+      srcList4_1: [],
+      srcList4_2: [],
+      srcList4_3: [],
+      srcList4_4: [],
+      srcList4_5: [],
+      srcList4_6: [],
+      // feature_list: [],
+      // feature_list_1: [],
+      // feat_list: [],
       url: "",
       visible: false,
       wait_return: "等待上传",
@@ -443,31 +453,54 @@ export default {
         type: type,
       });
     },
+    dateFtt(fmt, date) 
+    { 
+      var o = { 
+      "M+" : date.getMonth()+1,     //月份 
+      "d+" : date.getDate(),     //日 
+      "h+" : date.getHours(),     //小时 
+      "m+" : date.getMinutes(),     //分 
+      "s+" : date.getSeconds(),     //秒 
+      "q+" : Math.floor((date.getMonth()+3)/3), //季度 
+      "S" : date.getMilliseconds()    //毫秒 
+      }; 
+      if(/(y+)/.test(fmt)) 
+      fmt=fmt.replace(RegExp.$1, (date.getFullYear()+"").substr(4 - RegExp.$1.length)); 
+      for(var k in o) 
+      if(new RegExp("("+ k +")").test(fmt)) 
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length))); 
+      return fmt; 
+    },
     nst() {
       // console.log(this.srcList1[this.srcList1.length - 1]);
       // console.log(this.srcList2[this.srcList2.length - 1]);
       // this.dialogTableVisible = true;
       this.percentage = 0;
+      // TODO: hash code for a certain pic
+      var d = new Date();
+      var timeString = this.dateFtt("yyyy-MM-dd-hh-mm-ss", d);
+      // console.log(timeString);
       // this.fullscreenLoading = true;
       // this.loading = true;
       this.url_3 = "";
       var timer = setInterval(() => {
-        // this.myFunc();
+        this.myFunc();
         // TODO: get backend data
-      //   $.ajax({
-      //   url: "/nstjt",
-      //   type: "GET",
-      //   // data: senddata,
-      //   dataType: "json",
-      //   success: function (data) {
-      //     console.log(data)
-      //   }
-      // })
+        $.ajax({
+        url: "/nstjttmp",
+        type: "GET",
+        data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
+        dataType: "json",
+        success: function (data) {
+          console.log(data)
+        }
+      })
       }, 1000);
       axios
         .get(this.server_url + "/nstjt", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      ref: this.srcList2[this.srcList2.length - 1],}})
+                      ref: this.srcList2[this.srcList2.length - 1],
+                      timeString: timeString}})
         .then((response) => {
           
           this.percentage = 100;
