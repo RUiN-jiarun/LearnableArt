@@ -211,18 +211,19 @@ def nst_jt_page():
 
 @app.route('/nstjttmp', methods=['GET'])
 def nst_jt_tmp():
-    src = request.values.get('src')
-    timeString = request.values.get('timeString')
+    src = request.args.get('src')
+    timeString = request.args.get('timeString')
     if src:
         src_path = '.' + src[21:]
         # TODO: pid??
         # pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
         fname = src_path[9:].split('.')[0]
+        ftype = src_path[9:].split('.')[1]
         # pid = timeString + '_' + src_path[9:]
-        tmp_path_1 = timeString + '_' + fname + '_200.png'
-        tmp_path_2 = timeString + '_' + fname + '_400.png'
-        tmp_path_3 = timeString + '_' + fname + '_600.png'
-        tmp_path_4 = timeString + '_' + fname + '_800.png'
+        tmp_path_1 = timeString + '_' + fname + '_200.' + ftype
+        tmp_path_2 = timeString + '_' + fname + '_400.' + ftype
+        tmp_path_3 = timeString + '_' + fname + '_600.' + ftype
+        tmp_path_4 = timeString + '_' + fname + '_800.' + ftype
 
         
         return jsonify({'status': 1,
@@ -259,4 +260,4 @@ if __name__ == '__main__':
     for ff in files:
         if not os.path.exists(ff):
             os.makedirs(ff)
-    app.run(host='127.0.0.1', port=5003, debug=True)
+    app.run(host='127.0.0.1', port=5003, threaded=True)

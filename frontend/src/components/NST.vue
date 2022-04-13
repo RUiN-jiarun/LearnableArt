@@ -487,8 +487,8 @@ export default {
         this.myFunc();
         // TODO: get backend data
         $.ajax({
-        url: "/nstjttmp",
-        type: "GET",
+        url: "http://127.0.0.1:5003/nstjttmp",
+        type: "POST",
         data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
         dataType: "json",
         success: function (data) {
