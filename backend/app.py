@@ -194,11 +194,13 @@ def color_transfer_page():
 def nst_jt_page():
     src = request.values.get('src')
     ref = request.values.get('ref')
+    timeString = request.values.get('timeString')
     if src and ref:
         src_path = '.' + src[21:]
         ref_path = '.' + ref[21:]
         # global pid
-        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+        # pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+        pid = timeString + '_' + src_path[9:]
         output_path = './tmp/draw/trans_' + pid
         # TODO: NST Here
         nst(content_image=src_path, style_image=ref_path, output_image=output_path)
@@ -210,14 +212,24 @@ def nst_jt_page():
 @app.route('/nstjttmp', methods=['GET'])
 def nst_jt_tmp():
     src = request.values.get('src')
+    timeString = request.values.get('timeString')
     if src:
         src_path = '.' + src[21:]
         # TODO: pid??
-        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
-        output_path = './tmp/draw/trans_' + pid
+        # pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+        fname = src_path[9:].split('.')[0]
+        # pid = timeString + '_' + src_path[9:]
+        tmp_path_1 = timeString + '_' + fname + '_200.png'
+        tmp_path_2 = timeString + '_' + fname + '_400.png'
+        tmp_path_3 = timeString + '_' + fname + '_600.png'
+        tmp_path_4 = timeString + '_' + fname + '_800.png'
+
         
         return jsonify({'status': 1,
-                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/trans_' + pid})
+                        'tmp_url_1': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_1,
+                        'tmp_url_2': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_2,
+                        'tmp_url_3': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_3,
+                        'tmp_url_4': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_4})
 
     return jsonify({'status': 0})
 

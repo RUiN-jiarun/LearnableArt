@@ -41,7 +41,7 @@ parser.add_argument("-output_image", default='out.png')
 parser.add_argument("-style_scale", type=float, default=1.0)
 parser.add_argument("-original_colors", type=int, choices=[0, 1], default=0)
 parser.add_argument("-pooling", choices=['avg', 'max'], default='max')
-parser.add_argument("-model_file", type=str, default='models/vgg19-d01eb7cb.pth')
+parser.add_argument("-model_file", type=str, default='NST/models/vgg19-d01eb7cb.pth')
 parser.add_argument("-backend", choices=['nn', 'cudnn', 'mkl', 'mkldnn', 'openmp', 'mkl,cudnn', 'cudnn,mkl'], default='cudnn')
 parser.add_argument("-cudnn_autotune", action='store_true')
 parser.add_argument("-seed", type=int, default=-1)
@@ -63,7 +63,7 @@ def param_main(content_image, style_image, output_image):
     params.style_image = style_image
     params.output_image = output_image
     print(params)
-    # main()
+    main()
 
 
 def main():

@@ -492,7 +492,15 @@ export default {
         data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
         dataType: "json",
         success: function (data) {
-          console.log(data)
+          console.log(data);
+          this.url_4_1 = data.tmp_url_1;
+          this.url_4_2 = data.tmp_url_2;
+          this.url_4_3 = data.tmp_url_3;
+          this.url_4_4 = data.tmp_url_4;
+          this.srcList4_1.push(this.url_4_1);
+          this.srcList4_2.push(this.url_4_2);
+          this.srcList4_3.push(this.url_4_3);
+          this.srcList4_4.push(this.url_4_4);
         }
       })
       }, 1000);
