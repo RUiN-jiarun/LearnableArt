@@ -483,7 +483,24 @@ export default {
       // this.fullscreenLoading = true;
       // this.loading = true;
       this.url_3 = "";
-      // var _this = this;
+
+      // TEST: Get all tmp urls at first
+      // var src_path = '.' + this.srcList1[this.srcList1.length - 1].substring(21);
+      // var fname = src_path.substring(9).split('.')[0];
+      // var ftype = src_path.substring(9).split('.')[1];
+      // var tmp_path_1 = 'http://127.0.0.1:5003/tmp/draw/trans_' + timeString + '_' + fname + '_200.' + ftype;
+      // var tmp_path_2 = 'http://127.0.0.1:5003/tmp/draw/trans_' + timeString + '_' + fname + '_400.' + ftype;
+      // var tmp_path_3 = 'http://127.0.0.1:5003/tmp/draw/trans_' + timeString + '_' + fname + '_600.' + ftype;
+      // var tmp_path_4 = 'http://127.0.0.1:5003/tmp/draw/trans_' + timeString + '_' + fname + '_800.' + ftype;
+      // this.url_4_1 = tmp_path_1;
+      // this.url_4_2 = tmp_path_2;
+      // this.url_4_3 = tmp_path_3;
+      // this.url_4_4 = tmp_path_4;
+      // this.srcList4_1.push(this.url_4_1);
+      // this.srcList4_2.push(this.url_4_2);
+      // this.srcList4_3.push(this.url_4_3);
+      // this.srcList4_4.push(this.url_4_4);
+
       var timer = setInterval(() => {
         this.myFunc();
         // TODO: get backend data
@@ -493,11 +510,11 @@ export default {
         data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
         dataType: "json",
         success: (data) => {
-          console.log(data.tmp_url_1);
-          this.url_4_1 = data.tmp_url_1;
-          this.url_4_2 = data.tmp_url_2;
-          this.url_4_3 = data.tmp_url_3;
-          this.url_4_4 = data.tmp_url_4;
+          if (data.tmp_url_1)   this.url_4_1 = data.tmp_url_1;
+          if (data.tmp_url_2)   this.url_4_2 = data.tmp_url_2;
+          if (data.tmp_url_3)   this.url_4_3 = data.tmp_url_3;
+          if (data.tmp_url_4)   this.url_4_4 = data.tmp_url_4;
+
           this.srcList4_1.push(this.url_4_1);
           this.srcList4_2.push(this.url_4_2);
           this.srcList4_3.push(this.url_4_3);

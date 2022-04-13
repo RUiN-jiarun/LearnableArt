@@ -202,6 +202,13 @@ def nst_jt_page():
         # pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
         pid = timeString + '_' + src_path[9:]
         output_path = './tmp/draw/trans_' + pid
+        fname = src_path[9:].split('.')[0]
+        ftype = src_path[9:].split('.')[1]
+        # pid = timeString + '_' + src_path[9:]
+        tmp_path_1 = timeString + '_' + fname + '_200.' + ftype
+        tmp_path_2 = timeString + '_' + fname + '_400.' + ftype
+        tmp_path_3 = timeString + '_' + fname + '_600.' + ftype
+        tmp_path_4 = timeString + '_' + fname + '_800.' + ftype
         # TODO: NST Here
         nst(content_image=src_path, style_image=ref_path, output_image=output_path)
         return jsonify({'status': 1,
@@ -213,10 +220,9 @@ def nst_jt_page():
 def nst_jt_tmp():
     src = request.args.get('src')
     timeString = request.args.get('timeString')
-    print(src, timeString)
+    # print(src, timeString)
     if src:
         src_path = '.' + src[21:]
-        # TODO: pid??
         # pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
         fname = src_path[9:].split('.')[0]
         ftype = src_path[9:].split('.')[1]
@@ -226,12 +232,24 @@ def nst_jt_tmp():
         tmp_path_3 = timeString + '_' + fname + '_600.' + ftype
         tmp_path_4 = timeString + '_' + fname + '_800.' + ftype
 
-        
-        return jsonify({'status': 1,
-                        'tmp_url_1': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_1,
-                        'tmp_url_2': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_2,
-                        'tmp_url_3': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_3,
-                        'tmp_url_4': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_4})
+        data = {}
+        data['status'] = 1
+
+        if os.path.exists('tmp/draw/trans_' + tmp_path_1):
+            data['tmp_url_1'] = 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_1
+        if os.path.exists('tmp/draw/trans_' + tmp_path_2):
+            data['tmp_url_2'] = 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_2
+        if os.path.exists('tmp/draw/trans_' + tmp_path_3):
+            data['tmp_url_3'] = 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_3
+        if os.path.exists('tmp/draw/trans_' + tmp_path_4):
+            data['tmp_url_4'] = 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_4
+
+        # return jsonify({'status': 1,
+        #                 'tmp_url_1': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_1,
+        #                 'tmp_url_2': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_2,
+        #                 'tmp_url_3': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_3,
+        #                 'tmp_url_4': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_4})
+        return jsonify(data)
 
     return jsonify({'status': 0})
 
