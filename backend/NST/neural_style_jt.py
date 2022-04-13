@@ -65,7 +65,9 @@ def param_main(content_image, style_image, output_image):
     # print(params)
     main()
     # TODO: Memory collection
+    jt.sync_all()
     jt.gc()
+    print('Done.')
 
 
 def main():
@@ -290,7 +292,7 @@ def main():
 
         optimizer.backward(loss)
         optimizer.step()
-        jt.gc()
+        # jt.gc()
         maybe_save(num_calls[0])
         maybe_print(num_calls[0], loss)
 

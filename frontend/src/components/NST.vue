@@ -483,16 +483,17 @@ export default {
       // this.fullscreenLoading = true;
       // this.loading = true;
       this.url_3 = "";
+      // var _this = this;
       var timer = setInterval(() => {
         this.myFunc();
         // TODO: get backend data
         $.ajax({
         url: "http://127.0.0.1:5003/nstjttmp",
-        type: "POST",
+        type: "GET",
         data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
         dataType: "json",
-        success: function (data) {
-          console.log(data);
+        success: (data) => {
+          console.log(data.tmp_url_1);
           this.url_4_1 = data.tmp_url_1;
           this.url_4_2 = data.tmp_url_2;
           this.url_4_3 = data.tmp_url_3;

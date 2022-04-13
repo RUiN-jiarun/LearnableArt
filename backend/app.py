@@ -213,6 +213,7 @@ def nst_jt_page():
 def nst_jt_tmp():
     src = request.args.get('src')
     timeString = request.args.get('timeString')
+    print(src, timeString)
     if src:
         src_path = '.' + src[21:]
         # TODO: pid??
