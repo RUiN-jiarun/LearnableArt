@@ -223,6 +223,7 @@ class LBFGS(Optimizer):
                  line_search_fn=None):
         if max_eval is None:
             max_eval = max_iter * 5 // 4
+        # TODO: Add param
         defaults = dict(
             lr=lr,
             max_iter=max_iter,
@@ -295,13 +296,14 @@ class LBFGS(Optimizer):
 
         group = self.param_groups[0]
         # lr = group['lr']
-        lr = self.lr
         max_iter = group['max_iter']
         max_eval = group['max_eval']
         tolerance_grad = group['tolerance_grad']
         tolerance_change = group['tolerance_change']
         line_search_fn = group['line_search_fn']
         history_size = group['history_size']
+        lr = self.lr
+        # max_iter = self.max_iter
 
         # NOTE: LBFGS has only global state, but we register it as state for
         # the first param, because this helps with casting in load_state_dict

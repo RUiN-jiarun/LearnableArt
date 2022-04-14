@@ -237,19 +237,23 @@ def nst_jt_tmp():
 
         if os.path.exists('tmp/draw/trans_' + tmp_path_1):
             data['tmp_url_1'] = 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_1
+            return jsonify(data)
         if os.path.exists('tmp/draw/trans_' + tmp_path_2):
             data['tmp_url_2'] = 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_2
+            return jsonify(data)
         if os.path.exists('tmp/draw/trans_' + tmp_path_3):
             data['tmp_url_3'] = 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_3
+            return jsonify(data)
         if os.path.exists('tmp/draw/trans_' + tmp_path_4):
             data['tmp_url_4'] = 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_4
+            return jsonify(data)
 
         # return jsonify({'status': 1,
         #                 'tmp_url_1': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_1,
         #                 'tmp_url_2': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_2,
         #                 'tmp_url_3': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_3,
         #                 'tmp_url_4': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_4})
-        return jsonify(data)
+        # return jsonify(data)
 
     return jsonify({'status': 0})
 

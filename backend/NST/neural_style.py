@@ -13,9 +13,9 @@ import matplotlib.pyplot as plt
 import argparse
 parser = argparse.ArgumentParser()
 # Basic options
-parser.add_argument("-style_image", help="Style target image", default='examples/inputs/the_scream.jpg')
+parser.add_argument("-style_image", help="Style target image", default='examples/inputs/starry_night.jpg')
 parser.add_argument("-style_blend_weights", default=None)
-parser.add_argument("-content_image", help="Content target image", default='examples/inputs/mill.jpg')
+parser.add_argument("-content_image", help="Content target image", default='examples/inputs/bird.png')
 parser.add_argument("-image_size", help="Maximum height / width of generated image", type=int, default=700)
 parser.add_argument("-gpu", help="Zero-indexed ID of the GPU to use; for CPU mode set -gpu = c", default=0)
 

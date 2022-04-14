@@ -4,17 +4,17 @@ import jittor as jt
 from jittor import nn
 from jittor import optim
 from jittor import transform
-from .lbfgs_jt import LBFGS
+from lbfgs_jt import LBFGS
 
 from PIL import Image
-from .models_jt import loadModel
+from models_jt import loadModel
 
 import argparse
 parser = argparse.ArgumentParser()
 # Basic options
-parser.add_argument("-style_image", help="Style target image", default='examples/inputs/the_scream.jpg')
+parser.add_argument("-style_image", help="Style target image", default='examples/inputs/starry_night.jpg')
 parser.add_argument("-style_blend_weights", default=None)
-parser.add_argument("-content_image", help="Content target image", default='examples/inputs/mill.jpg')
+parser.add_argument("-content_image", help="Content target image", default='examples/inputs/bird.png')
 parser.add_argument("-image_size", help="Maximum height / width of generated image", type=int, default=700)
 parser.add_argument("-gpu", help="Zero-indexed ID of the GPU to use; for CPU mode set -gpu = c", default=0)
 
@@ -41,7 +41,7 @@ parser.add_argument("-output_image", default='out.png')
 parser.add_argument("-style_scale", type=float, default=1.0)
 parser.add_argument("-original_colors", type=int, choices=[0, 1], default=0)
 parser.add_argument("-pooling", choices=['avg', 'max'], default='max')
-parser.add_argument("-model_file", type=str, default='NST/models/vgg19-d01eb7cb.pth')
+parser.add_argument("-model_file", type=str, default='models/vgg19-d01eb7cb.pth')   # NST/models/vgg19-d01eb7cb.pth
 parser.add_argument("-backend", choices=['nn', 'cudnn', 'mkl', 'mkldnn', 'openmp', 'mkl,cudnn', 'cudnn,mkl'], default='cudnn')
 parser.add_argument("-cudnn_autotune", action='store_true')
 parser.add_argument("-seed", type=int, default=-1)
@@ -291,7 +291,10 @@ def main():
                 loss += mod.loss
 
         optimizer.backward(loss)
-        optimizer.step()
+        if params.optimizer == 'lbfgs':
+            optimizer.step(feval)
+        else:
+            optimizer.step()
         # jt.gc()
         maybe_save(num_calls[0])
         maybe_print(num_calls[0], loss)
