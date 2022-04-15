@@ -216,7 +216,7 @@ def main():
         else:
             img = content_image.clone()
     img = nn.Parameter(img)
-    print(img)
+    # print(img)
 
     # # Initialize params for plot
     loss_list = []

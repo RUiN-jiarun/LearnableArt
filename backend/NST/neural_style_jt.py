@@ -4,7 +4,10 @@ import jittor as jt
 from jittor import nn
 from jittor import optim
 from jittor import transform
-from lbfgs_jt import LBFGS
+# FUCK.
+from torch.optim import LBFGS
+import torch
+# from lbfgs_jt import LBFGS
 
 from PIL import Image
 from models_jt import loadModel
@@ -71,6 +74,8 @@ def param_main(content_image, style_image, output_image):
 
 
 def main():
+    jt.flags.use_cuda = 1
+
     dtype, multidevice, backward_device = setup_gpu()
 
     cnn, layerList = loadModel(params.model_file, params.pooling, params.gpu)
@@ -258,13 +263,18 @@ def main():
         loss = 0
 
         for mod in content_losses:
-            loss += mod.loss
+            # print(mod.loss.data)
+            loss += torch.tensor(mod.loss.data).to('cuda:0')
         for mod in style_losses:
-            loss += mod.loss
+            # print(mod)
+            loss += torch.tensor(mod.loss.data).to('cuda:0')
+            jt.gc()
         if params.tv_weight > 0:
             for mod in tv_losses:
-                loss += mod.loss
-
+                loss += torch.tensor(mod.loss.data).to('cuda:0')
+        # print(loss)
+        # TODO: requires_grad
+        # loss = torch.tensor(loss.data)
         loss.backward()
 
         maybe_save(num_calls[0])
@@ -290,10 +300,12 @@ def main():
             for mod in tv_losses:
                 loss += mod.loss
 
-        optimizer.backward(loss)
+        
         if params.optimizer == 'lbfgs':
             optimizer.step(feval)
+            # optimizer.step()
         else:
+            optimizer.backward(loss)
             optimizer.step()
         # jt.gc()
         maybe_save(num_calls[0])
@@ -311,7 +323,7 @@ def setup_optimizer(img):
         }
         if params.lbfgs_num_correction != 100:
             optim_state['history_size'] = params.lbfgs_num_correction
-        optimizer = LBFGS([img], **optim_state)
+        optimizer = LBFGS([torch.tensor(img.data)], **optim_state)
         loopVal = 1
     elif params.optimizer == 'adam':
         print("Running optimization with ADAM")

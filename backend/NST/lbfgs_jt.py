@@ -1,6 +1,7 @@
 import jittor as jt
 from functools import reduce
 from jittor.optim import Optimizer
+from collections import defaultdict
 
 
 def _cubic_interpolate(x1, f1, g1, x2, f2, g2, bounds=None):
@@ -221,18 +222,18 @@ class LBFGS(Optimizer):
                  tolerance_change=1e-9,
                  history_size=100,
                  line_search_fn=None):
+        super().__init__(params, lr)
         if max_eval is None:
             max_eval = max_iter * 5 // 4
         # TODO: Add param
-        defaults = dict(
-            lr=lr,
-            max_iter=max_iter,
-            max_eval=max_eval,
-            tolerance_grad=tolerance_grad,
-            tolerance_change=tolerance_change,
-            history_size=history_size,
-            line_search_fn=line_search_fn)
-        super(LBFGS, self).__init__(params, defaults)
+        self.max_iter = max_iter
+        self.max_eval = max_eval
+        self.tolerance_grad = tolerance_grad
+        self.tolerance_change = tolerance_change
+        self.history_size = history_size
+        self.line_search_fn = line_search_fn
+
+        self.state = defaultdict(dict)
 
         if len(self.param_groups) != 1:
             raise ValueError("LBFGS doesn't support per-parameter options "
@@ -240,6 +241,19 @@ class LBFGS(Optimizer):
 
         self._params = self.param_groups[0]['params']
         self._numel_cache = None
+
+        # initialize required arguments for each param_groups
+        for pg in self.param_groups:
+            values = pg["values"] = []
+            for p in pg["params"]:
+                values.append(jt.zeros(p.shape, p.dtype).stop_grad())
+
+    def add_param_group(self, group):
+        values = group["values"] = []
+        for p in group["params"]:
+            values.append(jt.zeros(p.shape, p.dtype).stop_grad())
+        self.param_groups.append(group)
+
 
     def _numel(self):
         if self._numel_cache is None:
@@ -249,14 +263,17 @@ class LBFGS(Optimizer):
     def _gather_flat_grad(self):
         views = []
         for p in self._params:
-            if p.grad is None:
+            # print(p)
+            p.requires_grad = True
+            if jt.grad(p) is None:
                 view = p.new(p.numel()).zero_()
-            elif p.grad.is_sparse:
-                view = p.grad.to_dense().view(-1)
+            # elif p.opt_grad(self).is_sparse:
+            #     view = p.opt_grad(self).to_dense().view(-1)
             else:
-                view = p.grad.view(-1)
+                print(p.opt_grad(self))
+                view = p.opt_grad(self).view(-1)
             views.append(view)
-        return jt.cat(views, 0)
+        return jt.concat(views, 0)
 
     def _add_grad(self, step_size, update):
         offset = 0
@@ -274,15 +291,15 @@ class LBFGS(Optimizer):
         for p, pdata in zip(self._params, params_data):
             p.copy_(pdata)
 
-    def _directional_evaluate(self, closure, x, t, d):
+
+    def _directional_evaluate(self, loss, x, t, d):
         self._add_grad(t, d)
-        loss = float(closure())
+        loss = float(loss)
         flat_grad = self._gather_flat_grad()
         self._set_param(x)
         return loss, flat_grad
 
-    @jt.no_grad()
-    def step(self, closure):
+    def step(self, loss=None):
         """Performs a single optimization step.
 
         Args:
@@ -292,33 +309,39 @@ class LBFGS(Optimizer):
         assert len(self.param_groups) == 1
 
         # Make sure the closure is always called with grad enabled
-        closure = jt.enable_grad()(closure)
+        if loss is not None:
+            self.pre_step(loss)
+        # loss = jt.enable_grad()(loss)
 
         group = self.param_groups[0]
         # lr = group['lr']
-        max_iter = group['max_iter']
-        max_eval = group['max_eval']
-        tolerance_grad = group['tolerance_grad']
-        tolerance_change = group['tolerance_change']
-        line_search_fn = group['line_search_fn']
-        history_size = group['history_size']
+        max_iter = self.max_iter
+        max_eval = self.max_eval
+        tolerance_grad = self.tolerance_grad
+        tolerance_change = self.tolerance_change
+        line_search_fn = self.line_search_fn
+        history_size = self.history_size
         lr = self.lr
         # max_iter = self.max_iter
 
         # NOTE: LBFGS has only global state, but we register it as state for
         # the first param, because this helps with casting in load_state_dict
-        state = self.state[self._params[0]]
+
+        state = defaultdict()
         state.setdefault('func_evals', 0)
         state.setdefault('n_iter', 0)
 
         # evaluate initial f(x) and df/dx
-        orig_loss = closure()
-        loss = float(orig_loss)
+        orig_loss = loss
+        # loss = float(orig_loss)
         current_evals = 1
         state['func_evals'] += 1
 
         flat_grad = self._gather_flat_grad()
-        opt_cond = flat_grad.abs().max() <= tolerance_grad
+        opt_cond = False
+        print(flat_grad)
+        if flat_grad.abs().max().data <= tolerance_grad:
+            opt_cond = True
 
         # optimal condition
         if opt_cond:
@@ -424,7 +447,7 @@ class LBFGS(Optimizer):
                     x_init = self._clone_param()
 
                     def obj_func(x, t, d):
-                        return self._directional_evaluate(closure, x, t, d)
+                        return self._directional_evaluate(loss, x, t, d)
 
                     loss, flat_grad, t, ls_func_evals = _strong_wolfe(
                         obj_func, x_init, t, d, loss, flat_grad, gtd)
@@ -438,7 +461,7 @@ class LBFGS(Optimizer):
                     # the reason we do this: in a stochastic setting,
                     # no use to re-evaluate that function here
                     with jt.enable_grad():
-                        loss = float(closure())
+                        loss = float(loss)
                     flat_grad = self._gather_flat_grad()
                     opt_cond = flat_grad.abs().max() <= tolerance_grad
                     ls_func_evals = 1
@@ -461,7 +484,7 @@ class LBFGS(Optimizer):
                 break
 
             # lack of progress
-            if d.mul(t).abs().max() <= tolerance_change:
+            if d.multiply(t).abs().max() <= tolerance_change:
                 break
 
             if abs(loss - prev_loss) < tolerance_change:
@@ -476,4 +499,5 @@ class LBFGS(Optimizer):
         state['prev_flat_grad'] = prev_flat_grad
         state['prev_loss'] = prev_loss
 
-        return orig_loss
+        # return orig_loss
+        self.zero_grad()
