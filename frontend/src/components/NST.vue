@@ -218,7 +218,7 @@
             > -->
               <div>TEST：傻瓜风格迁移</div>
               <el-image
-                :src="url_3"
+                :src="url_5"
                 class="image_2"
                 :preview-src-list="srcList3"
                 style="border-radius: 3px"
@@ -246,7 +246,7 @@
             </div>
             <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
               <el-image
-                :src="url_4_1"
+                :src="url_6_1"
                 class="image_3"
                 :preview-src-list="srcList4_1"
                 style="border-radius: 3px;"
@@ -258,7 +258,7 @@
                 </div>
               </el-image>
               <el-image
-                :src="url_4_2"
+                :src="url_6_2"
                 class="image_3"
                 :preview-src-list="srcList4_2"
                 style="border-radius: 3px;"
@@ -273,7 +273,7 @@
             </div>
             <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
               <el-image
-                :src="url_4_3"
+                :src="url_6_3"
                 class="image_3"
                 :preview-src-list="srcList4_3"
                 style="border-radius: 3px;"
@@ -285,7 +285,7 @@
                 </div>
               </el-image>
               <el-image
-                :src="url_4_4"
+                :src="url_6_4"
                 class="image_3"
                 :preview-src-list="srcList4_4"
                 style="border-radius: 3px;"
@@ -603,7 +603,7 @@ export default {
         this.myFunc();
         // TODO: get backend data
         $.ajax({
-        url: "http://127.0.0.1:5003/nstjttmp",
+        url: "http://127.0.0.1:5003/nsttmp",
         type: "GET",
         data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
         dataType: "json",
@@ -631,7 +631,7 @@ export default {
           clearInterval(timer);
           if (response.data.status == 1) {
             this.url_5 = response.data.draw_url;
-            this.srcList3.push(this.url_3);
+            this.srcList5.push(this.url_5);
             this.fullscreenLoading = false;
             this.loading = false;
             

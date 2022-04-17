@@ -6,7 +6,7 @@ import torch.optim as optim
 import torchvision.transforms as transforms
 
 from PIL import Image
-from models import loadModel, ModelParallel
+from .models import loadModel, ModelParallel
 
 import matplotlib.pyplot as plt
 
@@ -42,7 +42,7 @@ parser.add_argument("-output_image", default='out.png')
 parser.add_argument("-style_scale", type=float, default=1.0)
 parser.add_argument("-original_colors", type=int, choices=[0, 1], default=0)
 parser.add_argument("-pooling", choices=['avg', 'max'], default='max')
-parser.add_argument("-model_file", type=str, default='models/vgg19-d01eb7cb.pth')
+parser.add_argument("-model_file", type=str, default='NST/models/vgg19-d01eb7cb.pth')
 parser.add_argument("-disable_check", action='store_true')
 parser.add_argument("-backend", choices=['nn', 'cudnn', 'mkl', 'mkldnn', 'openmp', 'mkl,cudnn', 'cudnn,mkl'], default='cudnn')
 parser.add_argument("-cudnn_autotune", action='store_true')
@@ -269,7 +269,6 @@ def main():
         loss = 0
 
         for mod in content_losses:
-            print(mod.loss)
             loss += mod.loss.to(backward_device)
         for mod in style_losses:
             loss += mod.loss.to(backward_device)

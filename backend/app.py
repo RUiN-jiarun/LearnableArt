@@ -8,7 +8,8 @@ from flask import *
 from preprocessing.utils.application import run as match
 from preprocessing.core import Params
 from postprocessing.color_transfer import color_trans
-from NST.neural_style_jt import param_main as nst
+from NST.neural_style_jt import param_main as nst_jt
+from NST.neural_style import param_main as nst_pt
 
 import io
 import imageio
@@ -210,7 +211,33 @@ def nst_jt_page():
         tmp_path_3 = timeString + '_' + fname + '_600.' + ftype
         tmp_path_4 = timeString + '_' + fname + '_800.' + ftype
         # TODO: NST Here
-        nst(content_image=src_path, style_image=ref_path, output_image=output_path)
+        nst_jt(content_image=src_path, style_image=ref_path, output_image=output_path)
+        return jsonify({'status': 1,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/trans_' + pid})
+
+    return jsonify({'status': 0})
+
+@app.route('/nstpt', methods=['GET'])
+def nst_pt_page():
+    src = request.values.get('src')
+    ref = request.values.get('ref')
+    timeString = request.values.get('timeString')
+    if src and ref:
+        src_path = '.' + src[21:]
+        ref_path = '.' + ref[21:]
+        # global pid
+        # pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+        pid = timeString + '_' + src_path[9:]
+        output_path = './tmp/draw/trans_' + pid
+        fname = src_path[9:].split('.')[0]
+        ftype = src_path[9:].split('.')[1]
+        # pid = timeString + '_' + src_path[9:]
+        tmp_path_1 = timeString + '_' + fname + '_200.' + ftype
+        tmp_path_2 = timeString + '_' + fname + '_400.' + ftype
+        tmp_path_3 = timeString + '_' + fname + '_600.' + ftype
+        tmp_path_4 = timeString + '_' + fname + '_800.' + ftype
+        # TODO: NST Here
+        nst_pt(content_image=src_path, style_image=ref_path, output_image=output_path)
         return jsonify({'status': 1,
                         'draw_url': 'http://127.0.0.1:5003/tmp/draw/trans_' + pid})
 
