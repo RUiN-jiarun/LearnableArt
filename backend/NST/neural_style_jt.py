@@ -75,6 +75,7 @@ def param_main(content_image, style_image, output_image):
 
 def main():
     jt.flags.use_cuda = 1
+    jt.cudnn.set_max_workspace_ratio(0.0)
 
     dtype, multidevice, backward_device = setup_gpu()
 
@@ -264,17 +265,18 @@ def main():
 
         for mod in content_losses:
             # print(mod.loss.data)
-            loss += torch.tensor(mod.loss.data).to('cuda:0')
+            loss += torch.tensor(mod.loss.data).to('cuda:0').requires_grad_()
         for mod in style_losses:
             # print(mod)
-            loss += torch.tensor(mod.loss.data).to('cuda:0')
-            jt.gc()
+            loss += torch.tensor(mod.loss.data).to('cuda:0').requires_grad_()
+            # jt.gc()
         if params.tv_weight > 0:
             for mod in tv_losses:
-                loss += torch.tensor(mod.loss.data).to('cuda:0')
+                loss += torch.tensor(mod.loss.data).to('cuda:0').requires_grad_()
         # print(loss)
         # TODO: requires_grad
         # loss = torch.tensor(loss.data)
+        loss.requires_grad_()
         loss.backward()
 
         maybe_save(num_calls[0])
@@ -285,31 +287,32 @@ def main():
         return loss
 
     optimizer, loopVal = setup_optimizer(img)
-    while num_calls[0] <= loopVal:
-        # optimizer.step(feval)
-        num_calls[0] += 1
-        optimizer.zero_grad()
-        net(img)
-        loss = 0
-
-        for mod in content_losses:
-            loss += mod.loss
-        for mod in style_losses:
-            loss += mod.loss
-        if params.tv_weight > 0:
-            for mod in tv_losses:
-                loss += mod.loss
-
-        
-        if params.optimizer == 'lbfgs':
+    if params.optimizer == 'lbfgs':
+        while num_calls[0] <= loopVal:
             optimizer.step(feval)
-            # optimizer.step()
-        else:
+            # jt.gc()
+    else: 
+        while num_calls[0] <= loopVal:
+            # optimizer.step(feval)
+            num_calls[0] += 1
+            optimizer.zero_grad()
+            net(img)
+            loss = 0
+
+            for mod in content_losses:
+                loss += mod.loss
+            for mod in style_losses:
+                loss += mod.loss
+            if params.tv_weight > 0:
+                for mod in tv_losses:
+                    loss += mod.loss
+
+            
             optimizer.backward(loss)
             optimizer.step()
-        # jt.gc()
-        maybe_save(num_calls[0])
-        maybe_print(num_calls[0], loss)
+            # jt.gc()
+            maybe_save(num_calls[0])
+            maybe_print(num_calls[0], loss)
 
 
 # Configure the optimizer

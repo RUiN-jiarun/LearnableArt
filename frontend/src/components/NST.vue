@@ -114,9 +114,9 @@
       <div id="info_patient">
         <el-card class="box-card" style="border-radius: 8px; width: 950px; height:550px;">
           <el-tabs v-model="activeName">
-            <el-tab-pane label="简单迁移" name="first">
+            <el-tab-pane label="jittor引擎迁移" name="first">
             </el-tab-pane>
-            <el-tab-pane label="eee" name="second">
+            <el-tab-pane label="pytorch引擎迁移" name="second">
             </el-tab-pane>
 
             <div v-if="activeName=='first'">
@@ -148,7 +148,7 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="nst"
+                      @click="nstjt"
                     >开始处理
                 </el-button>
                 </div>
@@ -179,6 +179,9 @@
                   </div>
                 </div>
               </el-image>
+              
+            </div>
+            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
               <el-image
                 :src="url_4_3"
                 class="image_3"
@@ -191,8 +194,6 @@
                   </div>
                 </div>
               </el-image>
-            </div>
-            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
               <el-image
                 :src="url_4_4"
                 class="image_3"
@@ -205,65 +206,97 @@
                   </div>
                 </div>
               </el-image>
-              <el-image
-                :src="url_4_5"
-                class="image_3"
-                :preview-src-list="srcList4_5"
-                style="border-radius: 3px;"
-              >
-                <div slot="error">
-                  <div slot="placeholder" class="error" style="margin-top: 50px;">
-                    <el-progress :percentage="percentage"></el-progress>
-                  </div>
-                </div>
-              </el-image>
-              <el-image
-                :src="url_4_6"
-                class="image_3"
-                :preview-src-list="srcList4_6"
-                style="border-radius: 3px;"
-              >
-                <div slot="error">
-                  <div slot="placeholder" class="error" style="margin-top: 50px;">
-                    <el-progress :percentage="percentage"></el-progress>
-                  </div>
-                </div>
-              </el-image>
+              
             </div>
             </div>
             <div v-if="activeName=='second'">
-            <div class="demo-image__preview1" >
-            <div
+            <div class="demo-image__preview1" style="float: left; width: 30%; margin: 50px 20px;">
+            <!-- <div
               v-loading="loading"
               element-loading-text="处理图片中"
               element-loading-spinner="el-icon-loading"
-            >
+            > -->
+              <div>TEST：傻瓜风格迁移</div>
               <el-image
-                :src="url_4"
+                :src="url_3"
                 class="image_2"
-                :preview-src-list="srcList4"
-                style="border-radius: 3px;"
+                :preview-src-list="srcList3"
+                style="border-radius: 3px"
               >
                 <div slot="error">
-                  <div slot="placeholder" class="error">等待处理
+                  <div slot="placeholder" class="error">
+                    <el-progress :percentage="percentage"></el-progress>
                   </div>
+                  
                 </div>
               </el-image>
+              <!-- <el-progress :percentage="percentage"></el-progress> -->
+              <!-- <div>请耐心等待</div> -->
               
               <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
               <el-button
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="palettetransfer"
+                      @click="nstpt"
                     >开始处理
                 </el-button>
                 </div>
+            <!-- </div> -->
             </div>
-            
+            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
+              <el-image
+                :src="url_4_1"
+                class="image_3"
+                :preview-src-list="srcList4_1"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error" style="margin-top: 50px;">
+                    <el-progress :percentage="percentage"></el-progress>
+                  </div>
+                </div>
+              </el-image>
+              <el-image
+                :src="url_4_2"
+                class="image_3"
+                :preview-src-list="srcList4_2"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error" style="margin-top: 50px;">
+                    <el-progress :percentage="percentage"></el-progress>
+                  </div>
+                </div>
+              </el-image>
+              
             </div>
-            <div class="demo-image__preview1" style="float:left;">
-                <sketch-picker v-model="colors" />
+            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
+              <el-image
+                :src="url_4_3"
+                class="image_3"
+                :preview-src-list="srcList4_3"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error" style="margin-top: 50px;">
+                    <el-progress :percentage="percentage"></el-progress>
+                  </div>
+                </div>
+              </el-image>
+              <el-image
+                :src="url_4_4"
+                class="image_3"
+                :preview-src-list="srcList4_4"
+                style="border-radius: 3px;"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error" style="margin-top: 50px;">
+                    <el-progress :percentage="percentage"></el-progress>
+                  </div>
+                </div>
+              </el-image>
+              
             </div>
             </div>
             
@@ -298,8 +331,11 @@ export default {
       url_4_2: "",
       url_4_3: "",
       url_4_4: "",
-      url_4_5: "",
-      url_4_6: "",
+      url_5: "",
+      url_6_1: "",  // 过程图片
+      url_6_2: "",
+      url_6_3: "",
+      url_6_4: "",
       textarea: "",
       srcList1: [],
       srcList2: [],
@@ -308,8 +344,11 @@ export default {
       srcList4_2: [],
       srcList4_3: [],
       srcList4_4: [],
-      srcList4_5: [],
-      srcList4_6: [],
+      srcList5: [],
+      srcList6_1: [],
+      srcList6_2: [],
+      srcList6_3: [],
+      srcList6_4: [],
       // feature_list: [],
       // feature_list_1: [],
       // feat_list: [],
@@ -329,20 +368,7 @@ export default {
       },
       dialogTableVisible: false,
       // 色彩迁移参数
-      isMasked: 0,
-      // algorithm: "fdm",
-      match_mode: 0,
-      // match_proportion: 1.0,
 
-      // 调色盘
-      colors : {
-        hex: '#194d33',
-        hex8: '#194D33A8',
-        hsl: { h: 150, s: 0.5, l: 0.2, a: 1 },
-        hsv: { h: 150, s: 0.66, v: 0.30, a: 1 },
-        rgba: { r: 25, g: 77, b: 51, a: 1 },
-        a: 1
-      }
     };
   },
   created: function () {
@@ -471,7 +497,7 @@ export default {
       fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length))); 
       return fmt; 
     },
-    nst() {
+    nstjt() {
       // console.log(this.srcList1[this.srcList1.length - 1]);
       // console.log(this.srcList2[this.srcList2.length - 1]);
       // this.dialogTableVisible = true;
@@ -483,6 +509,10 @@ export default {
       // this.fullscreenLoading = true;
       // this.loading = true;
       this.url_3 = "";
+      this.url_4_1 = "";
+      this.url_4_2 = "";
+      this.url_4_3 = "";
+      this.url_4_4 = "";
 
       // TEST: Get all tmp urls at first
       // var src_path = '.' + this.srcList1[this.srcList1.length - 1].substring(21);
@@ -505,7 +535,7 @@ export default {
         this.myFunc();
         // TODO: get backend data
         $.ajax({
-        url: "http://127.0.0.1:5003/nstjttmp",
+        url: "http://127.0.0.1:5003/nsttmp",
         type: "GET",
         data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
         dataType: "json",
@@ -551,46 +581,67 @@ export default {
           
         });
     },
-    palettetransfer() {
-      this.dialogTableVisible = true;
+    nstpt() {
+      // console.log(this.srcList1[this.srcList1.length - 1]);
+      // console.log(this.srcList2[this.srcList2.length - 1]);
+      // this.dialogTableVisible = true;
       this.percentage = 0;
-      this.fullscreenLoading = true;
-      this.loading = true;
-      this.url_4 = "";
-      // console.log(this.colors);
+
+      var d = new Date();
+      var timeString = this.dateFtt("yyyy-MM-dd-hh-mm-ss", d);
+      // console.log(timeString);
+      // this.fullscreenLoading = true;
+      // this.loading = true;
+      this.url_5 = "";
+      this.url_6_1 = "";
+      this.url_6_2 = "";
+      this.url_6_3 = "";
+      this.url_6_4 = "";
+
+
       var timer = setInterval(() => {
-      //   $.ajax({
-      //   url: "/nstjt",
-      //   type: "GET",
-      //   data: senddata,
-      //   dataType: "json",
-      //   success: function (data) {
-      //     console.log(data)
-      //   }
-      // })
+        this.myFunc();
+        // TODO: get backend data
+        $.ajax({
+        url: "http://127.0.0.1:5003/nstjttmp",
+        type: "GET",
+        data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
+        dataType: "json",
+        success: (data) => {
+          if (data.tmp_url_1)   this.url_6_1 = data.tmp_url_1;
+          if (data.tmp_url_2)   this.url_6_2 = data.tmp_url_2;
+          if (data.tmp_url_3)   this.url_6_3 = data.tmp_url_3;
+          if (data.tmp_url_4)   this.url_6_4 = data.tmp_url_4;
+
+          this.srcList6_1.push(this.url_6_1);
+          this.srcList6_2.push(this.url_6_2);
+          this.srcList6_3.push(this.url_6_3);
+          this.srcList6_4.push(this.url_6_4);
+        }
+      })
       }, 1000);
       axios
-        .get(this.server_url + "/colortransfer", 
+        .get(this.server_url + "/nstpt", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
                       ref: this.srcList2[this.srcList2.length - 1],
-                      isMasked: this.isMasked,
-                      hist_match: this.match_mode,}})
+                      timeString: timeString}})
         .then((response) => {
+          
           this.percentage = 100;
           clearInterval(timer);
           if (response.data.status == 1) {
-            this.url_4 = response.data.draw_url;
-            this.srcList4.push(this.url_4);
+            this.url_5 = response.data.draw_url;
+            this.srcList3.push(this.url_3);
             this.fullscreenLoading = false;
             this.loading = false;
-
+            
             this.dialogTableVisible = false;
             this.percentage = 0;
             this.notice("操作完成", "点击图片以查看大图", "success");
           } else {
             this.fullscreenLoading = false;
             this.loading = false;
-
+            
             this.dialogTableVisible = false;
             this.percentage = 0;
             this.notice("操作失败", "请重新检查", "error");
@@ -711,6 +762,7 @@ export default {
   width: 150px;
   height: 145px;
   background: #ffffff;
+  margin-top: 25px;
   /* display: inline-block; */
   /* float:left; */
 }

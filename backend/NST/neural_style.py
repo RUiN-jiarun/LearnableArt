@@ -63,6 +63,15 @@ params = parser.parse_args()
 
 Image.MAX_IMAGE_PIXELS = 1000000000 # Support gigapixel images
 
+def param_main(content_image, style_image, output_image):
+    params.content_image = content_image
+    params.style_image = style_image
+    params.output_image = output_image
+    # print(params)
+    main()
+    print('Done.')
+
+
 
 def main():
     dtype, multidevice, backward_device = setup_gpu()
@@ -260,6 +269,7 @@ def main():
         loss = 0
 
         for mod in content_losses:
+            print(mod.loss)
             loss += mod.loss.to(backward_device)
         for mod in style_losses:
             loss += mod.loss.to(backward_device)

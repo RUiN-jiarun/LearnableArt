@@ -216,8 +216,8 @@ def nst_jt_page():
 
     return jsonify({'status': 0})
 
-@app.route('/nstjttmp', methods=['GET'])
-def nst_jt_tmp():
+@app.route('/nsttmp', methods=['GET'])
+def nst_tmp():
     src = request.args.get('src')
     timeString = request.args.get('timeString')
     # print(src, timeString)
