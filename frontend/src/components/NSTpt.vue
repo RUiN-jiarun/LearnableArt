@@ -244,7 +244,7 @@
                 </div>
             <!-- </div> -->
             </div>
-            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
+            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px 0px;">
               <el-image
                 :src="url_6_1"
                 class="image_3"
@@ -258,21 +258,6 @@
                 </div>
               </el-image>
               <el-image
-                :src="url_6_2"
-                class="image_3"
-                :preview-src-list="srcList6_2"
-                style="border-radius: 3px;"
-              >
-                <div slot="error">
-                  <div slot="placeholder" class="error" style="margin-top: 50px;">
-                    <el-progress :percentage="percentage"></el-progress>
-                  </div>
-                </div>
-              </el-image>
-              
-            </div>
-            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
-              <el-image
                 :src="url_6_3"
                 class="image_3"
                 :preview-src-list="srcList6_3"
@@ -284,31 +269,20 @@
                   </div>
                 </div>
               </el-image>
-              <el-image
-                :src="url_6_4"
-                class="image_3"
-                :preview-src-list="srcList6_4"
-                style="border-radius: 3px;"
-              >
-                <div slot="error">
-                  <div slot="placeholder" class="error" style="margin-top: 50px;">
-                    <el-progress :percentage="percentage"></el-progress>
-                  </div>
-                </div>
-              </el-image>
+              
               
             </div>
             <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
               <div class="param_block">
                 <span>生成图像大小</span>
-                <el-radio-group style="margin-top: 10px;" v-model="isMasked">
+                <el-radio-group style="margin-top: 10px;" v-model="image_size">
                   <el-radio :label="1">是</el-radio>
                   <el-radio :label="0">否</el-radio>
                 </el-radio-group>
               </div>
               <div class="param_block">
                 <span>内容图像权重</span>
-                <el-radio-group style="margin-top: 10px;" v-model="match_mode">
+                <el-radio-group style="margin-top: 10px;" v-model="content_weight">
                   <el-radio :label="1">分布匹配</el-radio>
                   <el-radio :label="0">直接匹配</el-radio>
                 </el-radio-group>
@@ -317,19 +291,45 @@
                 <span>风格图像权重</span>
               </div>
               <div class="param_block">
+                <span>平滑程度</span>
+              </div>
+              <div class="param_block">
                 <span>初始图</span>
+                <el-radio-group style="margin-top: 10px;" v-model="init">
+                  <el-radio label="image">原图</el-radio>
+                  <el-radio label="random">噪声图</el-radio>
+                </el-radio-group>
               </div>
               <div class="param_block">
                 <span>优化器</span>
+                <el-radio-group style="margin-top: 10px;" v-model="optimizer">
+                  <el-radio label="lbfgs">L-BFGS</el-radio>
+                  <el-radio label="adam">Adam</el-radio>
+                </el-radio-group>
               </div>
+              
+            </div>
+            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
+              
               <div class="param_block">
                 <span>改进特征提取</span>
+                <el-radio-group style="margin-top: 10px;" v-model="improve_gram">
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="0">否</el-radio>
+                </el-radio-group>
               </div>
               <div class="param_block">
                 <span>风格层数</span>
               </div>
               <div class="param_block">
                 <span>风格尺寸</span>
+              </div>
+              <div class="param_block">
+                <span>池化方式</span>
+                <el-radio-group style="margin-top: 10px;" v-model="pooling">
+                  <el-radio label="max">最大池化</el-radio>
+                  <el-radio label="avg">平均池化</el-radio>
+                </el-radio-group>
               </div>
             </div>
             </div>
@@ -401,7 +401,17 @@ export default {
         opacity: 0,
       },
       dialogTableVisible: false,
-      // 色彩迁移参数
+      // 参数
+      image_size: 600,
+      content_weight: 5e0,
+      style_weight: 1e2,
+      tv_weight: 1e-4,
+      init: 'image',      // 'random'
+      optimizer: 'lbfgs', // 'adam'
+      improve_gram: 0,
+      style_scale: 1.0,
+      pooling: 'max',     // 'avg'
+      style_layers: [],
 
     };
   },
