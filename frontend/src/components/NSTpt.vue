@@ -1,5 +1,5 @@
 <template>
-  <div id="NST">
+  <div id="NSTpt">
     <el-dialog
       title="上传中"
       :visible.sync="dialogTableVisible"
@@ -114,9 +114,9 @@
       <div id="info_patient">
         <el-card class="box-card" style="border-radius: 8px; width: 950px; height:550px;">
           <el-tabs v-model="activeName">
-            <el-tab-pane label="jittor引擎迁移" name="first">
+            <el-tab-pane label="默认参数" name="first">
             </el-tab-pane>
-            <el-tab-pane label="pytorch引擎迁移" name="second">
+            <el-tab-pane label="完整参数" name="second">
             </el-tab-pane>
 
             <div v-if="activeName=='first'">
@@ -148,7 +148,7 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="nstjt"
+                      @click="nstpt"
                     >开始处理
                 </el-button>
                 </div>
@@ -216,11 +216,11 @@
               element-loading-text="处理图片中"
               element-loading-spinner="el-icon-loading"
             > -->
-              <div>TEST：傻瓜风格迁移</div>
+              <div>TEST：带参数风格迁移</div>
               <el-image
                 :src="url_5"
                 class="image_2"
-                :preview-src-list="srcList3"
+                :preview-src-list="srcList5"
                 style="border-radius: 3px"
               >
                 <div slot="error">
@@ -248,7 +248,7 @@
               <el-image
                 :src="url_6_1"
                 class="image_3"
-                :preview-src-list="srcList4_1"
+                :preview-src-list="srcList6_1"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -260,7 +260,7 @@
               <el-image
                 :src="url_6_2"
                 class="image_3"
-                :preview-src-list="srcList4_2"
+                :preview-src-list="srcList6_2"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -275,7 +275,7 @@
               <el-image
                 :src="url_6_3"
                 class="image_3"
-                :preview-src-list="srcList4_3"
+                :preview-src-list="srcList6_3"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -287,7 +287,7 @@
               <el-image
                 :src="url_6_4"
                 class="image_3"
-                :preview-src-list="srcList4_4"
+                :preview-src-list="srcList6_4"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -313,7 +313,7 @@ import axios from "axios";
 import {Sketch} from "vue-color";
 
 export default {
-  name: "NST",
+  name: "NSTpt",
   components: {
     // 'photoshop-picker': Photoshop,
     'sketch-picker': Sketch,
@@ -869,7 +869,7 @@ div {
   margin: 0px 0px;
 }
 
-#NST {
+#NSTpt {
   width: 85%;
   height: 800px;
   background-color: #ffffff;

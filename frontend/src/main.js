@@ -6,7 +6,8 @@ import Content from './components/Content'
 import Mask from './components/Mask'
 import Optim from './components/Optim'
 import Home from './components/Home'
-import NST from './components/NST'
+import NSTjt from './components/NSTjt'
+import NSTpt from './components/NSTpt'
 // import Sidebar from './components/Sidebar'
 import VueRouter from 'vue-router'
 import axios from 'axios'
@@ -52,10 +53,15 @@ const routes = [
         component: Optim,
     },
     {
-        path: '/nst',
-        name: 'nst',
-        component: NST,
-    }
+        path: '/nstjt',
+        name: 'nstjt',
+        component: NSTjt,
+    },
+    {
+        path: '/nstpt',
+        name: 'nstpt',
+        component: NSTpt,
+    },
 ]
 
 const router = new VueRouter({

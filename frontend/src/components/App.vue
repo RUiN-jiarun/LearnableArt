@@ -20,8 +20,8 @@
             </el-submenu>
             <el-submenu index="nst">
               <template slot="title"><i class="el-icon-document"></i>风格迁移</template>
-              <el-menu-item index="nst">风格迁移</el-menu-item>
-              <el-menu-item index="index2">编辑2</el-menu-item>
+              <el-menu-item index="nstjt">jittor引擎</el-menu-item>
+              <el-menu-item index="nstpt">pytorch引擎</el-menu-item>
               <el-menu-item index="index3">编辑3</el-menu-item>
             </el-submenu>
             <el-submenu index="post">
