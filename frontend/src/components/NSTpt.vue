@@ -112,7 +112,7 @@
         </el-card>
       </div>
       <div id="info_patient">
-        <el-card class="box-card" style="border-radius: 8px; width: 950px; height:550px;">
+        <el-card class="box-card" style="border-radius: 8px; width: 1200px; height:550px;">
           <el-tabs v-model="activeName">
             <el-tab-pane label="默认参数" name="first">
             </el-tab-pane>
@@ -210,7 +210,7 @@
             </div>
             </div>
             <div v-if="activeName=='second'">
-            <div class="demo-image__preview1" style="float: left; width: 30%; margin: 50px 20px;">
+            <div class="demo-image__preview1" style="float:left; width: 30%; margin: 50px 20px;">
             <!-- <div
               v-loading="loading"
               element-loading-text="处理图片中"
@@ -297,6 +297,40 @@
                 </div>
               </el-image>
               
+            </div>
+            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
+              <div class="param_block">
+                <span>生成图像大小</span>
+                <el-radio-group style="margin-top: 10px;" v-model="isMasked">
+                  <el-radio :label="1">是</el-radio>
+                  <el-radio :label="0">否</el-radio>
+                </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>内容图像权重</span>
+                <el-radio-group style="margin-top: 10px;" v-model="match_mode">
+                  <el-radio :label="1">分布匹配</el-radio>
+                  <el-radio :label="0">直接匹配</el-radio>
+                </el-radio-group>
+              </div>
+              <div class="param_block">
+                <span>风格图像权重</span>
+              </div>
+              <div class="param_block">
+                <span>初始图</span>
+              </div>
+              <div class="param_block">
+                <span>优化器</span>
+              </div>
+              <div class="param_block">
+                <span>改进特征提取</span>
+              </div>
+              <div class="param_block">
+                <span>风格层数</span>
+              </div>
+              <div class="param_block">
+                <span>风格尺寸</span>
+              </div>
             </div>
             </div>
             
