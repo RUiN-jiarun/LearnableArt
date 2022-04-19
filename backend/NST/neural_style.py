@@ -76,8 +76,18 @@ def param_main(content_image, style_image, output_image, image_size=600, content
     params.optimizer = optimizer
     params.style_scale = style_scale
     params.pooling = pooling
-    params.improve_gram = True
+    params.improve_gram = improve_gram
     # TODO: set up layers
+    if style_layers_num == 1:
+        params.style_layers = 'relu1_1,relu2_1,relu3_1,relu4_1,relu5_1'
+    elif style_layers_num == 2:
+        params.style_layers = 'relu1_1,relu1_2,relu2_1,relu2_2,relu3_1,relu3_2,relu4_1,relu5_1'
+    elif style_layers_num == 3:
+        params.style_layers = 'relu1_1,relu1_2,relu2_1,relu2_2,relu3_1,relu3_2,relu4_1,relu4_2,relu5_1,relu5_2'
+    elif style_layers_num == 4:
+        params.style_layers = 'relu1_1,relu1_2,relu2_1,relu2_2,relu3_1,relu3_2,relu3_3,relu4_1,relu4_2,relu4_3,relu5_1,relu5_2,relu5_3'
+    elif style_layers_num == 5:
+        params.style_layers = 'relu1_1,relu1_2,relu2_1,relu2_2,relu3_1,relu3_2,relu3_3,relu3_4,relu4_1,relu4_2,relu4_3,relu4_4,relu5_1,relu5_2,relu5_3,relu5_4'
     # print(params)
     main()
     print('Done.')
