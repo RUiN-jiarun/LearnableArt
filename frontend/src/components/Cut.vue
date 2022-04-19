@@ -114,9 +114,9 @@
       <div id="info_patient">
         <el-card class="box-card" style="border-radius: 8px; width: 800px;height:500px;">
           <el-tabs v-model="activeName">
-            <el-tab-pane label="参考图迁移" name="first">
+            <el-tab-pane label="智能蒙版裁剪" name="first">
             </el-tab-pane>
-            <el-tab-pane label="调色盘迁移" name="second">
+            <el-tab-pane label="手动生成蒙版" name="second">
             </el-tab-pane>
 
             <div v-if="activeName=='first'">

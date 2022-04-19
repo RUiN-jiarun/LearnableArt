@@ -22,12 +22,12 @@
               <template slot="title"><i class="el-icon-document"></i>风格迁移</template>
               <el-menu-item index="nstjt">jittor引擎</el-menu-item>
               <el-menu-item index="nstpt">pytorch引擎</el-menu-item>
-              <el-menu-item index="index3">编辑3</el-menu-item>
             </el-submenu>
             <el-submenu index="post">
               <template slot="title"><i class="el-icon-document"></i>后处理</template>
               <el-menu-item index="post">色彩迁移</el-menu-item>
               <el-menu-item index="cut">蒙版裁切</el-menu-item>
+              <el-menu-item index="sr">超分辨率</el-menu-item>
             </el-submenu>
             
           </el-menu>

@@ -8,6 +8,7 @@ from flask import *
 from preprocessing.utils.application import run as match
 from preprocessing.core import Params
 from postprocessing.color_transfer import color_trans
+from postprocessing.mask_transfer import mask_trans
 from NST.neural_style_jt import param_main as nst_jt
 from NST.neural_style import param_main as nst_pt
 
@@ -189,7 +190,32 @@ def color_transfer_page():
                         'draw_url': 'http://127.0.0.1:5003/tmp/draw/colortrans_' + pid})
 
     return jsonify({'status': 0})
-    
+
+@app.route('/masktransfer', methods=['GET'])
+def mask_transfer_page():
+    src = request.values.get('src')
+    ref = request.values.get('ref')
+
+    # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
+    # ./tmp/ct/xxxxx.jpg
+    # print(hist_match)
+    if src and ref:
+        src_path = '.' + src[21:]
+        ref_path = '.' + ref[21:]
+        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+        # TODO: mask trans param fix
+        # mask_trans(generated_image, content_image, content_mask)
+        # TODO: automask here?
+        img = mask_trans(src_path, ref_path)
+        output_path = './tmp/draw/masktrans_' + pid
+        imageio.imwrite(output_path, img)
+        # img = Image.fromarray(np.uint8(img))
+        # img.save(output_path)
+        return jsonify({'status': 1,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/masktrans_' + pid})
+
+    return jsonify({'status': 0})
+
 
 @app.route('/nstjt', methods=['GET'])
 def nst_jt_page():

@@ -42,7 +42,7 @@ def mask_content(content, generated, mask):
 
 
 def mask_trans(generated_image, content_image, content_mask):
-    image_path = os.path.splitext(generated_image)[0] + "_masked.png"
+    # image_path = os.path.splitext(generated_image)[0] + "_masked.png"
     generated_image = imread(generated_image, mode="RGB")
     img_width, img_height, channels = generated_image.shape
 
@@ -54,6 +54,6 @@ def mask_trans(generated_image, content_image, content_mask):
     img = mask_content(content_image, generated_image, mask)
     # return img
     
-    imsave(image_path, img)
+    # imsave(image_path, img)
 
     # print("Image saved at path : %s" % image_path)
