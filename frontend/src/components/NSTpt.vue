@@ -687,7 +687,16 @@ export default {
         .get(this.server_url + "/nstpt", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
                       ref: this.srcList2[this.srcList2.length - 1],
-                      timeString: timeString}})
+                      timeString: timeString,
+                      image_size: this.image_size,
+                      content_weight: this.content_weight,
+                      tv_weight: this.tv_weight,
+                      init: this.init,
+                      optimizer: this.optimizer,
+                      improve_gram: this.improve_gram,
+                      style_scale: this.style_scale,
+                      pooling: this.pooling,
+                      style_layers: this.style_layers}})
         .then((response) => {
           
           this.percentage = 100;

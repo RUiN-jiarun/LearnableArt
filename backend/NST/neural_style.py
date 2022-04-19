@@ -63,11 +63,21 @@ params = parser.parse_args()
 
 Image.MAX_IMAGE_PIXELS = 1000000000 # Support gigapixel images
 
-def param_main(content_image, style_image, output_image):
+def param_main(content_image, style_image, output_image, image_size=600, content_weight=5e0, tv_weight=1e-4,
+                init='image', optimizer='lbfgs', style_scale=1.0, pooling='max', improve_gram=False, style_layers_num=5):
     params.content_image = content_image
     params.style_image = style_image
     params.output_image = output_image
     params.cudnn_autotune = True
+    params.image_size = image_size
+    params.content_weight = content_weight
+    params.tv_weight = tv_weight
+    params.init = init
+    params.optimizer = optimizer
+    params.style_scale = style_scale
+    params.pooling = pooling
+    params.improve_gram = True
+    # TODO: set up layers
     # print(params)
     main()
     print('Done.')
