@@ -112,7 +112,7 @@
         </el-card>
       </div>
       <div id="info_patient">
-        <el-card class="box-card" style="border-radius: 8px; width: 1200px; height:550px;">
+        <el-card class="box-card" style="border-radius: 8px; width: 1250px; height:550px;">
           <el-tabs v-model="activeName">
             <el-tab-pane label="默认参数" name="first">
             </el-tab-pane>
@@ -272,26 +272,27 @@
               
               
             </div>
-            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
+            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px 20px;">
               <div class="param_block">
                 <span>生成图像大小</span>
-                <el-radio-group style="margin-top: 10px;" v-model="image_size">
-                  <el-radio :label="1">是</el-radio>
-                  <el-radio :label="0">否</el-radio>
-                </el-radio-group>
+                <el-slider style="margin-top: 0px;" v-model="image_size" :marks="image_size_marks" :min=256 :max=1024>
+                </el-slider>
               </div>
               <div class="param_block">
                 <span>内容图像权重</span>
                 <el-radio-group style="margin-top: 10px;" v-model="content_weight">
-                  <el-radio :label="1">分布匹配</el-radio>
-                  <el-radio :label="0">直接匹配</el-radio>
+                  <el-radio :label="5e0">具体</el-radio>
+                  <el-radio :label="1e0">平衡</el-radio>
+                  <el-radio :label="1e-1">抽象</el-radio>
                 </el-radio-group>
               </div>
               <div class="param_block">
-                <span>风格图像权重</span>
-              </div>
-              <div class="param_block">
                 <span>平滑程度</span>
+                <el-radio-group style="margin-top: 10px;" v-model="tv_weight">
+                  <el-radio :label="1e-3">模糊</el-radio>
+                  <el-radio :label="1e-4">平衡</el-radio>
+                  <el-radio :label="1e-5">锐化</el-radio>
+                </el-radio-group>
               </div>
               <div class="param_block">
                 <span>初始图</span>
@@ -309,7 +310,7 @@
               </div>
               
             </div>
-            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px;">
+            <div class="demo-image__preview1" style="float:left; width: 20%; margin: 10px; ">
               
               <div class="param_block">
                 <span>改进特征提取</span>
@@ -319,10 +320,25 @@
                 </el-radio-group>
               </div>
               <div class="param_block">
-                <span>风格层数</span>
+                <span>风格深度</span>
+                <el-slider
+                  v-model="style_layers"
+                  :min="1"
+                  :max="5"
+                  :marks="style_layers_marks"
+                  style="margin-top: 0px;">
+                </el-slider>
               </div>
               <div class="param_block">
-                <span>风格尺寸</span>
+                <span>风格尺度</span>
+                <el-slider
+                  v-model="style_scale"
+                  :min="0.1"
+                  :max="2.0"
+                  :step="0.1"
+                  :marks="style_scale_marks"
+                  style="margin-top: 0px;">
+                </el-slider>
               </div>
               <div class="param_block">
                 <span>池化方式</span>
@@ -404,14 +420,17 @@ export default {
       // 参数
       image_size: 600,
       content_weight: 5e0,
-      style_weight: 1e2,
       tv_weight: 1e-4,
       init: 'image',      // 'random'
       optimizer: 'lbfgs', // 'adam'
       improve_gram: 0,
       style_scale: 1.0,
       pooling: 'max',     // 'avg'
-      style_layers: [],
+      style_layers: 5,
+      // UI参数
+      image_size_marks: {256:"256", 512:"512", 600:"600", 800:"800", 1024:"1024"},
+      style_scale_marks: {0.1:"密集", 0.5:"填充", 1.0:"平衡", 2.0:"稀疏"},
+      style_layers_marks: {1:"最浅", 5:"最深"},
 
     };
   },
