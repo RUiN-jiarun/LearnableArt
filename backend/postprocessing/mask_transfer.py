@@ -1,7 +1,3 @@
-from __future__ import print_function
-from __future__ import division
-from __future__ import absolute_import
-
 import argparse
 import os
 import numpy as np
@@ -35,25 +31,29 @@ def mask_content(content, generated, mask):
 
     return generated
 
-parser = argparse.ArgumentParser(description='Neural style transfer color preservation.')
+# parser = argparse.ArgumentParser(description='Neural style transfer color preservation.')
 
-parser.add_argument('content_image', type=str, help='Path to content image')
-parser.add_argument('generated_image', type=str, help='Path to generated image')
-parser.add_argument('content_mask', type=str, help='Path to content mask')
+# parser.add_argument('content_image', type=str, help='Path to content image')
+# parser.add_argument('generated_image', type=str, help='Path to generated image')
+# parser.add_argument('content_mask', type=str, help='Path to content mask')
 
-args = parser.parse_args()
+# args = parser.parse_args()
 
-image_path = os.path.splitext(args.generated_image)[0] + "_masked.png"
 
-generated_image = imread(args.generated_image, mode="RGB")
-img_width, img_height, channels = generated_image.shape
 
-content_image = imread(args.content_image, mode='RGB')
-content_image = imresize(content_image, (img_width, img_height), interp='bicubic')
+def mask_trans(generated_image, content_image, content_mask):
+    image_path = os.path.splitext(generated_image)[0] + "_masked.png"
+    generated_image = imread(generated_image, mode="RGB")
+    img_width, img_height, channels = generated_image.shape
 
-mask = load_mask(args.content_mask, generated_image.shape)
+    content_image = imread(content_image, mode='RGB')
+    content_image = imresize(content_image, (img_width, img_height), interp='bicubic')
 
-img = mask_content(content_image, generated_image, mask)
-imsave(image_path, img)
+    mask = load_mask(content_mask, generated_image.shape)
 
-print("Image saved at path : %s" % image_path)
+    img = mask_content(content_image, generated_image, mask)
+    # return img
+    
+    imsave(image_path, img)
+
+    # print("Image saved at path : %s" % image_path)

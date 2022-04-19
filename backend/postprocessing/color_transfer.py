@@ -98,7 +98,7 @@ def color_trans(generated_image, content_image, mask, hist_match):
         mode = "YCbCr"
     # mode = hist_match
 
-    image_path = os.path.splitext(generated_image)[0] + "_color.png"
+    # image_path = os.path.splitext(generated_image)[0] + "_color.png"
 
     generated_image = imread(generated_image, mode="RGB")
     img_width, img_height, _ = generated_image.shape
