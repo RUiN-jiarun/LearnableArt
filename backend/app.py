@@ -155,7 +155,7 @@ def auto_mask_page():
                 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
             f = np.fromfile(style_path)
-            res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=1)
+            res = mask.generate(f, model_name=model_name, isBackground=int(isBackground), dilate_structure_size=1)
             img = Image.open(io.BytesIO(res)).convert("RGBA")
             pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + style_path[9:]
         
@@ -195,7 +195,8 @@ def color_transfer_page():
 def mask_transfer_page():
     src = request.values.get('src')
     ref = request.values.get('ref')
-
+    isBackground = request.values.get('isBackground')
+    model_name = request.values.get('model')
     # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
     # ./tmp/ct/xxxxx.jpg
     # print(hist_match)
@@ -203,10 +204,21 @@ def mask_transfer_page():
         src_path = '.' + src[21:]
         ref_path = '.' + ref[21:]
         pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
-        # TODO: mask trans param fix
-        # mask_trans(generated_image, content_image, content_mask)
-        # TODO: automask here?
-        img = mask_trans(src_path, ref_path)
+
+        if ref_path.endswith('.jpg'):
+            ImageFile.LOAD_TRUNCATED_IMAGES = True
+
+        f = np.fromfile(ref_path)
+
+        res = mask.generate(f, model_name=model_name, isBackground=int(isBackground), dilate_structure_size=1)
+        content_mask = Image.open(io.BytesIO(res)).convert("RGBA")
+
+        pid = pid.split('.')[0] + '.png'
+        mask_path = './tmp/mask/mask_' + pid
+        content_mask.save(mask_path)
+
+        img = mask_trans(src_path, ref_path, mask_path)
+
         output_path = './tmp/draw/masktrans_' + pid
         imageio.imwrite(output_path, img)
         # img = Image.fromarray(np.uint8(img))

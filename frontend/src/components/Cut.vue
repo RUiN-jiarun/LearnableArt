@@ -116,7 +116,7 @@
           <el-tabs v-model="activeName">
             <el-tab-pane label="智能蒙版裁剪" name="first">
             </el-tab-pane>
-            <el-tab-pane label="手动生成蒙版" name="second">
+            <el-tab-pane label="手动上传蒙版" name="second">
             </el-tab-pane>
 
             <div v-if="activeName=='first'">
@@ -126,7 +126,7 @@
               element-loading-text="处理图片中"
               element-loading-spinner="el-icon-loading"
             >
-              <div>请在参考图像中上传蒙版图像</div>
+              <div>请在参考图像中上传要保留的原始图像</div>
               <el-image
                 :src="url_3"
                 class="image_2"
@@ -143,7 +143,7 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="colortransfer"
+                      @click="masktransfer"
                     >开始处理
                 </el-button>
                 </div>
@@ -151,27 +151,19 @@
             </div>
             <div class="demo-image__preview1" style="float:left; height:400px;">
               <div class="param_block">
-                <span>是否使用蒙版</span>
-                <el-radio-group style="margin-top: 10px;" v-model="isMasked">
-                  <el-radio :label="1">是</el-radio>
-                  <el-radio :label="0">否</el-radio>
-                </el-radio-group>
+                <span>保留内容</span>
+              <el-radio-group style="margin-top: 10px;" v-model="isBackground">
+                <el-radio :label="1">背景</el-radio>
+                <el-radio :label="0">前景</el-radio>
+              </el-radio-group>
               </div>
-
-              <!-- <div class="param_block">
-                <span>匹配算法</span>
-                <el-radio-group style="margin-top: 10px;" v-model="algorithm">
-                  <el-radio label="fdm">特征分布匹配</el-radio>
-                  <el-radio label="hm">直方图匹配</el-radio>
-                </el-radio-group>
-              </div> -->
-              
               <div class="param_block">
-                <span>匹配方式</span>
-                <el-radio-group style="margin-top: 10px;" v-model="match_mode">
-                  <el-radio :label="1">分布匹配</el-radio>
-                  <el-radio :label="0">直接匹配</el-radio>
-                </el-radio-group>
+                <span>算法模型</span>
+              <el-radio-group style="margin-top: 10px;" v-model="mask_model">
+                <el-radio label="u2netp">简易</el-radio>
+                <el-radio label="u2net">完整</el-radio>
+                <el-radio label="u2net_human_seg">人像</el-radio>
+              </el-radio-group>
               </div>
             </div>
             </div>
@@ -199,7 +191,7 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="palettetransfer"
+                      @click="masktransfer"
                     >开始处理
                 </el-button>
                 </div>
@@ -207,7 +199,7 @@
             
             </div>
             <div class="demo-image__preview1" style="float:left;">
-                <sketch-picker v-model="colors" />
+                
             </div>
             </div>
             
@@ -262,21 +254,9 @@ export default {
         opacity: 0,
       },
       dialogTableVisible: false,
-      // 色彩迁移参数
-      isMasked: 0,
-      // algorithm: "fdm",
-      match_mode: 0,
-      // match_proportion: 1.0,
-
-      // 调色盘
-      colors : {
-        hex: '#194d33',
-        hex8: '#194D33A8',
-        hsl: { h: 150, s: 0.5, l: 0.2, a: 1 },
-        hsv: { h: 150, s: 0.66, v: 0.30, a: 1 },
-        rgba: { r: 25, g: 77, b: 51, a: 1 },
-        a: 1
-      }
+      // 生成蒙版部分参数
+      isBackground: 1,
+      mask_model: "u2netp",
     };
   },
   created: function () {
@@ -387,7 +367,7 @@ export default {
         type: type,
       });
     },
-    colortransfer() {
+    masktransfer() {
       // console.log(this.srcList1[this.srcList1.length - 1]);
       // console.log(this.srcList2[this.srcList2.length - 1]);
       this.dialogTableVisible = true;
@@ -400,11 +380,11 @@ export default {
       }, 30);
       // console.log(JSON.parse(JSON.stringify(this.channels)));
       axios
-        .get(this.server_url + "/colortransfer", 
+        .get(this.server_url + "/masktransfer", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
                       ref: this.srcList2[this.srcList2.length - 1],
-                      isMasked: this.isMasked,
-                      hist_match: this.match_mode,}})
+                      isBackground: this.isBackground,
+                      mask_model: this.mask_model,}})
         .then((response) => {
           
           this.percentage = 100;
@@ -429,45 +409,7 @@ export default {
           
         });
     },
-    palettetransfer() {
-      this.dialogTableVisible = true;
-      this.percentage = 0;
-      this.fullscreenLoading = true;
-      this.loading = true;
-      this.url_4 = "";
-      // console.log(this.colors);
-      var timer = setInterval(() => {
-        this.myFunc();
-      }, 30);
-      axios
-        .get(this.server_url + "/colortransfer", 
-            {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      ref: this.srcList2[this.srcList2.length - 1],
-                      isMasked: this.isMasked,
-                      hist_match: this.match_mode,}})
-        .then((response) => {
-          this.percentage = 100;
-          clearInterval(timer);
-          if (response.data.status == 1) {
-            this.url_4 = response.data.draw_url;
-            this.srcList4.push(this.url_4);
-            this.fullscreenLoading = false;
-            this.loading = false;
-
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作完成", "点击图片以查看大图", "success");
-          } else {
-            this.fullscreenLoading = false;
-            this.loading = false;
-
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作失败", "请重新检查", "error");
-          }
-          
-        });
-    },
+    
   },
   mounted() {
     this.drawChart();

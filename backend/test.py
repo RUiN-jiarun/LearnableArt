@@ -12,4 +12,5 @@ from postprocessing.mask_transfer import mask_trans
 # color_trans("xxx.png", "golden_gate.jpg", mask=0, hist_match=0)
 
 # param_main("bird.png", "rain-princess.jpg", "output.png")
-mask_trans("output_400.png", "bird.png", "birdmask.png")
+# mask_trans("output_400.png", "bird.png", "birdmask.png")
+print(bool(int('0')))

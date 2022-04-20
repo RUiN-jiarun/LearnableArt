@@ -2,6 +2,7 @@ import argparse
 import os
 import numpy as np
 from .utils import imread, imresize, imsave
+from PIL import Image
 
 
 # util function to load masks
@@ -49,10 +50,11 @@ def mask_trans(generated_image, content_image, content_mask):
     content_image = imread(content_image, mode='RGB')
     content_image = imresize(content_image, (img_width, img_height), interp='bicubic')
 
+
     mask = load_mask(content_mask, generated_image.shape)
 
     img = mask_content(content_image, generated_image, mask)
-    # return img
+    return img
     
     # imsave(image_path, img)
 
