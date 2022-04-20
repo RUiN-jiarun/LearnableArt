@@ -6,6 +6,7 @@ import Content from './components/Content'
 import Mask from './components/Mask'
 import Optim from './components/Optim'
 import Cut from './components/Cut'
+import SR from './components/SR'
 import Home from './components/Home'
 import NSTjt from './components/NSTjt'
 import NSTpt from './components/NSTpt'
@@ -68,6 +69,11 @@ const routes = [
         name: 'cut',
         component: Cut,
     },
+    {
+        path: '/sr',
+        name: sr,
+        component: SR,
+    }
 ]
 
 const router = new VueRouter({
