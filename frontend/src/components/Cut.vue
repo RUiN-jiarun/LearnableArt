@@ -126,7 +126,7 @@
               element-loading-text="处理图片中"
               element-loading-spinner="el-icon-loading"
             >
-              <div>请在参考图像中上传要保留的原始图像</div>
+              <div>请在参考图像中上传原始图像</div>
               <el-image
                 :src="url_3"
                 class="image_2"
@@ -174,6 +174,7 @@
               element-loading-text="处理图片中"
               element-loading-spinner="el-icon-loading"
             >
+              <div>请在参考图像中上传原始图像</div>
               <el-image
                 :src="url_4"
                 class="image_2"
@@ -191,15 +192,53 @@
                       v-show="showbutton1"
                       type="primary"
                       class="download_bt"
-                      @click="masktransfer"
+                      @click="dumbmasktransfer"
                     >开始处理
                 </el-button>
                 </div>
             </div>
             
             </div>
-            <div class="demo-image__preview1" style="float:left;">
-                
+            <div class="demo-image__preview1" style="float:left; height:400px;">
+              <div
+              v-loading="loading"
+              element-loading-text="上传图片中"
+              element-loading-spinner="el-icon-loading"
+            >
+              <el-image
+                :src="url_5"
+                class="image_1"
+                :preview-src-list="srcList5"
+                style="border-radius: 3px 3px 0 0"
+              >
+                <div slot="error">
+                  <div slot="placeholder" class="error">
+                  </div>
+                </div>
+              </el-image>
+            </div>
+            <div class="img_info_1" style="border-radius: 0 0 5px 5px">
+              <span style="color: white; letter-spacing: 4px">蒙版图像</span>
+            </div>
+                <div class="img_info_1" style="border-radius: 5px; background-color: #ffffff">
+              <el-button
+                      v-show="showbutton2"
+                      type="primary"
+                      icon="el-icon-upload"
+                      class="download_bt"
+                      v-on:click="true_upload3"
+                    >
+                      上传图像
+                      <input
+                        ref="upload3"
+                        style="display: none"
+                        name="file"
+                        type="file"
+                        @change="update($event, 2)"
+                      />
+                      <!-- 更改此处的change函数？ -->
+              </el-button>
+            </div>
             </div>
             </div>
             
@@ -231,11 +270,13 @@ export default {
       url_2: "",  // 风格图片
       url_3: "",  // 色域匹配结果
       url_4: "",  // 生成蒙版结果
+      url_5: "",  // 上传蒙版
       textarea: "",
       srcList1: [],
       srcList2: [],
       srcList3: [],
       srcList4: [],
+      srcList5: [],
       feature_list: [],
       feature_list_1: [],
       feat_list: [],
@@ -248,6 +289,7 @@ export default {
       isNav: false,
       showbutton1: true,
       showbutton2: true,
+      showbutton3: true,
       percentage: 0,
       fullscreenLoading: false,
       opacitys: {
@@ -268,6 +310,9 @@ export default {
     },
     true_upload2() {
       this.$refs.upload2.click();
+    },
+    true_upload3() {
+      this.$refs.upload3.click();
     },
     next() {
       this.active++;
@@ -291,6 +336,7 @@ export default {
       this.dialogTableVisible = true;
       this.url_1 = "";
       this.url_2 = "";
+      this.url_5 = "";
       // this.srcList1 = [];
       // this.srcList2 = [];
       // console.log(this.srcList1);
@@ -307,6 +353,8 @@ export default {
         this.url_1 = this.$options.methods.getObjectURL(file);
       } else if (id == 2) {
         this.url_2 = this.$options.methods.getObjectURL(file);
+      } else if (id == 3) {
+        this.url_5 = this.$options.methods.getObjectURL(file);
       }
       // this.url_1 = this.$options.methods.getObjectURL(file);
       let param = new FormData();               // 创建form对象
@@ -326,10 +374,17 @@ export default {
             this.url_1 = response.data.image_url;
             this.srcList1.push(this.url_1);
             this.url_2 = this.srcList2[this.srcList2.length-1];
+            this.url_5 = this.srcList5[this.srcList5.length-1];
           } else if (id == 2) {
             this.url_2 = response.data.draw_url;
             this.srcList2.push(this.url_2);
             this.url_1 = this.srcList1[this.srcList1.length-1];
+            this.url_5 = this.srcList5[this.srcList5.length-1];
+          } else if (id == 3) {
+            this.url_5 = response.data.draw_url;
+            this.srcList5.push(this.url_5);
+            this.url_1 = this.srcList1[this.srcList1.length-1];
+            this.url_2 = this.srcList2[this.srcList2.length-1];
           }
 
           this.fullscreenLoading = false;
@@ -380,7 +435,7 @@ export default {
       }, 30);
       // console.log(JSON.parse(JSON.stringify(this.channels)));
       axios
-        .get(this.server_url + "/masktransfer", 
+        .get(this.server_url + "/automasktransfer", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
                       ref: this.srcList2[this.srcList2.length - 1],
                       isBackground: this.isBackground,
@@ -409,7 +464,47 @@ export default {
           
         });
     },
-    
+    dumbmasktransfer() {
+      // console.log(this.srcList1[this.srcList1.length - 1]);
+      // console.log(this.srcList2[this.srcList2.length - 1]);
+      this.dialogTableVisible = true;
+      this.percentage = 0;
+      this.fullscreenLoading = true;
+      this.loading = true;
+      this.url_3 = "";
+      var timer = setInterval(() => {
+        this.myFunc();
+      }, 30);
+      // console.log(JSON.parse(JSON.stringify(this.channels)));
+      axios
+        .get(this.server_url + "/masktransfer", 
+            {params: {src: this.srcList1[this.srcList1.length - 1], 
+                      ref: this.srcList2[this.srcList2.length - 1],
+                      mask: this.srcList5[this.srcList5.length - 1],}})
+        .then((response) => {
+          
+          this.percentage = 100;
+          clearInterval(timer);
+          if (response.data.status == 1) {
+            this.url_4 = response.data.draw_url;
+            this.srcList4.push(this.url_4);
+            this.fullscreenLoading = false;
+            this.loading = false;
+            
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作完成", "点击图片以查看大图", "success");
+          } else {
+            this.fullscreenLoading = false;
+            this.loading = false;
+            
+            this.dialogTableVisible = false;
+            this.percentage = 0;
+            this.notice("操作失败", "请重新检查", "error");
+          }
+          
+        });
+    },
   },
   mounted() {
     this.drawChart();

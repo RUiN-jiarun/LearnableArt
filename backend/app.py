@@ -191,8 +191,8 @@ def color_transfer_page():
 
     return jsonify({'status': 0})
 
-@app.route('/masktransfer', methods=['GET'])
-def mask_transfer_page():
+@app.route('/automasktransfer', methods=['GET'])
+def automask_transfer_page():
     src = request.values.get('src')
     ref = request.values.get('ref')
     isBackground = request.values.get('isBackground')
@@ -228,6 +228,30 @@ def mask_transfer_page():
 
     return jsonify({'status': 0})
 
+@app.route('/masktransfer', methods=['GET'])
+def mask_transfer_page():
+    src = request.values.get('src')
+    ref = request.values.get('ref')
+    mask = request.values.get('mask')
+    # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
+    # ./tmp/ct/xxxxx.jpg
+    # print(hist_match)
+    if src and ref:
+        src_path = '.' + src[21:]
+        ref_path = '.' + ref[21:]
+        mask_path = '.' + mask[21:]
+        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+
+        img = mask_trans(src_path, ref_path, mask_path)
+
+        output_path = './tmp/draw/masktrans_' + pid
+        imageio.imwrite(output_path, img)
+        # img = Image.fromarray(np.uint8(img))
+        # img.save(output_path)
+        return jsonify({'status': 1,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/masktrans_' + pid})
+
+    return jsonify({'status': 0})
 
 @app.route('/nstjt', methods=['GET'])
 def nst_jt_page():
