@@ -487,6 +487,7 @@ export default {
       let param = new FormData();               // 创建form对象
       param.append("file", file, file.name);    // 通过append向form对象添加数据
       var timer = setInterval(() => {
+        // TODO: 进度条
         this.myFunc();
       }, 30);
       let config = {
@@ -560,90 +561,7 @@ export default {
       fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length))); 
       return fmt; 
     },
-    nstjt() {
-      // console.log(this.srcList1[this.srcList1.length - 1]);
-      // console.log(this.srcList2[this.srcList2.length - 1]);
-      // this.dialogTableVisible = true;
-      this.percentage = 0;
-      // TODO: hash code for a certain pic
-      var d = new Date();
-      var timeString = this.dateFtt("yyyy-MM-dd-hh-mm-ss", d);
-      // console.log(timeString);
-      // this.fullscreenLoading = true;
-      // this.loading = true;
-      this.url_3 = "";
-      this.url_4_1 = "";
-      this.url_4_2 = "";
-      this.url_4_3 = "";
-      this.url_4_4 = "";
-
-      // TEST: Get all tmp urls at first
-      // var src_path = '.' + this.srcList1[this.srcList1.length - 1].substring(21);
-      // var fname = src_path.substring(9).split('.')[0];
-      // var ftype = src_path.substring(9).split('.')[1];
-      // var tmp_path_1 = 'http://127.0.0.1:5003/tmp/draw/trans_' + timeString + '_' + fname + '_200.' + ftype;
-      // var tmp_path_2 = 'http://127.0.0.1:5003/tmp/draw/trans_' + timeString + '_' + fname + '_400.' + ftype;
-      // var tmp_path_3 = 'http://127.0.0.1:5003/tmp/draw/trans_' + timeString + '_' + fname + '_600.' + ftype;
-      // var tmp_path_4 = 'http://127.0.0.1:5003/tmp/draw/trans_' + timeString + '_' + fname + '_800.' + ftype;
-      // this.url_4_1 = tmp_path_1;
-      // this.url_4_2 = tmp_path_2;
-      // this.url_4_3 = tmp_path_3;
-      // this.url_4_4 = tmp_path_4;
-      // this.srcList4_1.push(this.url_4_1);
-      // this.srcList4_2.push(this.url_4_2);
-      // this.srcList4_3.push(this.url_4_3);
-      // this.srcList4_4.push(this.url_4_4);
-
-      var timer = setInterval(() => {
-        this.myFunc();
-        // TODO: get backend data
-        $.ajax({
-        url: "http://127.0.0.1:5003/nsttmp",
-        type: "GET",
-        data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
-        dataType: "json",
-        success: (data) => {
-          if (data.tmp_url_1)   this.url_4_1 = data.tmp_url_1;
-          if (data.tmp_url_2)   this.url_4_2 = data.tmp_url_2;
-          if (data.tmp_url_3)   this.url_4_3 = data.tmp_url_3;
-          if (data.tmp_url_4)   this.url_4_4 = data.tmp_url_4;
-
-          this.srcList4_1.push(this.url_4_1);
-          this.srcList4_2.push(this.url_4_2);
-          this.srcList4_3.push(this.url_4_3);
-          this.srcList4_4.push(this.url_4_4);
-        }
-      })
-      }, 1000);
-      axios
-        .get(this.server_url + "/nstjt", 
-            {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      ref: this.srcList2[this.srcList2.length - 1],
-                      timeString: timeString}})
-        .then((response) => {
-          
-          this.percentage = 100;
-          clearInterval(timer);
-          if (response.data.status == 1) {
-            this.url_3 = response.data.draw_url;
-            this.srcList3.push(this.url_3);
-            this.fullscreenLoading = false;
-            this.loading = false;
-            
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作完成", "点击图片以查看大图", "success");
-          } else {
-            this.fullscreenLoading = false;
-            this.loading = false;
-            
-            this.dialogTableVisible = false;
-            this.percentage = 0;
-            this.notice("操作失败", "请重新检查", "error");
-          }
-          
-        });
-    },
+    
     nstpt() {
       // console.log(this.srcList1[this.srcList1.length - 1]);
       // console.log(this.srcList2[this.srcList2.length - 1]);
@@ -663,25 +581,25 @@ export default {
 
 
       var timer = setInterval(() => {
+        // TODO：Progress bar
         this.myFunc();
-        // TODO: get backend data
         $.ajax({
-        url: "http://127.0.0.1:5003/nsttmp",
-        type: "GET",
-        data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
-        dataType: "json",
-        success: (data) => {
-          if (data.tmp_url_1)   this.url_6_1 = data.tmp_url_1;
-          if (data.tmp_url_2)   this.url_6_2 = data.tmp_url_2;
-          if (data.tmp_url_3)   this.url_6_3 = data.tmp_url_3;
-          if (data.tmp_url_4)   this.url_6_4 = data.tmp_url_4;
+          url: "http://127.0.0.1:5003/nsttmp",
+          type: "GET",
+          data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
+          dataType: "json",
+          success: (data) => {
+            if (data.tmp_url_1)   this.url_6_1 = data.tmp_url_1;
+            if (data.tmp_url_2)   this.url_6_2 = data.tmp_url_2;
+            if (data.tmp_url_3)   this.url_6_3 = data.tmp_url_3;
+            if (data.tmp_url_4)   this.url_6_4 = data.tmp_url_4;
 
-          this.srcList6_1.push(this.url_6_1);
-          this.srcList6_2.push(this.url_6_2);
-          this.srcList6_3.push(this.url_6_3);
-          this.srcList6_4.push(this.url_6_4);
-        }
-      })
+            this.srcList6_1.push(this.url_6_1);
+            this.srcList6_2.push(this.url_6_2);
+            this.srcList6_3.push(this.url_6_3);
+            this.srcList6_4.push(this.url_6_4);
+          }
+        })
       }, 1000);
       axios
         .get(this.server_url + "/nstpt", 

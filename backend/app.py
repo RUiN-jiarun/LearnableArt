@@ -4,13 +4,14 @@ import os
 import shutil
 from datetime import timedelta
 from flask import *
+from importlib_metadata import re
 
 from preprocessing.utils.application import run as match
 from preprocessing.core import Params
 from postprocessing.color_transfer import color_trans
 from postprocessing.mask_transfer import mask_trans
 from srgan.sr import sr_image
-# from NST.neural_style_jt import param_main as nst_jt
+# from NST.neural_style_jt import param_main as nst_jt      # Jittor reports bug on cudnn
 from NST.neural_style import param_main as nst_pt
 
 import io
@@ -89,7 +90,7 @@ def hist_match_page():
         src_path = '.' + src[21:]
         style_path = '.' + style[21:]
         # pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
-        if isSrc2Style:
+        if int(isSrc2Style):
             pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
             param = {"color_space": color_space, 
                     "source_path": src_path, 
@@ -277,6 +278,15 @@ def nst_pt_page():
     src = request.values.get('src')
     ref = request.values.get('ref')
     timeString = request.values.get('timeString')
+    image_size = request.values.get('image_size')
+    content_weight = request.values.get('content_weight')
+    tv_weight = request.values.get('tv_weight')
+    init = request.values.get('init')
+    optimizer = request.values.get('optimizer')
+    improve_gram = request.values.get('improve_gram')
+    style_scale = request.values.get('style_scale')
+    pooling = request.values.get('pooling')
+    style_layers = request.values.get('style_layers')
     if src and ref:
         src_path = '.' + src[21:]
         ref_path = '.' + ref[21:]
@@ -292,7 +302,18 @@ def nst_pt_page():
         tmp_path_3 = timeString + '_' + fname + '_600.' + ftype
         tmp_path_4 = timeString + '_' + fname + '_800.' + ftype
         # TODO: NST Here
-        nst_pt(content_image=src_path, style_image=ref_path, output_image=output_path)
+        if image_size:
+            nst_pt(content_image=src_path, style_image=ref_path, output_image=output_path, image_size=int(image_size),
+                    content_weight=float(content_weight),
+                    tv_weight=float(tv_weight),
+                    init=init,
+                    optimizer=optimizer,
+                    style_scale=float(style_scale),
+                    pooling=pooling,
+                    improve_gram=int(improve_gram),
+                    style_layers_num=int(style_layers))
+        else:
+            nst_pt(content_image=src_path, style_image=ref_path, output_image=output_path)
         return jsonify({'status': 1,
                         'draw_url': 'http://127.0.0.1:5003/tmp/draw/trans_' + pid})
 

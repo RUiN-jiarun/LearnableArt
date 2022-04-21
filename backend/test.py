@@ -15,4 +15,7 @@ from srgan.sr import sr_image
 # param_main("bird.png", "rain-princess.jpg", "output.png")
 # mask_trans("output_400.png", "bird.png", "birdmask.png")
 # print(bool(int('0')))
-sr_image(2, 'output_400.png', 'test.jpg')
+# sr_image(2, 'output_400.png', 'test.jpg')
+f = float('5e-2')
+print(f)
+print(type(f))
