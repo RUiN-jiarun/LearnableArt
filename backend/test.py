@@ -4,6 +4,7 @@
 # from NST.neural_style_jt import param_main
 # from NST.neural_style import param_main
 from postprocessing.mask_transfer import mask_trans
+from srgan.sr import sr_image
 
 # param = {"match_proportion":"1","color_space": "rgb", "source_path":"latrobe.jpg", "reference_path":"rain-princess.jpg", "channels":"0,1,2", "result_path":"test.png", "verify_input":"False", "plot":"False"}
 # match("fdm", Params(param))
@@ -13,4 +14,5 @@ from postprocessing.mask_transfer import mask_trans
 
 # param_main("bird.png", "rain-princess.jpg", "output.png")
 # mask_trans("output_400.png", "bird.png", "birdmask.png")
-print(bool(int('0')))
+# print(bool(int('0')))
+sr_image(2, 'output_400.png')

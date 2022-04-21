@@ -11,8 +11,8 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 import pytorch_ssim
-from data_utils import TestDatasetFromFolder, display_transform
-from model import Generator
+from .data_utils import TestDatasetFromFolder, display_transform
+from .model import Generator
 
 parser = argparse.ArgumentParser(description='Test Benchmark Datasets')
 parser.add_argument('--upscale_factor', default=4, type=int, help='super resolution upscale factor')

@@ -11,9 +11,9 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 import pytorch_ssim
-from data_utils import TrainDatasetFromFolder, ValDatasetFromFolder, display_transform
-from loss import GeneratorLoss
-from model import Generator, Discriminator
+from .data_utils import TrainDatasetFromFolder, ValDatasetFromFolder, display_transform
+from .loss import GeneratorLoss
+from .model import Generator, Discriminator
 
 parser = argparse.ArgumentParser(description='Train Super Resolution Models')
 parser.add_argument('--crop_size', default=88, type=int, help='training images crop size')
