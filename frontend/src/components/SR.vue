@@ -204,14 +204,9 @@
 
 <script>
 import axios from "axios";
-import {Sketch} from "vue-color";
 
 export default {
   name: "SR",
-  components: {
-    // 'photoshop-picker': Photoshop,
-    'sketch-picker': Sketch,
-  },
   data() {
     return {
       server_url: "http://127.0.0.1:5003",

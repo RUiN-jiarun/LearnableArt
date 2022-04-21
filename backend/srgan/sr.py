@@ -18,7 +18,7 @@ from .model import Generator
 # IMAGE_NAME = opt.image_name
 # MODEL_NAME = opt.model_name
 
-def sr_image(upscale_factor, image_path, use_cuda=True):
+def sr_image(upscale_factor, image_path, out_path, use_cuda=True):
     model = Generator(upscale_factor).eval()
     if upscale_factor == 2:
         model_name = 'netG_epoch_2_100.pth'
@@ -43,4 +43,5 @@ def sr_image(upscale_factor, image_path, use_cuda=True):
     # elapsed = (time.clock() - start)
     # print('cost' + str(elapsed) + 's')
     out_img = ToPILImage()(out[0].data.cpu())
-    out_img.save('out_srf_' + str(upscale_factor) + '_' + image_path)
+    out_img.save(out_path)
+    # return out_img

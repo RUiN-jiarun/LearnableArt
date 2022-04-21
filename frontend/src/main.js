@@ -71,7 +71,7 @@ const routes = [
     },
     {
         path: '/sr',
-        name: sr,
+        name: 'sr',
         component: SR,
     }
 ]

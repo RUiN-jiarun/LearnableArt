@@ -9,7 +9,8 @@ from preprocessing.utils.application import run as match
 from preprocessing.core import Params
 from postprocessing.color_transfer import color_trans
 from postprocessing.mask_transfer import mask_trans
-from NST.neural_style_jt import param_main as nst_jt
+from srgan.sr import sr_image
+# from NST.neural_style_jt import param_main as nst_jt
 from NST.neural_style import param_main as nst_pt
 
 import io
@@ -109,15 +110,7 @@ def hist_match_page():
                     "plot": "False",
                     "match_proportion": match_proportion}
         match(algorithm, Params(param))
-        # print(src_path, style_path)
-        # test -- copy only
-        # shutil.copy(src_path, './tmp/draw')
-    #     draw_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    #     file.save(draw_path)
-    #     shutil.copy(draw_path, './tmp/draw')
-    #     image_path = os.path.join('./tmp/draw', file.filename)
-        # pid= src_path[9:]
-        # print(pid)
+
         return jsonify({'status': 1,
                         'draw_url': 'http://127.0.0.1:5003/tmp/match/match_' + pid})
 
@@ -273,7 +266,7 @@ def nst_jt_page():
         tmp_path_3 = timeString + '_' + fname + '_600.' + ftype
         tmp_path_4 = timeString + '_' + fname + '_800.' + ftype
         # TODO: NST Here
-        nst_jt(content_image=src_path, style_image=ref_path, output_image=output_path)
+        # nst_jt(content_image=src_path, style_image=ref_path, output_image=output_path)
         return jsonify({'status': 1,
                         'draw_url': 'http://127.0.0.1:5003/tmp/draw/trans_' + pid})
 
@@ -343,6 +336,27 @@ def nst_tmp():
         #                 'tmp_url_3': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_3,
         #                 'tmp_url_4': 'http://127.0.0.1:5003/tmp/draw/trans_' + tmp_path_4})
         # return jsonify(data)
+
+    return jsonify({'status': 0})
+
+@app.route('/srgan', methods=['GET'])
+def srgan_page():
+    src = request.values.get('src')
+    upscale_factor = request.values.get('upscale_factor')
+    # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
+    # ./tmp/ct/xxxxx.jpg
+    pid = ""
+    if src:
+        src_path = '.' + src[21:]
+
+        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+        out_path = "./tmp/image/sr_" + upscale_factor + "_" + pid
+
+
+        sr_image(upscale_factor=int(upscale_factor), image_path=src_path, out_path=out_path)
+
+        return jsonify({'status': 1,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/image/sr_' + upscale_factor + "_" + pid})
 
     return jsonify({'status': 0})
 
