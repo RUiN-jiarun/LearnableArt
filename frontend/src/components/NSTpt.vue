@@ -135,7 +135,7 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error">
-                    <el-progress :percentage="percentage"></el-progress>
+                    <el-progress :percentage="percentage1"></el-progress>
                   </div>
                   
                 </div>
@@ -163,7 +163,7 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error" style="margin-top: 50px;">
-                    <el-progress :percentage="percentage"></el-progress>
+                    <el-progress :percentage="percentage1_1"></el-progress>
                   </div>
                 </div>
               </el-image>
@@ -175,7 +175,7 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error" style="margin-top: 50px;">
-                    <el-progress :percentage="percentage"></el-progress>
+                    <el-progress :percentage="percentage1_2"></el-progress>
                   </div>
                 </div>
               </el-image>
@@ -190,7 +190,7 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error" style="margin-top: 50px;">
-                    <el-progress :percentage="percentage"></el-progress>
+                    <el-progress :percentage="percentage1_3"></el-progress>
                   </div>
                 </div>
               </el-image>
@@ -202,7 +202,7 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error" style="margin-top: 50px;">
-                    <el-progress :percentage="percentage"></el-progress>
+                    <el-progress :percentage="percentage1_4"></el-progress>
                   </div>
                 </div>
               </el-image>
@@ -225,7 +225,7 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error">
-                    <el-progress :percentage="percentage"></el-progress>
+                    <el-progress :percentage="percentage1"></el-progress>
                   </div>
                   
                 </div>
@@ -253,7 +253,7 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error" style="margin-top: 50px;">
-                    <el-progress :percentage="percentage"></el-progress>
+                    <el-progress :percentage="percentage1_1"></el-progress>
                   </div>
                 </div>
               </el-image>
@@ -265,7 +265,7 @@
               >
                 <div slot="error">
                   <div slot="placeholder" class="error" style="margin-top: 50px;">
-                    <el-progress :percentage="percentage"></el-progress>
+                    <el-progress :percentage="percentage1_3"></el-progress>
                   </div>
                 </div>
               </el-image>
@@ -412,6 +412,11 @@ export default {
       showbutton1: true,
       showbutton2: true,
       percentage: 0,
+      percentage1: 0,
+      percentage1_1: 0,
+      percentage1_2: 0,
+      percentage1_3: 0,
+      percentage1_4: 0,
       fullscreenLoading: false,
       opacitys: {
         opacity: 0,
@@ -421,11 +426,11 @@ export default {
       image_size: 600,
       content_weight: 5e0,
       tv_weight: 1e-4,
-      init: 'image',      // 'random'
-      optimizer: 'lbfgs', // 'adam'
+      init: "image",      // "random"
+      optimizer: "lbfgs", // "adam"
       improve_gram: 0,
       style_scale: 1.0,
-      pooling: 'max',     // 'avg'
+      pooling: "max",     // "avg"
       style_layers: 5,
       // UI参数
       image_size_marks: {256:"256", 512:"512", 600:"600", 800:"800", 1024:"1024"},
@@ -534,7 +539,35 @@ export default {
         this.percentage = 99;
       }
     },
-    drawChart() {},
+    progress() {
+      // this.percentage1
+      // if (this.percentage1 + 1 < 99) {
+      //   this.percentage1 = this.percentage1 + 1;
+      // } else {
+      //   this.percentage1 = 99;
+      // }
+      if (this.percentage1_1 + 3 < 99) {
+        this.percentage1_1 = this.percentage1_1 + 3;
+      } else if (this.percentage1_1 != 100) {
+        this.percentage1_1 = 99;
+      }
+      if (this.percentage1_2 + 3 < 99 && percentage1_1 == 100) {
+        this.percentage1_2 = this.percentage1_2 + 3;
+      } else if (this.percentage1_2 != 100) {
+        this.percentage1_2 = 99;
+      }
+      if (this.percentage1_3 + 3 < 99 && percentage1_2 == 100) {
+        this.percentage1_3 = this.percentage1_3 + 3;
+      } else if (this.percentage1_3 != 100) {
+        this.percentage1_3 = 99;
+      }
+      if (this.percentage1_4 + 3 < 99 && percentage1_3 == 100) {
+        this.percentage1_4 = this.percentage1_4 + 3;
+      } else if (this.percentage1_4 != 100) {
+        this.percentage1_4 = 99;
+      }
+      // this.percentage1_1
+    },
     notice(str, msg, type) {
       this.$notify({
         title: str,
@@ -566,7 +599,14 @@ export default {
       // console.log(this.srcList1[this.srcList1.length - 1]);
       // console.log(this.srcList2[this.srcList2.length - 1]);
       // this.dialogTableVisible = true;
-      this.percentage = 0;
+
+      // TODO: notice
+      this.notice("正在生成", "请稍等……", "alert");
+      this.percentage1 = 0;
+      this.percentage1_1 = 0;
+      this.percentage1_2 = 0;
+      this.percentage1_3 = 0;
+      this.percentage1_4 = 0;
 
       var d = new Date();
       var timeString = this.dateFtt("yyyy-MM-dd-hh-mm-ss", d);
@@ -581,26 +621,44 @@ export default {
 
 
       var timer = setInterval(() => {
-        // TODO：Progress bar
-        this.myFunc();
+        // TODO：Progress bar 4.21
+        this.progress();
+
         $.ajax({
           url: "http://127.0.0.1:5003/nsttmp",
           type: "GET",
-          data: {'src':this.srcList1[this.srcList1.length - 1], 'timeString':timeString},
+          data: {"src":this.srcList1[this.srcList1.length - 1], "timeString":timeString},
           dataType: "json",
           success: (data) => {
-            if (data.tmp_url_1)   this.url_6_1 = data.tmp_url_1;
-            if (data.tmp_url_2)   this.url_6_2 = data.tmp_url_2;
-            if (data.tmp_url_3)   this.url_6_3 = data.tmp_url_3;
-            if (data.tmp_url_4)   this.url_6_4 = data.tmp_url_4;
+            if (data.tmp_url_1) {
+              this.url_6_1 = data.tmp_url_1;
+              this.srcList6_1.push(this.url_6_1);
+              this.percentage1_1 = 100;
+              this.percentage1 = 20;
+            }
+            if (data.tmp_url_2) {
+              this.url_6_2 = data.tmp_url_2;
+              this.srcList6_2.push(this.url_6_2);
+              this.percentage1_2 = 100;
+              this.percentage1 = 40;
+            }  
+            if (data.tmp_url_3) {
+              this.url_6_3 = data.tmp_url_3;
+              this.srcList6_3.push(this.url_6_3);
+              this.percentage1_3 = 100;
+              this.percentage1 = 60;
+            }  
+            if (data.tmp_url_4) {
+              this.url_6_4 = data.tmp_url_4;
+              this.srcList6_4.push(this.url_6_4);
+              this.percentage1_4 = 100;
+              this.percentage1 = 80;
+            }  
 
-            this.srcList6_1.push(this.url_6_1);
-            this.srcList6_2.push(this.url_6_2);
-            this.srcList6_3.push(this.url_6_3);
-            this.srcList6_4.push(this.url_6_4);
+
           }
         })
-      }, 1000);
+      }, 2000);
       axios
         .get(this.server_url + "/nstpt", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
@@ -617,7 +675,7 @@ export default {
                       style_layers: this.style_layers}})
         .then((response) => {
           
-          this.percentage = 100;
+          this.percentage1 = 100;
           clearInterval(timer);
           if (response.data.status == 1) {
             this.url_5 = response.data.draw_url;
@@ -626,14 +684,14 @@ export default {
             this.loading = false;
             
             this.dialogTableVisible = false;
-            this.percentage = 0;
+            this.percentage1 = 0;
             this.notice("操作完成", "点击图片以查看大图", "success");
           } else {
             this.fullscreenLoading = false;
             this.loading = false;
             
             this.dialogTableVisible = false;
-            this.percentage = 0;
+            this.percentage1 = 0;
             this.notice("操作失败", "请重新检查", "error");
           }
           
