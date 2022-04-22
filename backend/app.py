@@ -9,6 +9,7 @@ from importlib_metadata import re
 from preprocessing.utils.application import run as match
 from preprocessing.core import Params
 from postprocessing.color_transfer import color_trans
+from postprocessing.palette_transfer import palette_trans
 from postprocessing.mask_transfer import mask_trans
 from srgan.sr import sr_image
 # from NST.neural_style_jt import param_main as nst_jt      # Jittor reports bug on cudnn
@@ -182,6 +183,27 @@ def color_transfer_page():
         # img.save(output_path)
         return jsonify({'status': 1,
                         'draw_url': 'http://127.0.0.1:5003/tmp/draw/colortrans_' + pid})
+
+    return jsonify({'status': 0})
+
+@app.route('/palettetransfer', methods=['GET'])
+def palette_transfer_page():
+    src = request.values.get('src')
+    target_h = request.values.get('target_h')
+    # http://127.0.0.1:5003/tmp/ct/xxxxx.jpg
+    # ./tmp/ct/xxxxx.jpg
+    # print(hist_match)
+    if src:
+        src_path = '.' + src[21:]
+        pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]
+        
+        output_path = './tmp/draw/palettetrans_' + pid
+        img = palette_trans(src_path, output_path, float(target_h))
+        
+        # img = Image.fromarray(np.uint8(img))
+        # img.save(output_path)
+        return jsonify({'status': 1,
+                        'draw_url': 'http://127.0.0.1:5003/tmp/draw/palettetrans_' + pid})
 
     return jsonify({'status': 0})
 

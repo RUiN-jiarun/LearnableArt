@@ -116,8 +116,6 @@
           <el-tabs v-model="activeName">
             <el-tab-pane label="自动超分辨率" name="first">
             </el-tab-pane>
-            <el-tab-pane label="##" name="second">
-            </el-tab-pane>
 
             <div v-if="activeName=='first'">
             <div class="demo-image__preview1" >
@@ -158,41 +156,7 @@
               </div>
             </div>
             </div>
-            <div v-if="activeName=='second'">
-            <div class="demo-image__preview1" >
-            <div
-              v-loading="loading"
-              element-loading-text="处理图片中"
-              element-loading-spinner="el-icon-loading"
-            >
-              <el-image
-                :src="url_4"
-                class="image_2"
-                :preview-src-list="srcList4"
-                style="border-radius: 3px;"
-              >
-                <div slot="error">
-                  <div slot="placeholder" class="error">等待处理
-                  </div>
-                </div>
-              </el-image>
-              
-              <div class="img_info_1" style="margin-top: 10px; border-radius: 5px; background-color: #ffffff">
-              <el-button
-                      v-show="showbutton1"
-                      type="primary"
-                      class="download_bt"
-                      @click="sr"
-                    >开始处理
-                </el-button>
-                </div>
-            </div>
             
-            </div>
-            <div class="demo-image__preview1" style="float:left;">
-
-            </div>
-            </div>
             
             </el-tabs>
 

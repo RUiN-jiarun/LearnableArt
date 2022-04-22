@@ -333,7 +333,7 @@ export default {
       param.append("file", file, file.name);    // 通过append向form对象添加数据
       var timer = setInterval(() => {
         this.myFunc();
-      }, 30);
+      }, 50);
       let config = {
         headers: { "Content-Type": "multipart/form-data" },
       };                                        // 添加请求头
@@ -435,16 +435,14 @@ export default {
       this.fullscreenLoading = true;
       this.loading = true;
       this.url_4 = "";
-      // console.log(this.colors);
+      // console.log(this.colors.hsv.h);
       var timer = setInterval(() => {
         this.myFunc();
       }, 30);
       axios
-        .get(this.server_url + "/colortransfer", 
+        .get(this.server_url + "/palettetransfer", 
             {params: {src: this.srcList1[this.srcList1.length - 1], 
-                      ref: this.srcList2[this.srcList2.length - 1],
-                      isMasked: this.isMasked,
-                      hist_match: this.match_mode,}})
+                      target_h: this.colors.hsv.h}})
         .then((response) => {
           this.percentage = 100;
           clearInterval(timer);
