@@ -545,23 +545,23 @@ export default {
       }
     },
     progress1() {
-      if (this.percentage1_1 + 3 < 99) {
-        this.percentage1_1 = this.percentage1_1 + 3;
+      if (this.percentage1_1 + 5 < 99) {
+        this.percentage1_1 = this.percentage1_1 + 5;
       } else if (this.percentage1_1 != 100) {
         this.percentage1_1 = 99;
       }
-      if (this.percentage1_2 + 3 < 99 && this.percentage1_1 == 100) {
-        this.percentage1_2 = this.percentage1_2 + 3;
+      if (this.percentage1_2 + 5 < 99 && this.percentage1_1 == 100) {
+        this.percentage1_2 = this.percentage1_2 + 5;
       } else if (this.percentage1_1 == 100 && this.percentage1_2 != 100) {
         this.percentage1_2 = 99;
       }
-      if (this.percentage1_3 + 3 < 99 && this.percentage1_2 == 100) {
-        this.percentage1_3 = this.percentage1_3 + 3;
+      if (this.percentage1_3 + 5 < 99 && this.percentage1_2 == 100) {
+        this.percentage1_3 = this.percentage1_3 + 5;
       } else if (this.percentage1_2 == 100 && this.percentage1_3 != 100) {
         this.percentage1_3 = 99;
       }
-      if (this.percentage1_4 + 3 < 99 && this.percentage1_3 == 100) {
-        this.percentage1_4 = this.percentage1_4 + 3;
+      if (this.percentage1_4 + 5 < 99 && this.percentage1_3 == 100) {
+        this.percentage1_4 = this.percentage1_4 + 5;
       } else if (this.percentage1_3 == 100 && this.percentage1_4 != 100) {
         this.percentage1_4 = 99;
       }
@@ -650,6 +650,7 @@ export default {
           data: {"src":this.srcList1[this.srcList1.length - 1], "timeString":timeString},
           dataType: "json",
           success: (data) => {
+            // console.log(data);
             if (data.tmp_url_4) {
               this.url_6_4 = data.tmp_url_4;
               this.srcList6_4.push(this.url_6_4);
@@ -750,6 +751,7 @@ export default {
           data: {"src":this.srcList1[this.srcList1.length - 1], "timeString":timeString},
           dataType: "json",
           success: (data) => {
+            console.log(data);
             if (data.tmp_url_4) {
               this.url_4_4 = data.tmp_url_4;
               this.srcList4_4.push(this.url_4_4);
