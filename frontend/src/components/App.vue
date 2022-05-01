@@ -1,7 +1,7 @@
 <template>
   <div class="sidebar" style="">
       
-      <el-row style="height: 100%; overflow:hidden; display:flex;">
+      <el-row style="height: 140%; overflow:hidden; display:flex;">
         <el-col style="min-height: 100%;background-color: #21b3b9;overflow: hidden;width:15%">
           <el-menu
             router
@@ -88,6 +88,7 @@ export default {
   background-color: #ffffff;
   height: 100%;
   overflow-x: hidden;
+  overflow-y: hidden;
 }
 .sidebar {
   display: block;

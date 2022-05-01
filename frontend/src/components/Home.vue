@@ -10,7 +10,7 @@
         <div class="img_info_1" style="border-radius: 0 0 5px 5px">
               <span style="color: white; letter-spacing: 6px">系统流程示意</span>
             </div>
-        Repository: TBA
+        Repository link: <a href="https://github.com/RUiN-jiarun/LearnableArt">LearnableArt</a>
 </div>
 </template>
 

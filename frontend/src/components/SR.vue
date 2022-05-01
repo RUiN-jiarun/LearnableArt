@@ -420,10 +420,6 @@ export default {
   margin-top: -20px;
 }
 
-.divider {
-  width: 50%;
-}
-
 #CT {
   display: flex;
   height: 100%;
@@ -576,37 +572,6 @@ div {
   display: flex;
   min-width: 1200px;
 
-}
-
-.divider {
-  background-color: #eaeaea !important;
-  height: 2px !important;
-  width: 100%;
-  margin-bottom: 50px;
-}
-
-.divider_1 {
-  background-color: #ffffff;
-  height: 2px !important;
-  width: 100%;
-  margin-bottom: 20px;
-  margin: 20px auto;
-}
-
-.steps {
-  font-family: "lucida grande", "lucida sans unicode", lucida, helvetica,
-    "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
-  color: #21b3b9;
-  text-align: center;
-  margin: 15px auto;
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.step_1 {
-  /*color: #303133 !important;*/
-  margin: 20px 26px;
 }
 
 #info_patient {
