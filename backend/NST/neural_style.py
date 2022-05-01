@@ -5,6 +5,8 @@ import torch.nn as nn
 import torch.optim as optim
 import torchvision.transforms as transforms
 
+import pandas as pd
+
 from PIL import Image
 from .models import loadModel, ModelParallel
 
@@ -43,6 +45,7 @@ parser.add_argument("-style_scale", type=float, default=1.0)
 parser.add_argument("-original_colors", type=int, choices=[0, 1], default=0)
 parser.add_argument("-pooling", choices=['avg', 'max'], default='max')
 parser.add_argument("-model_file", type=str, default='NST/models/vgg19-d01eb7cb.pth')   # NST/models/vgg19-d01eb7cb.pth
+# parser.add_argument("-model_file", type=str, default='models/vgg19-d01eb7cb.pth')
 parser.add_argument("-disable_check", action='store_true')
 parser.add_argument("-backend", choices=['nn', 'cudnn', 'mkl', 'mkldnn', 'openmp', 'mkl,cudnn', 'cudnn,mkl'], default='cudnn')
 parser.add_argument("-cudnn_autotune", action='store_true')
@@ -302,7 +305,7 @@ def main():
         maybe_save(num_calls[0])
         maybe_print(num_calls[0], loss)
 
-        loss_list.append(loss)
+        loss_list.append(loss.cpu().detach().numpy())
 
         return loss
 
@@ -310,14 +313,25 @@ def main():
     while num_calls[0] <= loopVal:
         optimizer.step(feval)
 
-    # if params.plot:
-    #     x1 = range(0, params.num_iterations)
-    #     y1 = loss_list
-    #     plt.plot(x1, y1)
-    #     plt.xlabel('Iters')
-    #     plt.ylabel('Total Loss')
-    #     plt.show()
-    #     # plt.savefig('loss.jpg')   # FIXME: save bug
+    # wirte data to csv
+    
+
+    if params.plot:
+        idx = range(1, params.num_iterations+1)
+        data = loss_list
+        csv = pd.DataFrame(columns=['iter', 'loss'], data={'iter':idx,'loss':data})
+        output_filename, file_extension = os.path.splitext(params.output_image)
+        csv.to_csv(str(output_filename) + '_loss.csv')
+        
+        x1 = range(0, params.num_iterations)
+        y1 = loss_list
+        # print(x1, y1)
+        plt.plot(x1, y1)
+        plt.xlabel('Iters')
+        plt.ylabel('Total Loss')
+        output_filename, file_extension = os.path.splitext(params.output_image)
+        plt.savefig(str(output_filename) + '_loss.jpg')
+        # plt.show()
 
 # Configure the optimizer
 def setup_optimizer(img):
@@ -613,5 +627,15 @@ class TVLoss(nn.Module):
 
 
 if __name__ == "__main__":
+    start = torch.cuda.Event(enable_timing=True)
+    end = torch.cuda.Event(enable_timing=True)
+    start.record()
     main()
-    # test()
+    end.record()
+
+    # Waits for everything to finish running
+    torch.cuda.synchronize()
+
+    print('Total time: ', start.elapsed_time(end) / 1000.0)
+
+

@@ -1,16 +1,19 @@
 <template>
-    <div class="home">
-        TESTTESTTESTTESTTESTTESTTESTTESTTEST
+    <div id="home">
+        这是一款面向艺术创作的完整图像风格迁移系统。
     </div>
 </template>
 
 <script>
 export default {
-    name: 'Home',
-    data() {
-        return {}
-    },
-    mounted() {},
+  name: 'Home',
+  data() {
+    return {}
+  },
+  mounted() {},
+  created: function () {
+    document.title = "LearnableArt";
+  },
 }
 </script>
 
@@ -20,16 +23,19 @@ export default {
   margin: 0;
   padding: 0;
 }
+
 div {
   display: block;
 }
-.home {
-  width: 85%;
-  height: 800px;
+
+#home {
+  width: 100%;
+  /* height: 100%; */
   background-color: #ffffff;
-  margin-left: 170px;
-  display: flex;
-  min-width: 1200px;
+  margin-left: 100px;
+  /* display: flex; */
+  min-width: 1300px;
 
 }
+
 </style>

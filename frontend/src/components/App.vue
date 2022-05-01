@@ -87,7 +87,7 @@ export default {
 .el-col {
   background-color: #ffffff;
   height: 100%;
-  overflow: auto;
+  overflow-x: hidden;
 }
 .sidebar {
   display: block;

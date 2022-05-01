@@ -878,6 +878,7 @@ export default {
   height: 200px;
   border-radius: 8px;
   margin-top: -20px;
+  margin-left: 80px;
 }
 
 .divider {
