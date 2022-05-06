@@ -136,12 +136,13 @@ def auto_mask_page():
         # print(src_path, style_path)
         # test -- hard-coded
         # shutil.copy(src_path, './tmp/draw')
-        if isSrc:
+        if int(isSrc):
             if src_path.endswith('.jpg'):
                 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
             f = np.fromfile(src_path)
-            res = mask.generate(f, model_name=model_name, isBackground=isBackground, dilate_structure_size=1)
+            # print(isBackground)
+            res = mask.generate(f, model_name=model_name, isBackground=int(isBackground), dilate_structure_size=1)
             img = Image.open(io.BytesIO(res)).convert("RGBA")
 
             pid = datetime.datetime.now().strftime('%Y-%m-%d-%H-%M-%S') + '_' + src_path[9:]

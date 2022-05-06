@@ -459,7 +459,7 @@ export default {
           clearInterval(timer);
           if (response.data.status == 1) {
             this.url_3 = response.data.draw_url;
-            this.srcList5.push(this.url_3);
+            this.srcList3.push(this.url_3);
             this.fullscreenLoading = false;
             this.loading = false;
 
