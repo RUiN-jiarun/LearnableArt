@@ -131,7 +131,7 @@
               <el-image
                 :src="url_3"
                 class="image_2"
-                :preview-src-list="srcList4"
+                :preview-src-list="srcList3"
                 style="border-radius: 3px;"
               >
                 <div slot="error">
@@ -223,7 +223,7 @@
               <el-image
                 :src="url_5"
                 class="image_2"
-                :preview-src-list="srcList4"
+                :preview-src-list="srcList5"
                 style="border-radius: 3px;"
               >
                 <div slot="error">

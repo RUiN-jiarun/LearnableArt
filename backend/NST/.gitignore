@@ -10,4 +10,5 @@ examples/
 __pycache__/
 test/
 INSTALL.md 
+testing_res/
 

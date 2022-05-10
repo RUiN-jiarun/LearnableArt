@@ -26,6 +26,13 @@ CONTENT_IMAGE4_3=input/fdm_rgb_rain.png
 CONTENT_IMAGE4_4=input/fdm_hsv_rain.png
 CONTENT_IMAGE4_5=input/fdm_lab_rain.png
 CONTENT_IMAGE4_6=input/bird.png
+STYLE_IMAGE5=input/farmer.png
+CONTENT_IMAGE5_1=input/hm_rgb.png
+CONTENT_IMAGE5_2=input/hm_lab.png
+CONTENT_IMAGE5_3=input/fdm_rgb.png
+CONTENT_IMAGE5_4=input/fdm_hsv.png
+CONTENT_IMAGE5_5=input/fdm_lab.png
+CONTENT_IMAGE5_6=input/bird.png
 
 PYTHON=python3 # Change to Python if using Python 2
 SCRIPT=neural_style.py
@@ -176,4 +183,40 @@ $NEURAL_STYLE \
   -content_image $CONTENT_IMAGE4_6 \
   -style_image $STYLE_IMAGE4 \
   -output_image res/bird_rain.png \
+  -backend cudnn -cudnn_autotune -improve_gram
+
+$NEURAL_STYLE \
+  -content_image $CONTENT_IMAGE5_1 \
+  -style_image $STYLE_IMAGE5 \
+  -output_image res/hm_rgb_farmer.png \
+  -backend cudnn -cudnn_autotune -improve_gram
+
+$NEURAL_STYLE \
+  -content_image $CONTENT_IMAGE5_2 \
+  -style_image $STYLE_IMAGE5 \
+  -output_image res/hm_lab_farmer.png \
+  -backend cudnn -cudnn_autotune -improve_gram
+  
+$NEURAL_STYLE \
+  -content_image $CONTENT_IMAGE5_3 \
+  -style_image $STYLE_IMAGE5 \
+  -output_image res/fdm_rgb_farmer.png \
+  -backend cudnn -cudnn_autotune -improve_gram
+  
+$NEURAL_STYLE \
+  -content_image $CONTENT_IMAGE5_4 \
+  -style_image $STYLE_IMAGE5 \
+  -output_image res/fdm_hsv_farmer.png \
+  -backend cudnn -cudnn_autotune -improve_gram
+  
+$NEURAL_STYLE \
+  -content_image $CONTENT_IMAGE5_5 \
+  -style_image $STYLE_IMAGE5 \
+  -output_image res/fdm_lab_farmer.png \
+  -backend cudnn -cudnn_autotune -improve_gram
+  
+$NEURAL_STYLE \
+  -content_image $CONTENT_IMAGE5_6 \
+  -style_image $STYLE_IMAGE5 \
+  -output_image res/farmer.png \
   -backend cudnn -cudnn_autotune -improve_gram

@@ -280,8 +280,8 @@
                 <span>内容图像权重</span>
                 <el-radio-group style="margin-top: 10px;" v-model="content_weight">
                   <el-radio :label="5e0">具体</el-radio>
-                  <el-radio :label="1e0">平衡</el-radio>
-                  <el-radio :label="1e-1">抽象</el-radio>
+                  <el-radio :label="2e-1">平衡</el-radio>
+                  <el-radio :label="1e-5">抽象</el-radio>
                 </el-radio-group>
               </div>
               <div class="param_block">
