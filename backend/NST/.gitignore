@@ -11,4 +11,5 @@ __pycache__/
 test/
 INSTALL.md 
 testing_res/
+*.txt
 
