@@ -4,12 +4,12 @@ import torch
 from PIL import Image
 from pyiqa.models.inference_model import InferenceModel
 
-def main():
+def iqa(input, log_path):
     metric_list = ['niqe', 'ilniqe', 'brisque', 'nrqm', 'pi', 'musiq', 'nima', 'paq2piq', 'dbcnn']
     # metric_list = ['niqe', 'ilniqe', 'brisque', 'pi', 'musiq', 'nima', 'paq2piq', 'dbcnn']
     metric_mode = 'NR'
-    input = 'testing_res/res'
-    sf = open('res_log.txt', 'w')
+    # input = 'testing_res/adam_res'
+    sf = open(log_path, 'w')
     if os.path.isfile(input):
         input_paths = [input]
     else:
@@ -25,7 +25,7 @@ def main():
             score = iqa_model.test(tar_img)
             avg_score += score
             print(f'{metric_name} score of {img_name} is: {score}')
-            sf.write(f'{img_name}\t{metric_name}\t{score}\n')
+            sf.write(f'{img_name}\t\t{metric_name}\t{score}\n')
         avg_score /= test_img_num
         if test_img_num > 1:
             print(f'Average {metric_name} score of {input} with {test_img_num} images is: {avg_score}')
@@ -35,4 +35,4 @@ def main():
     sf.close()
 
 if __name__ == '__main__':
-    main()
+    iqa(input='testing_res/adam_res', log_path='adam_log.txt')
