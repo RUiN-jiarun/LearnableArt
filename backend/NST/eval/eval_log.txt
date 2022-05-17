@@ -1,0 +1,66 @@
+Content:
+BRISQUE index: 57.5715
+
+
+Original:
+BRISQUE index: 49.1496
+ContentLoss: 3210.5012
+DISTS: 0.3618
+DSS index: 0.0627, loss: 0.9373
+FSIM index: 0.4933, loss: 0.5067
+GMSD index: 0.3139, loss: 0.3139
+HaarPSI index: 0.1817, loss: 0.8183
+LPIPS: 0.6747
+MDSI index: 0.6639, loss: 0.3361
+MS-SSIM index: 0.4183, loss: 0.5817
+MS-GMSDc index: 0.3087, loss: 0.3087
+PSNR index: 8.1023
+PieAPP loss: 4.5590
+SSIM index: 0.2479, loss: 0.7521
+Style: 2251624192.0000
+TV index: 89.5314, loss: 89.5314
+VIFp index: 0.0448, loss: 0.9552
+VSI index: 0.8036, loss: 0.1964
+SR-SIM index: 0.7184, loss: 0.2816
+
+Shift+Cut:
+BRISQUE index: 50.4372
+ContentLoss: 3153.9290
+DISTS: 0.3544
+DSS index: 0.0727, loss: 0.9273
+FSIM index: 0.4977, loss: 0.5023
+GMSD index: 0.3123, loss: 0.3123
+HaarPSI index: 0.1910, loss: 0.8090
+LPIPS: 0.6737
+MDSI index: 0.6588, loss: 0.3412
+MS-SSIM index: 0.4055, loss: 0.5945
+MS-GMSDc index: 0.3065, loss: 0.3065
+PSNR index: 8.1213
+PieAPP loss: 4.8101
+SSIM index: 0.2400, loss: 0.7600
+Style: 2169479936.0000
+TV index: 89.5314, loss: 89.5314
+VIFp index: 0.0487, loss: 0.9513
+VSI index: 0.8023, loss: 0.1977
+SR-SIM index: 0.7162, loss: 0.2838
+
+Color:
+BRISQUE index: 48.9811
+ContentLoss: 3197.2573
+DISTS: 0.3515
+DSS index: 0.0698, loss: 0.9302
+FSIM index: 0.4912, loss: 0.5088
+GMSD index: 0.3124, loss: 0.3124
+HaarPSI index: 0.1954, loss: 0.8046
+LPIPS: 0.6691
+MDSI index: 0.6628, loss: 0.3372
+MS-SSIM index: 0.4216, loss: 0.5784
+MS-GMSDc index: 0.3039, loss: 0.3039
+PSNR index: 7.5796
+PieAPP loss: 4.6969
+SSIM index: 0.2379, loss: 0.7621
+Style: 2207363840.0000
+TV index: 89.5314, loss: 89.5314
+VIFp index: 0.0530, loss: 0.9470
+VSI index: 0.8033, loss: 0.1967
+SR-SIM index: 0.7271, loss: 0.2729

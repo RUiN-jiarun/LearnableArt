@@ -1,0 +1,17 @@
+bird_starry
+content BRISQUE score: 57.5715
+original BRISQUE score: 49.1496
+improved BRISQUE score: 50.4372
+color BRISQUE score: 48.9811
+
+bird_rain
+content BRISQUE score: 59.9511
+original BRISQUE score: 39.1965
+improved BRISQUE score: 40.5070
+color BRISQUE score: 43.8864
+
+bird_farmer
+content BRISQUE score: 59.9511
+original BRISQUE score: 61.0903
+improved BRISQUE score: 52.8940
+color BRISQUE score: 64.5178

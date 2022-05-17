@@ -11,5 +11,7 @@ __pycache__/
 test/
 INSTALL.md 
 testing_res/
-*.txt
+!eval/*.py
+!eval/*.txt
+*.sh
 
