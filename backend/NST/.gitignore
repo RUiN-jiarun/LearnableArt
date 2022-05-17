@@ -9,7 +9,7 @@ examples/
 !models/download_models.py
 __pycache__/
 test/
-INSTALL.md 
+INSTALL.md
 testing_res/
 !eval/*.py
 !eval/*.txt
