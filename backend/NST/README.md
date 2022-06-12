@@ -22,4 +22,13 @@ $ python neural_style.py -style_image examples/inputs/bird.png -content_image ex
 
 Jittor version created according to the Pytorch version.
 
+To install jittor, please follow [安装 — Jittor (tsinghua.edu.cn)](https://cg.cs.tsinghua.edu.cn/jittor/download/).
+
 For evaluation metrics please check `eval` folder. The results folders are removed for large size.
+
+
+
+## TODO
+
+Jittor version **DID NOT** imply the lbfgs optimizer. `lbfgs_jt.py` is a temp file.
+
